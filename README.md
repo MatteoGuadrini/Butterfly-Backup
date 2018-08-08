@@ -13,10 +13,10 @@ Butterfly Backup exploits the potential of rsync with maximum simplicity, and mo
 With Butterfly Backup I can perform single or group backups (Full, Incremental and Mirror), restore and archive old backups.
 
 ## How can you do it?
-Naturally through the synergy of rsync and openssh.
+Naturally through the synergy of rsync and OpenSSH technology.
 
 ## Which platforms support?
-Butterfly Backup run on Linux, BSD, MacOSX and Windows(with cygwin, see [docs]())
+Butterfly Backup run on Linux, BSD, MacOSX and Windows(with cygwin, see config [docs](https://Butterfly-Backup.readthedocs.io/en/latest/))
 
 ## Real uses
 This list consists of only a few examples; applications can be endless:
@@ -29,6 +29,7 @@ This list consists of only a few examples; applications can be endless:
 * Backup a entire file server, incrementally;
 
 ## Real possibilities
+- Configuration for silently backup
 - All backup are organized into a catalog
 - List single or all backup by the catalog
 - Backup single PC, with Full,Incremental and Mirror mode;
@@ -37,7 +38,6 @@ This list consists of only a few examples; applications can be endless:
 - Restore backup on the same PC
 - Restore backup in other PC
 - Restore backup in other operating system
-- Restore all or partial data
 - Apply retention policy to delete old backup
 - Archive old backup in other file system or same (zip backup folder)
 
@@ -49,7 +49,7 @@ This list consists of only a few examples; applications can be endless:
 All operation of Butterfly Backup are _server to client_, agent-less.
 This means that all commands must be executed by the backup server. Of course, nothing prevents the backup server from being itself (localhost).
 
-To see all the operations and more examples, see the [docs]().
+To see all the operations and more examples, see the [docs](https://Butterfly-Backup.readthedocs.io/en/latest/).
 
 ### Backup machine
 Backup a single PC or server is a everyday task. 
@@ -130,7 +130,7 @@ With Butterfly Backup, you can perform Full, Incremental and Mirror backups, app
 you can activate the log function, so as to track any operation over time and/or increase verbosity.
 Bulk backup operations can be performed using a simple text file, formatted in a list.
 Is possible create, by means of openssh operations, a configuration and copy them into the machines impacted by the backup without causing the machine to request the password (key exchange).
-For all this, [Read the Docs]() or run help:
+For all this, [Read the Docs](https://Butterfly-Backup.readthedocs.io/en/latest/) or run help:
 ```bash
 bb --help
 ```
@@ -138,8 +138,8 @@ bb --help
 # Butterfly Backup: supports
 
 ## One more thing
-The name butterfly, is born precisely because agent-less; like a butterfly takes the pollen from a flower and takes it elsewhere.
-A backup or restore is performed without any responsibility on the part of the final machine.
+The name butterfly, is born precisely because agent-less; like a butterfly takes the pollen from a flower and brings it elsewhere.
+A backup or restore is performed without any iterationresponsibility on the part of the final machine.
 The performances are not altered.
 While all the operations of Butterfly Backup are carried out, the impacted machine can continuously work with peace of mind.
 
