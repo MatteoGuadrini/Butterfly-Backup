@@ -1,4 +1,4 @@
 name:  Matteo Guadrini
-remote_theme: poole/lanyon
+theme: jekyll-theme-minimal
 show_downloads: true
 description: "Butterfly Backup is a simple command line wrapper of rsync for complex task, written in python."

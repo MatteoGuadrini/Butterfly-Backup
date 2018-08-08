@@ -1,8 +1,0 @@
-README.md
-bb.py
-setup.py
-utility.py
-ButterflyBackup.egg-info/PKG-INFO
-ButterflyBackup.egg-info/SOURCES.txt
-ButterflyBackup.egg-info/dependency_links.txt
-ButterflyBackup.egg-info/top_level.txt
