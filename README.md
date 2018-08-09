@@ -51,6 +51,15 @@ This means that all commands must be executed by the backup server. Of course, n
 
 To see all the operations and more examples, see the [docs](https://Butterfly-Backup.readthedocs.io/en/latest/).
 
+## Installation
+Install Butterfly Backup is very simple; run this:
+```bash
+git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
+cd Butterfly-Backup
+sudo python3 setup.py
+bb --help
+```
+
 ### Backup machine
 Backup a single PC or server is a everyday task. 
 But most of the data may not change in the various backups made;

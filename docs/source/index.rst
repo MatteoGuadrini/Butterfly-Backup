@@ -34,6 +34,17 @@ Butterfly Backup is a *simple* wrapper of rsync written in python; this means th
 The other requirement is a openssh and rsync (version 2.5 or higher).
 Ok, let's go!
 
+Installation
+------------
+
+Install Butterfly Backup is very simple; run this:
+
+.. code-block:: bash
+
+   arthur@goldenheart$ git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
+   arthur@goldenheart$ cd Butterfly-Backup
+   arthur@goldenheart$ sudo python3 setup.py
+   arthur@goldenheart$ bb --help
 
 .. _core:
 
