@@ -1,19 +1,25 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+# -*- encoding: utf-8 -*-
+# vim: se ts=4 et syn=python:
 
-
-"""
-Welcome to ButterflyBackup
-
-Author: 		    GU aka Matteo Guadrini
-Mail:			    matteo.guadrini@hotmail.it
-Scriptname: 	    bb.py
-Version: 		    1.0
-Python Version : 	Python 3
-Required:           openssh,rsync
-Revision:		    1 (Matteo Guadrini) [Created script]
-
-
-"""
+# created by: matteo.guadrini
+# bb.py -- Butterfly-Backup
+#
+#     Copyright (C) 2018 Matteo Guadrini <matteo.guadrini@hotmail.it>
+#
+#     This program is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This program is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
 
 import argparse
 import configparser
@@ -25,7 +31,7 @@ from multiprocessing import Pool
 from utility import print_verbose
 
 # region Global Variables
-VERSION = '1.0.0'
+VERSION = '1.1.0'
 
 
 # endregion
@@ -718,8 +724,8 @@ def parse_arguments():
                                 choices=['User', 'Config', 'Application', 'System', 'Log'], nargs='+')
     data_or_custom.add_argument('--custom-data', '-C', help='Custom path of which you want to backup',
                                 dest='customdata', action='store', nargs='+')
-    group_backup.add_argument('--user', '-u', help='Login name used to log into the remote host (being backed up)', dest='user', action='store',
-                              default=os.getlogin())
+    group_backup.add_argument('--user', '-u', help='Login name used to log into the remote host (being backed up)',
+                              dest='user', action='store', default=os.getlogin())
     group_backup.add_argument('--type', '-t', help='Type of operating system to backup', dest='type', action='store',
                               choices=['Unix', 'Windows', 'MacOS'], required=True)
     group_backup.add_argument('--compress', '-z', help='Compress data', dest='compress',
@@ -728,6 +734,8 @@ def parse_arguments():
                               action='store', type=int)
     group_backup.add_argument('--parallel', '-p', help='Number of parallel jobs', dest='parallel', action='store',
                               type=int, default=5)
+    group_backup.add_argument('--timeout', '-T', help='I/O timeout in seconds', dest='timeout', action='store',
+                              type=int)
     # restore session
     restore = action.add_parser('restore', help='Restore options', parents=[parent_parser])
     group_restore = restore.add_argument_group(title='Restore options')
@@ -735,12 +743,15 @@ def parse_arguments():
                                required=True)
     group_restore.add_argument('--backup-id', '-i', help='Backup-id of backup', dest='id', action='store',
                                required=True)
-    group_restore.add_argument('--user', '-u', help="Login name used to log into the remote host (where you're restoring)", dest='user',
+    group_restore.add_argument('--user', '-u', help="Login name used to log into the remote host "
+                                                    "(where you're restoring)", dest='user',
                                action='store', default=os.getlogin())
     group_restore.add_argument('--computer', '-c', help='Hostname or ip address to perform restore', dest='hostname',
                                action='store', required=True)
     group_restore.add_argument('--type', '-t', help='Type of operating system to perform restore', dest='type',
                                action='store', choices=['Unix', 'Windows', 'MacOS'])
+    group_restore.add_argument('--timeout', '-T', help='I/O timeout in seconds', dest='timeout', action='store',
+                               type=int)
     # archive session
     archive = action.add_parser('archive', help='Archive options', parents=[parent_parser])
     group_archive = archive.add_argument_group(title='Archive options')

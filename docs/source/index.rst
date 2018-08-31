@@ -287,10 +287,11 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 
    arthur@goldenheart$ bb backup --help
    usage: bb backup [-h] [--verbose] [--log] (--computer HOSTNAME | --list LIST)
-                    --destination DESTINATION [--mode {Full,Incremental,Mirror}]
-                    (--data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...])
-                    [--user USER] --type {Unix,Windows,MacOS} [--compress]
-                    [--retention RETENTION] [--parallel PARALLEL]
+                 --destination DESTINATION [--mode {Full,Incremental,Mirror}]
+                 (--data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...])
+                 [--user USER] --type {Unix,Windows,MacOS} [--compress]
+                 [--retention RETENTION] [--parallel PARALLEL]
+                 [--timeout TIMEOUT]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -317,6 +318,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                            Number of days of backup retention
      --parallel PARALLEL, -p PARALLEL
                            Number of parallel jobs
+     --timeout TIMEOUT, -T TIMEOUT
+                           I/O timeout in seconds
 
 
 * [**--computer**, **-c**]: Select the ip or hostname where to perform backup.
@@ -358,6 +361,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 * **--compress**, **-z**: Compresses the data transmitted.
 * **--retention**, **-r**: Number of days for which you want to keep your backups.
 * **--parallel**, **-p**: Maximum number of concurrent rsync processes. By default is 5 jobs.
+* **--timeout**, **-T**: Specify number of seconds of I/O timeout.
 
 
 .. _backup_computer:
@@ -575,8 +579,8 @@ The restore process is the exact opposite of the backup process. It takes the fi
 
    arthur@goldenheart$ bb restore --help
    usage: bb restore [-h] [--verbose] [--log] --catalog CATALOG --backup-id ID
-                     [--user USER] --computer HOSTNAME
-                     [--type {Unix,Windows,MacOS}]
+                  [--user USER] --computer HOSTNAME
+                  [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -593,7 +597,8 @@ The restore process is the exact opposite of the backup process. It takes the fi
                            Hostname or ip address to perform restore
      --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
                            Type of operating system to perform restore
-
+     --timeout TIMEOUT, -T TIMEOUT
+                           I/O timeout in seconds
 
 * **--catalog**, **-C**: Select the backups folder (root).
 * **--backup-id**, **-i**: Select backup id in the catalog.
@@ -605,6 +610,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
     * **Windows** -> Windows Vista or higher with cygwin installed.
     * **MacOS** -> MacOSX 10.8 or higher.
 
+* **--timeout**, **-T**: Specify number of seconds of I/O timeout.
 
 This is a few examples:
 

@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e135afbf-2c92-4ce2-87c8-aa48daff965b" name="Default" comment="Add cygwin instruction">
-      <change afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+    <list default="true" id="e135afbf-2c92-4ce2-87c8-aa48daff965b" name="Default" comment="Add timeout option&#10;Add disclaimer for each pyfile">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bb.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/doctrees/environment.pickle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/build/doctrees/index.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/doctrees/index.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/build/html/.buildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/.buildinfo" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/build/html/_sources/index.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/_sources/index.rst.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/build/html/backup.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/build/html/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/searchindex.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/source/conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/conf.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/source/index.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/index.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility.py" beforeDir="false" afterPath="$PROJECT_DIR$/utility.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -78,38 +76,41 @@
         <counts>
           <entry key="project.closed" value="1" />
           <entry key="project.open.time.5" value="1" />
-          <entry key="project.opened" value="1" />
+          <entry key="project.open.time.9" value="1" />
+          <entry key="project.opened" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="gitignore" value="1" />
           <entry key="md" value="1" />
-          <entry key="py" value="2" />
-          <entry key="rst" value="2" />
+          <entry key="py" value="3" />
+          <entry key="rst" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="Markdown" value="1" />
           <entry key="PLAIN_TEXT" value="1" />
-          <entry key="Python" value="2" />
-          <entry key="ReST" value="2" />
+          <entry key="Python" value="3" />
+          <entry key="ReST" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="md" value="147" />
-          <entry key="py" value="249" />
-          <entry key="rst" value="42" />
+          <entry key="py" value="263" />
+          <entry key="rst" value="52" />
+          <entry key="txt" value="71" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Bash" value="3" />
           <entry key="Markdown" value="144" />
-          <entry key="Python" value="249" />
-          <entry key="ReST" value="42" />
+          <entry key="PLAIN_TEXT" value="71" />
+          <entry key="Python" value="263" />
+          <entry key="ReST" value="52" />
         </counts>
       </usages-collector>
     </session>
@@ -119,10 +120,12 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="624" column="29" selection-start-line="624" selection-start-column="29" selection-end-line="624" selection-end-column="39" />
+            <state relative-caret-position="252">
+              <caret line="33" column="14" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
               <folding>
-                <element signature="e#25780#32426#0" expanded="true" />
+                <element signature="n#!!doc" expanded="true" />
+                <element signature="e#25729#32431#0" expanded="true" />
+                <element signature="e#30609#30734#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -134,12 +137,41 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/setup.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="864">
+              <caret line="48" lean-forward="true" selection-start-line="48" selection-end-line="48" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+                <element signature="e#892#905#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utility.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="129">
-              <caret line="100" column="30" selection-start-line="100" selection-start-column="30" selection-end-line="100" selection-end-column="30" />
+            <state relative-caret-position="4050">
+              <caret line="301" lean-forward="true" selection-start-line="301" selection-end-line="301" />
               <folding>
-                <element signature="e#46#322#0" />
+                <element signature="n#!!doc" expanded="true" />
+                <element signature="e#917#964#1" expanded="true" />
+                <element signature="e#1233#1533#0" expanded="true" />
+                <element signature="e#1584#2568#0" expanded="true" />
+                <element signature="e#2600#2751#0" expanded="true" />
+                <element signature="e#2781#2924#0" expanded="true" />
+                <element signature="e#2951#3098#0" expanded="true" />
+                <element signature="e#3136#3781#0" expanded="true" />
+                <element signature="e#3802#3900#0" expanded="true" />
+                <element signature="e#3935#4215#0" expanded="true" />
+                <element signature="e#4248#4489#0" expanded="true" />
+                <element signature="e#4535#4872#0" expanded="true" />
+                <element signature="e#4909#5129#0" expanded="true" />
+                <element signature="e#5158#5424#0" expanded="true" />
+                <element signature="e#5475#5653#0" expanded="true" />
+                <element signature="e#5682#5840#0" expanded="true" />
+                <element signature="e#5866#6151#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -199,14 +231,14 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/test.sh" />
-        <option value="$PROJECT_DIR$/utility.py" />
         <option value="$PROJECT_DIR$/docs/source/backup.rst" />
-        <option value="$PROJECT_DIR$/bb.py" />
         <option value="$PROJECT_DIR$/LICENSE.md" />
         <option value="$PROJECT_DIR$/_config.yml" />
-        <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/docs/source/conf.py" />
+        <option value="$PROJECT_DIR$/setup.py" />
+        <option value="$PROJECT_DIR$/utility.py" />
+        <option value="$PROJECT_DIR$/bb.py" />
         <option value="$PROJECT_DIR$/docs/source/index.rst" />
       </list>
     </option>
@@ -281,8 +313,8 @@
     <frame x="1920" y="26" width="1920" height="1054" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4593698" visible="true" weight="0.24960506" />
-      <window_info id="Structure" order="1" sideWeight="0.54063016" side_tool="true" visible="true" weight="0.24960506" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.45777777" visible="true" weight="0.24960506" />
+      <window_info id="Structure" order="1" sideWeight="0.5422222" side_tool="true" visible="true" weight="0.24960506" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32960895" />
@@ -293,7 +325,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.3288889" />
       <window_info anchor="bottom" id="Python Console" order="8" weight="0.3288889" />
-      <window_info anchor="bottom" id="Version Control" order="9" visible="true" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.3288889" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -426,16 +458,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utility.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="100" column="30" selection-start-line="100" selection-start-column="30" selection-end-line="100" selection-end-column="30" />
-          <folding>
-            <element signature="e#46#322#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -446,33 +468,58 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/setup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="17" column="57" selection-start-line="17" selection-start-column="57" selection-end-line="17" selection-end-column="57" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/docs/source/conf.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="88" column="1" selection-start-line="88" selection-start-column="1" selection-end-line="88" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="864">
+          <caret line="48" lean-forward="true" selection-start-line="48" selection-end-line="48" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <element signature="e#564#573#0" expanded="true" />
+            <element signature="e#892#905#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utility.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4050">
+          <caret line="301" lean-forward="true" selection-start-line="301" selection-end-line="301" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#917#964#1" expanded="true" />
+            <element signature="e#1233#1533#0" expanded="true" />
+            <element signature="e#1584#2568#0" expanded="true" />
+            <element signature="e#2600#2751#0" expanded="true" />
+            <element signature="e#2781#2924#0" expanded="true" />
+            <element signature="e#2951#3098#0" expanded="true" />
+            <element signature="e#3136#3781#0" expanded="true" />
+            <element signature="e#3802#3900#0" expanded="true" />
+            <element signature="e#3935#4215#0" expanded="true" />
+            <element signature="e#4248#4489#0" expanded="true" />
+            <element signature="e#4535#4872#0" expanded="true" />
+            <element signature="e#4909#5129#0" expanded="true" />
+            <element signature="e#5158#5424#0" expanded="true" />
+            <element signature="e#5475#5653#0" expanded="true" />
+            <element signature="e#5682#5840#0" expanded="true" />
+            <element signature="e#5866#6151#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bb.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="624" column="29" selection-start-line="624" selection-start-column="29" selection-end-line="624" selection-end-column="39" />
+        <state relative-caret-position="252">
+          <caret line="33" column="14" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
           <folding>
-            <element signature="e#25780#32426#0" expanded="true" />
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#25729#32431#0" expanded="true" />
+            <element signature="e#30609#30734#0" expanded="true" />
           </folding>
         </state>
       </provider>
