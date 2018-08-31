@@ -69,8 +69,8 @@ def print_logo():
         ..I8N....:.N.    +??..  .N 8....NN7.
             ..NOM.. .   .I??.     ..MZN.
                          .?.
-                         
-                         
+
+
                      [GRETA OTO]
         '''
     )
@@ -661,7 +661,7 @@ def check_configuration(ip):
         out = check_output(["ssh-keyscan", "{0}".format(ip)])
         if not out:
             print(utility.PrintColor.RED +
-                  '''ERROR: For bulk or silently backup to deploy configuration! 
+                  '''ERROR: For bulk or silently backup to deploy configuration!
 See bb deploy --help or specify --verbose
                   ''' + utility.PrintColor.END)
     except subprocess.CalledProcessError:
@@ -718,7 +718,7 @@ def parse_arguments():
                                 choices=['User', 'Config', 'Application', 'System', 'Log'], nargs='+')
     data_or_custom.add_argument('--custom-data', '-C', help='Custom path of which you want to backup',
                                 dest='customdata', action='store', nargs='+')
-    group_backup.add_argument('--user', '-u', help='User of which you want to backup', dest='user', action='store',
+    group_backup.add_argument('--user', '-u', help='Login name used to log into the remote host (being backed up)', dest='user', action='store',
                               default=os.getlogin())
     group_backup.add_argument('--type', '-t', help='Type of operating system to backup', dest='type', action='store',
                               choices=['Unix', 'Windows', 'MacOS'], required=True)
@@ -735,7 +735,7 @@ def parse_arguments():
                                required=True)
     group_restore.add_argument('--backup-id', '-i', help='Backup-id of backup', dest='id', action='store',
                                required=True)
-    group_restore.add_argument('--user', '-u', help='User of which you want to perform restore', dest='user',
+    group_restore.add_argument('--user', '-u', help="Login name used to log into the remote host (where you're restoring)", dest='user',
                                action='store', default=os.getlogin())
     group_restore.add_argument('--computer', '-c', help='Hostname or ip address to perform restore', dest='hostname',
                                action='store', required=True)
