@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e135afbf-2c92-4ce2-87c8-aa48daff965b" name="Default" comment="Add timeout option&#10;Add disclaimer for each pyfile">
+    <list default="true" id="e135afbf-2c92-4ce2-87c8-aa48daff965b" name="Default" comment="Add setup option for Mac OS X">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/doctrees/environment.pickle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/build/doctrees/index.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/doctrees/index.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/build/html/_sources/index.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/_sources/index.rst.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/build/html/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/searchindex.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/source/index.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/index.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility.py" beforeDir="false" afterPath="$PROJECT_DIR$/utility.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -74,10 +66,11 @@
     <session id="2033656489">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="1" />
+          <entry key="project.closed" value="2" />
           <entry key="project.open.time.5" value="1" />
+          <entry key="project.open.time.7" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -99,17 +92,17 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="md" value="147" />
-          <entry key="py" value="263" />
+          <entry key="py" value="316" />
           <entry key="rst" value="52" />
-          <entry key="txt" value="71" />
+          <entry key="txt" value="106" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Bash" value="3" />
           <entry key="Markdown" value="144" />
-          <entry key="PLAIN_TEXT" value="71" />
-          <entry key="Python" value="263" />
+          <entry key="PLAIN_TEXT" value="106" />
+          <entry key="Python" value="316" />
           <entry key="ReST" value="52" />
         </counts>
       </usages-collector>
@@ -117,30 +110,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bb.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="33" column="14" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
+            <state relative-caret-position="-992">
+              <caret line="683" column="22" lean-forward="true" selection-start-line="683" selection-start-column="22" selection-end-line="683" selection-end-column="22" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
-                <element signature="e#25729#32431#0" expanded="true" />
-                <element signature="e#30609#30734#0" expanded="true" />
+                <element signature="e#26327#33390#0" expanded="true" />
+                <element signature="e#31359#31484#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/docs/source/index.rst">
-          <provider selected="true" editor-type-id="restructured-text-editor" />
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/setup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="864">
-              <caret line="48" lean-forward="true" selection-start-line="48" selection-end-line="48" />
+            <state relative-caret-position="516">
+              <caret line="48" selection-start-line="48" selection-end-line="48" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#892#905#0" expanded="true" />
@@ -152,8 +140,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utility.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4050">
-              <caret line="301" lean-forward="true" selection-start-line="301" selection-end-line="301" />
+            <state relative-caret-position="1188">
+              <caret line="301" selection-start-line="301" selection-end-line="301" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#917#964#1" expanded="true" />
@@ -238,13 +226,12 @@
         <option value="$PROJECT_DIR$/docs/source/conf.py" />
         <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/utility.py" />
-        <option value="$PROJECT_DIR$/bb.py" />
         <option value="$PROJECT_DIR$/docs/source/index.rst" />
+        <option value="$PROJECT_DIR$/bb.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1920" />
     <option name="y" value="26" />
     <option name="width" value="1920" />
     <option name="height" value="1054" />
@@ -307,14 +294,22 @@
       <option name="presentableId" value="Default" />
       <updated>1524493743980</updated>
     </task>
+    <task id="LOCAL-00001" summary="Add timeout option&#10;Add disclaimer for each pyfile">
+      <created>1535725898948</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1535725898948</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1920" y="26" width="1920" height="1054" extended-state="6" />
+    <frame x="0" y="26" width="1920" height="1054" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.45777777" visible="true" weight="0.24960506" />
-      <window_info id="Structure" order="1" sideWeight="0.5422222" side_tool="true" visible="true" weight="0.24960506" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.45605308" visible="true" weight="0.24960506" />
+      <window_info id="Structure" order="1" sideWeight="0.5439469" side_tool="true" visible="true" weight="0.24960506" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32960895" />
@@ -325,7 +320,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.3288889" />
       <window_info anchor="bottom" id="Python Console" order="8" weight="0.3288889" />
-      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="9" visible="true" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.3288889" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -360,6 +355,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Add timeout option&#10;Add disclaimer for each pyfile" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add timeout option&#10;Add disclaimer for each pyfile" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file:///usr/lib64/python3.6/argparse.py">
@@ -475,21 +474,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/setup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="864">
-          <caret line="48" lean-forward="true" selection-start-line="48" selection-end-line="48" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="e#892#905#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
+    <entry file="file://$PROJECT_DIR$/docs/source/index.rst">
+      <provider selected="true" editor-type-id="restructured-text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/utility.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4050">
-          <caret line="301" lean-forward="true" selection-start-line="301" selection-end-line="301" />
+        <state relative-caret-position="1188">
+          <caret line="301" selection-start-line="301" selection-end-line="301" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="e#917#964#1" expanded="true" />
@@ -512,20 +503,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb.py">
+    <entry file="file://$PROJECT_DIR$/setup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="33" column="14" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
+        <state relative-caret-position="516">
+          <caret line="48" selection-start-line="48" selection-end-line="48" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <element signature="e#25729#32431#0" expanded="true" />
-            <element signature="e#30609#30734#0" expanded="true" />
+            <element signature="e#892#905#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/docs/source/index.rst">
-      <provider selected="true" editor-type-id="restructured-text-editor" />
+    <entry file="file://$PROJECT_DIR$/bb.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-992">
+          <caret line="683" column="22" lean-forward="true" selection-start-line="683" selection-start-column="22" selection-end-line="683" selection-end-column="22" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#26327#33390#0" expanded="true" />
+            <element signature="e#31359#31484#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
     </entry>
   </component>
 </project>

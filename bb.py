@@ -269,6 +269,9 @@ def compose_command(flags, host):
         # Set compress mode
         if flags.compress:
             command.append('-z')
+        # Set I/O timeout
+        if flags.timeout:
+            command.append('--timeout={0}'.format(flags.timeout))
         if flags.log:
             log_path = os.path.join(compose_destination(host, flags.destination), 'backup.log')
             command.append(
@@ -280,6 +283,9 @@ def compose_command(flags, host):
         command.append('-ahu')
         if flags.verbose:
             command.append('-vP')
+        # Set I/O timeout
+        if flags.timeout:
+            command.append('--timeout={0}'.format(flags.timeout))
         if flags.log:
             log_path = os.path.join(rpath, 'restore.log')
             command.append(
