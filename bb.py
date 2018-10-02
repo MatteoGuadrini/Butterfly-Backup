@@ -419,6 +419,27 @@ def get_last_full(catalog):
         return False
 
 
+def get_last_backup(catalog):
+    """
+    Get the last available backup
+    :param catalog: configparser object
+    :return: path (string)
+    """
+    config = catalog
+    dates = []
+    if config:
+        for bid in config.sections():
+            if config.get(bid, 'name') == hostname:
+                dates.append(utility.string_to_time(config.get(bid, 'timestamp')))
+        if dates:
+            dates.sort()
+            last = utility.time_to_string(dates[-1])
+            if last:
+                for bid in config.sections():
+                    if config.get(bid, 'name') == hostname and config.get(bid, 'timestamp') == last:
+                        return config.get(bid, 'path'), config.get(bid, 'os')
+
+
 def count_full(config, name):
     """
     Count all full in a catalog
@@ -747,8 +768,9 @@ def parse_arguments():
     group_restore = restore.add_argument_group(title='Restore options')
     group_restore.add_argument('--catalog', '-C', help='Folder where is catalog file', dest='catalog', action='store',
                                required=True)
-    group_restore.add_argument('--backup-id', '-i', help='Backup-id of backup', dest='id', action='store',
-                               required=True)
+    restore_id_or_last = group_restore.add_mutually_exclusive_group(required=True)
+    restore_id_or_last.add_argument('--backup-id', '-i', help='Backup-id of backup', dest='id', action='store')
+    restore_id_or_last.add_argument('--last', '-L', help='Last available backup', dest='last', action='store_true')
     group_restore.add_argument('--user', '-u', help="Login name used to log into the remote host "
                                                     "(where you're restoring)", dest='user',
                                action='store', default=os.getlogin())
@@ -875,60 +897,84 @@ if __name__ == '__main__':
     if args.action == 'restore':
         cmds = []
         logs = []
-        if not args.type:
+        rhost = ''
+        hostname = args.hostname
+        rpath = ''
+        bos = ''
+        ros = ''
+        rfolders = ''
+        if not args.type and args.id:
             args.type = get_restore_os()
         # Read catalog file
         restore_catalog = read_catalog(os.path.join(args.catalog, '.catalog.cfg'))
-        # Check catalog backup id
-        if restore_catalog.has_section(args.id):
-            # Check if exist path of backup
-            if os.path.exists(restore_catalog[args.id]['path']):
-                rhost = args.hostname
-                rpath = restore_catalog[args.id]['path']
-                bos = restore_catalog[args.id]['os']
+        # Check if select backup-id or last backup
+        if args.last:
+            rhost = hostname
+            last_backup = get_last_backup(restore_catalog)
+            if not args.type:
+                args.type = last_backup[1]
+            rpath = last_backup[0]
+            if os.path.exists(rpath):
+                bos = last_backup[1]
                 ros = args.type
                 rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
-                # Test connection
-                if not utility.check_ssh(rhost):
-                    print(utility.PrintColor.RED + 'ERROR: The port 22 on {0} is closed!'.format(rhost)
+            else:
+                print(utility.PrintColor.RED + 'ERROR: Backup folder {0} not exist!'.format(rpath) +
+                      utility.PrintColor.END)
+                exit(1)
+        elif args.id:
+            # Check catalog backup id
+            if restore_catalog.has_section(args.id):
+                # Check if exist path of backup
+                if os.path.exists(restore_catalog[args.id]['path']):
+                    rhost = hostname
+                    rpath = restore_catalog[args.id]['path']
+                    bos = restore_catalog[args.id]['os']
+                    ros = args.type
+                    rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
+                else:
+                    print(utility.PrintColor.RED +
+                          'ERROR: Backup folder {0} not exist!'.format(restore_catalog[args.id]['path'])
                           + utility.PrintColor.END)
                     exit(1)
-                if not args.verbose:
-                    check_configuration(rhost)
-                log_args = {
-                    'hostname': rhost,
-                    'status': args.log,
-                    'destination': os.path.join(os.path.dirname(rpath), 'general.log')
-                }
-                utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                                  'Restore on {0}'.format(rhost))
-                for rf in rfolders:
-                    # Append logs
-                    logs.append(log_args)
-                    # Compose command
-                    cmd = compose_command(args, rhost)
-                    # Compose source and destination
-                    src_dst = compose_restore_src_dst(bos, ros, os.path.basename(rf))
-                    if src_dst:
-                        src = src_dst[0]
-                        # Compose source
-                        cmd.append(os.path.join(rpath, src))
-                        dst = src_dst[1]
-                        # Compose destination <user>@<hostname> format
-                        cmd.append('{0}@{1}:'.format(args.user, rhost).__add__(dst))
-                        # Add command
-                        if utility.confirm("Want to do restore path {0}?".format(os.path.join(rpath, src))):
-                            cmds.append(' '.join(cmd))
-                # Start restore
-                run_in_parallel(start_process, cmds, 1)
             else:
                 print(utility.PrintColor.RED +
-                      'ERROR: Backup folder {0} not exist!'.format(restore_catalog[args.id]['path'])
+                      'ERROR: Backup id {0} not exist in catalog {1}!'.format(args.id, args.catalog)
                       + utility.PrintColor.END)
-        else:
-            print(utility.PrintColor.RED +
-                  'ERROR: Backup id {0} not exist in catalog {1}!'.format(args.id, args.catalog)
+                exit(1)
+        # Test connection
+        if not utility.check_ssh(rhost):
+            print(utility.PrintColor.RED + 'ERROR: The port 22 on {0} is closed!'.format(rhost)
                   + utility.PrintColor.END)
+            exit(1)
+        if not args.verbose:
+            check_configuration(rhost)
+        log_args = {
+            'hostname': rhost,
+            'status': args.log,
+            'destination': os.path.join(os.path.dirname(rpath), 'general.log')
+        }
+        utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                          'Restore on {0}'.format(rhost))
+        for rf in rfolders:
+            # Append logs
+            logs.append(log_args)
+            # Compose command
+            cmd = compose_command(args, rhost)
+            # Compose source and destination
+            src_dst = compose_restore_src_dst(bos, ros, os.path.basename(rf))
+            if src_dst:
+                src = src_dst[0]
+                # Compose source
+                cmd.append(os.path.join(rpath, src))
+                dst = src_dst[1]
+                # Compose destination <user>@<hostname> format
+                cmd.append('{0}@{1}:'.format(args.user, rhost).__add__(dst))
+                # Add command
+                if utility.confirm("Want to do restore path {0}?".format(os.path.join(rpath, src))):
+                    cmds.append(' '.join(cmd))
+        # Start restore
+        run_in_parallel(start_process, cmds, 1)
 
     # Check archive session
     if args.action == 'archive':
