@@ -579,28 +579,29 @@ The restore process is the exact opposite of the backup process. It takes the fi
 
    arthur@goldenheart$ bb restore --help
    usage: bb restore [-h] [--verbose] [--log] --catalog CATALOG
-                     (--backup-id ID | --last) [--user USER] --computer HOSTNAME
-                     [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT]
+                      (--backup-id ID | --last) [--user USER] --computer HOSTNAME
+                      [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
 
-   optional arguments:
-     -h, --help            show this help message and exit
-     --verbose, -v         Enable verbosity
-     --log, -l             Create a log
+    optional arguments:
+      -h, --help            show this help message and exit
+      --verbose, -v         Enable verbosity
+      --log, -l             Create a log
 
-   Restore options:
-     --catalog CATALOG, -C CATALOG
-                           Folder where is catalog file
-     --backup-id ID, -i ID
-                           Backup-id of backup
-     --last, -L            Last available backup
-     --user USER, -u USER  Login name used to log into the remote host (where
-                           you're restoring)
-     --computer HOSTNAME, -c HOSTNAME
-                           Hostname or ip address to perform restore
-     --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
-                           Type of operating system to perform restore
-     --timeout TIMEOUT, -T TIMEOUT
-                           I/O timeout in seconds
+    Restore options:
+      --catalog CATALOG, -C CATALOG
+                            Folder where is catalog file
+      --backup-id ID, -i ID
+                            Backup-id of backup
+      --last, -L            Last available backup
+      --user USER, -u USER  Login name used to log into the remote host (where
+                            you're restoring)
+      --computer HOSTNAME, -c HOSTNAME
+                            Hostname or ip address to perform restore
+      --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
+                            Type of operating system to perform restore
+      --timeout TIMEOUT, -T TIMEOUT
+                            I/O timeout in seconds
+      --mirror, -m          Mirrore mode
 
 * **--catalog**, **-C**: Select the backups folder (root).
 * [**--backup-id**, **-i**]: Select backup id in the catalog.
@@ -614,6 +615,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
     * **MacOS** -> MacOSX 10.8 or higher.
 
 * **--timeout**, **-T**: Specify number of seconds of I/O timeout.
+* **--mirror**, **-m**: Mirror mode. If a file or folder not exist in destination, will delete it. Overwrite files.
 
 This is a few examples:
 

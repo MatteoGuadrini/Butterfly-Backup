@@ -31,7 +31,7 @@ from multiprocessing import Pool
 from utility import print_verbose
 
 # region Global Variables
-VERSION = '1.1.0'
+VERSION = '1.2.0'
 
 
 # endregion
@@ -286,6 +286,10 @@ def compose_command(flags, host):
         # Set I/O timeout
         if flags.timeout:
             command.append('--timeout={0}'.format(flags.timeout))
+        # Set mirror mode
+        if flags.mirror:
+            command.append('--delete')
+            command.append('--ignore-times')
         if flags.log:
             log_path = os.path.join(rpath, 'restore.log')
             command.append(
@@ -780,6 +784,7 @@ def parse_arguments():
                                action='store', choices=['Unix', 'Windows', 'MacOS'])
     group_restore.add_argument('--timeout', '-T', help='I/O timeout in seconds', dest='timeout', action='store',
                                type=int)
+    group_restore.add_argument('--mirror', '-m', help='Mirrore mode', dest='mirror', action='store_true')
     # archive session
     archive = action.add_parser('archive', help='Archive options', parents=[parent_parser])
     group_archive = archive.add_argument_group(title='Archive options')
