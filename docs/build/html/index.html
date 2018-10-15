@@ -526,6 +526,7 @@ but only Increments. We recommend doing more Full for better retention managemen
 To query this catalog, the list command exists.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb list --help
 usage: bb list <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> --catalog CATALOG <span class="o">[</span>--backup-id ID<span class="o">]</span>
+               <span class="o">[</span>--archived<span class="o">]</span> <span class="o">[</span>--cleaned<span class="o">]</span>
 
 optional arguments:
   -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
@@ -537,11 +538,15 @@ List options:
                         Folder where is catalog file
   --backup-id ID, -i ID
                         Backup-id of backup
+  --archived, -a        List only archived backup
+  --cleaned, -c         List only cleaned backup
 </pre></div>
 </div>
 <ul class="simple">
 <li><strong>–catalog</strong>, <strong>-C</strong>: Select the backups folder (root).</li>
 <li><strong>–backup-id</strong>, <strong>-i</strong>: Select backup id in the catalog.</li>
+<li><strong>–archived</strong>, <strong>-a</strong>: List only archived backups.</li>
+<li><strong>–cleaned</strong>, <strong>-c</strong>: List only cleaned backups.</li>
 </ul>
 <p>First, let’s query the catalog:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb list --catalog /mnt/backup
@@ -588,9 +593,9 @@ arthur@goldenheart$ cat /mnt/backup/backup.list
 <span id="id6"></span><h2>Restore<a class="headerlink" href="#restore" title="Permalink to this headline">¶</a></h2>
 <p>The restore process is the exact opposite of the backup process. It takes the files from a specific backup and push it to the destination computer.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb restore --help
-usage: bb restore [-h] [--verbose] [--log] --catalog CATALOG --backup-id ID
-               [--user USER] --computer HOSTNAME
-               [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT]
+usage: bb restore [-h] [--verbose] [--log] --catalog CATALOG
+                   (--backup-id ID | --last) [--user USER] --computer HOSTNAME
+                   [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -602,19 +607,24 @@ Restore options:
                         Folder where is catalog file
   --backup-id ID, -i ID
                         Backup-id of backup
-  --user USER, -u USER  login name used to log into the remote host (where you&#39;re restoring)
+  --last, -L            Last available backup
+  --user USER, -u USER  Login name used to log into the remote host (where
+                        you&#39;re restoring)
   --computer HOSTNAME, -c HOSTNAME
                         Hostname or ip address to perform restore
   --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
                         Type of operating system to perform restore
   --timeout TIMEOUT, -T TIMEOUT
                         I/O timeout in seconds
+  --mirror, -m          Mirror mode
 </pre></div>
 </div>
 <ul>
 <li><p class="first"><strong>–catalog</strong>, <strong>-C</strong>: Select the backups folder (root).</p>
 </li>
-<li><p class="first"><strong>–backup-id</strong>, <strong>-i</strong>: Select backup id in the catalog.</p>
+<li><p class="first">[<strong>–backup-id</strong>, <strong>-i</strong>]: Select backup id in the catalog.</p>
+</li>
+<li><p class="first">[<strong>–last</strong>, <strong>-L</strong>]: Select last available backup in the catalog for same hostname or ip address.</p>
 </li>
 <li><p class="first"><strong>–user</strong>, <strong>-u</strong>: User of remote machine where you want to restore files.</p>
 </li>
@@ -631,6 +641,8 @@ Restore options:
 </li>
 <li><p class="first"><strong>–timeout</strong>, <strong>-T</strong>: Specify number of seconds of I/O timeout.</p>
 </li>
+<li><p class="first"><strong>–mirror</strong>, <strong>-m</strong>: Mirror mode. If a file or folder not exist in destination, will delete it. Overwrite files.</p>
+</li>
 </ul>
 <p>This is a few examples:</p>
 <p>This command perform a restore on the same machine of the backup:</p>
@@ -645,6 +657,14 @@ SUCCESS: Command rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/ho
 <p class="first admonition-title">Important</p>
 <p class="last">Without specifying the “type” flag that indicates the operating system on which the data are being retrieved,
 Butterfly Backup will select it directly from the catalog via the backup-id.</p>
+</div>
+<p>Now, select the last available backup on catalog; run this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb restore --catalog /mnt/backup --last --computer host1 --log
+Want to <span class="k">do</span> restore path /mnt/backup/host1/2018_08_08__10_58/etc? To <span class="k">continue</span> <span class="o">[</span>Y/N<span class="o">]</span>? y
+Want to <span class="k">do</span> restore path /mnt/backup/host1/2018_08_08__10_58/Users? To <span class="k">continue</span> <span class="o">[</span>Y/N<span class="o">]</span>? y
+SUCCESS: Command rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc arthur@host1:/restore_2018_08_08__10_59
+SUCCESS: Command rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host1:/Users
+</pre></div>
 </div>
 <p>This example, is the same as the previous one, but restore to other machine and other operating system:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host2 --type Unix --log --verbose

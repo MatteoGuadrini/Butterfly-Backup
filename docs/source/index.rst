@@ -504,6 +504,7 @@ To query this catalog, the list command exists.
 
    arthur@goldenheart$ bb list --help
    usage: bb list [-h] [--verbose] [--log] --catalog CATALOG [--backup-id ID]
+                  [--archived] [--cleaned]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -515,10 +516,14 @@ To query this catalog, the list command exists.
                            Folder where is catalog file
      --backup-id ID, -i ID
                            Backup-id of backup
+     --archived, -a        List only archived backup
+     --cleaned, -c         List only cleaned backup
 
 
 * **--catalog**, **-C**: Select the backups folder (root).
 * **--backup-id**, **-i**: Select backup id in the catalog.
+* **--archived**, **-a**: List only archived backups.
+* **--cleaned**, **-c**: List only cleaned backups.
 
 First, let's query the catalog:
 
@@ -582,26 +587,26 @@ The restore process is the exact opposite of the backup process. It takes the fi
                       (--backup-id ID | --last) [--user USER] --computer HOSTNAME
                       [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      --verbose, -v         Enable verbosity
-      --log, -l             Create a log
+   optional arguments:
+     -h, --help            show this help message and exit
+     --verbose, -v         Enable verbosity
+     --log, -l             Create a log
 
-    Restore options:
-      --catalog CATALOG, -C CATALOG
-                            Folder where is catalog file
-      --backup-id ID, -i ID
-                            Backup-id of backup
-      --last, -L            Last available backup
-      --user USER, -u USER  Login name used to log into the remote host (where
-                            you're restoring)
-      --computer HOSTNAME, -c HOSTNAME
-                            Hostname or ip address to perform restore
-      --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
-                            Type of operating system to perform restore
-      --timeout TIMEOUT, -T TIMEOUT
-                            I/O timeout in seconds
-      --mirror, -m          Mirrore mode
+   Restore options:
+     --catalog CATALOG, -C CATALOG
+                           Folder where is catalog file
+     --backup-id ID, -i ID
+                           Backup-id of backup
+     --last, -L            Last available backup
+     --user USER, -u USER  Login name used to log into the remote host (where
+                           you're restoring)
+     --computer HOSTNAME, -c HOSTNAME
+                           Hostname or ip address to perform restore
+     --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
+                           Type of operating system to perform restore
+     --timeout TIMEOUT, -T TIMEOUT
+                           I/O timeout in seconds
+     --mirror, -m          Mirror mode
 
 * **--catalog**, **-C**: Select the backups folder (root).
 * [**--backup-id**, **-i**]: Select backup id in the catalog.

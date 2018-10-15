@@ -504,6 +504,7 @@ To query this catalog, the list command exists.
 
    arthur@goldenheart$ bb list --help
    usage: bb list [-h] [--verbose] [--log] --catalog CATALOG [--backup-id ID]
+                  [--archived] [--cleaned]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -515,10 +516,14 @@ To query this catalog, the list command exists.
                            Folder where is catalog file
      --backup-id ID, -i ID
                            Backup-id of backup
+     --archived, -a        List only archived backup
+     --cleaned, -c         List only cleaned backup
 
 
 * **--catalog**, **-C**: Select the backups folder (root).
 * **--backup-id**, **-i**: Select backup id in the catalog.
+* **--archived**, **-a**: List only archived backups.
+* **--cleaned**, **-c**: List only cleaned backups.
 
 First, let's query the catalog:
 
@@ -578,9 +583,9 @@ The restore process is the exact opposite of the backup process. It takes the fi
 .. code-block:: bash
 
    arthur@goldenheart$ bb restore --help
-   usage: bb restore [-h] [--verbose] [--log] --catalog CATALOG --backup-id ID
-                  [--user USER] --computer HOSTNAME
-                  [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT]
+   usage: bb restore [-h] [--verbose] [--log] --catalog CATALOG
+                      (--backup-id ID | --last) [--user USER] --computer HOSTNAME
+                      [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -592,16 +597,20 @@ The restore process is the exact opposite of the backup process. It takes the fi
                            Folder where is catalog file
      --backup-id ID, -i ID
                            Backup-id of backup
-     --user USER, -u USER  login name used to log into the remote host (where you're restoring)
+     --last, -L            Last available backup
+     --user USER, -u USER  Login name used to log into the remote host (where
+                           you're restoring)
      --computer HOSTNAME, -c HOSTNAME
                            Hostname or ip address to perform restore
      --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
                            Type of operating system to perform restore
      --timeout TIMEOUT, -T TIMEOUT
                            I/O timeout in seconds
+     --mirror, -m          Mirror mode
 
 * **--catalog**, **-C**: Select the backups folder (root).
-* **--backup-id**, **-i**: Select backup id in the catalog.
+* [**--backup-id**, **-i**]: Select backup id in the catalog.
+* [**--last**, **-L**]: Select last available backup in the catalog for same hostname or ip address.
 * **--user**, **-u**: User of remote machine where you want to restore files.
 * **--computer**, **-c**: Select the ip or hostname where to perform restore.
 * **--type**, **-t**: Type of operating system to put under backup:
@@ -611,6 +620,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
     * **MacOS** -> MacOSX 10.8 or higher.
 
 * **--timeout**, **-T**: Specify number of seconds of I/O timeout.
+* **--mirror**, **-m**: Mirror mode. If a file or folder not exist in destination, will delete it. Overwrite files.
 
 This is a few examples:
 
@@ -627,6 +637,16 @@ This command perform a restore on the same machine of the backup:
 .. important::
    Without specifying the "type" flag that indicates the operating system on which the data are being retrieved,
    Butterfly Backup will select it directly from the catalog via the backup-id.
+
+Now, select the last available backup on catalog; run this:
+
+.. code-block:: bash
+
+   arthur@goldenheart$ bb restore --catalog /mnt/backup --last --computer host1 --log
+   Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
+   Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y
+   SUCCESS: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc arthur@host1:/restore_2018_08_08__10_59
+   SUCCESS: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host1:/Users
 
 This example, is the same as the previous one, but restore to other machine and other operating system:
 

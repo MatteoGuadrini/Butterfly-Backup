@@ -784,7 +784,7 @@ def parse_arguments():
                                action='store', choices=['Unix', 'Windows', 'MacOS'])
     group_restore.add_argument('--timeout', '-T', help='I/O timeout in seconds', dest='timeout', action='store',
                                type=int)
-    group_restore.add_argument('--mirror', '-m', help='Mirrore mode', dest='mirror', action='store_true')
+    group_restore.add_argument('--mirror', '-m', help='Mirror mode', dest='mirror', action='store_true')
     # archive session
     archive = action.add_parser('archive', help='Archive options', parents=[parent_parser])
     group_archive = archive.add_argument_group(title='Archive options')
@@ -800,6 +800,8 @@ def parse_arguments():
     group_list.add_argument('--catalog', '-C', help='Folder where is catalog file', dest='catalog', action='store',
                             required=True)
     group_list.add_argument('--backup-id', '-i', help='Backup-id of backup', dest='id', action='store')
+    group_list.add_argument('--archived', '-a', help='List only archived backup', dest='archived', action='store_true')
+    group_list.add_argument('--cleaned', '-c', help='List only cleaned backup', dest='cleaned', action='store_true')
     # Return all args
     parser_object.add_argument('--version', '-V', help='Print version', dest='version', action='store_true')
     return parser_object
@@ -1037,6 +1039,46 @@ if __name__ == '__main__':
             else:
                 print('List: ' + utility.PrintColor.DARKCYAN + '\n'.join(os.listdir(list_catalog[args.id]['path'])) +
                       utility.PrintColor.END)
+        elif args.archived:
+            utility.print_verbose(args.verbose, "List all archived backup in catalog")
+            text = 'BUTTERFLY BACKUP CATALOG (ARCHIVED)\n\n'
+            utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                              'BUTTERFLY BACKUP CATALOG (ARCHIVED)')
+            for lid in list_catalog.sections():
+                if 'archived' in list_catalog[lid]:
+                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                                      'Backup id: {0}'.format(lid))
+                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                                      'Hostname or ip: {0}'.format(list_catalog[lid]['name']))
+                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                                      'Timestamp: {0}'.format(list_catalog[lid]['timestamp']))
+                    text += 'Backup id: {0}'.format(lid)
+                    text += '\n'
+                    text += 'Hostname or ip: {0}'.format(list_catalog[lid]['name'])
+                    text += '\n'
+                    text += 'Timestamp: {0}'.format(list_catalog[lid]['timestamp'])
+                    text += '\n\n'
+            utility.pager(text)
+        elif args.cleaned:
+            utility.print_verbose(args.verbose, "List all cleaned backup in catalog")
+            text = 'BUTTERFLY BACKUP CATALOG (CLEANED)\n\n'
+            utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                              'BUTTERFLY BACKUP CATALOG (CLEANED)')
+            for lid in list_catalog.sections():
+                if 'cleaned' in list_catalog[lid]:
+                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                                      'Backup id: {0}'.format(lid))
+                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                                      'Hostname or ip: {0}'.format(list_catalog[lid]['name']))
+                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                                      'Timestamp: {0}'.format(list_catalog[lid]['timestamp']))
+                    text += 'Backup id: {0}'.format(lid)
+                    text += '\n'
+                    text += 'Hostname or ip: {0}'.format(list_catalog[lid]['name'])
+                    text += '\n'
+                    text += 'Timestamp: {0}'.format(list_catalog[lid]['timestamp'])
+                    text += '\n\n'
+            utility.pager(text)
         else:
             utility.print_verbose(args.verbose, "List all backup in catalog")
             text = 'BUTTERFLY BACKUP CATALOG\n\n'
