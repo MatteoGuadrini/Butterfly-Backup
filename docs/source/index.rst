@@ -46,6 +46,8 @@ Install Butterfly Backup is very simple; run this:
    arthur@goldenheart$ sudo python3 setup.py
    arthur@goldenheart$ bb --help
 
+The upgrade is also simple; type the same commands.
+
 .. _core:
 
 ############
@@ -94,27 +96,28 @@ Backup butterfly has, in its core, five main operations:
 .. code-block:: bash
 
    arthur@goldenheart$ bb --help
-      usage: bb [-h] [--verbose] [--log] [--version]
-                {config,backup,restore,archive,list} ...
+   usage: bb [-h] [--verbose] [--log] [--dry-run] [--version]
+             {config,backup,restore,archive,list} ...
 
-      Butterfly Backup
+   Butterfly Backup
 
-      optional arguments:
-        -h, --help            show this help message and exit
-        --verbose, -v         Enable verbosity
-        --log, -l             Create a log
-        --version, -V         Print version
+   optional arguments:
+     -h, --help            show this help message and exit
+     --verbose, -v         Enable verbosity
+     --log, -l             Create a log
+     --dry-run, -N         Dry run mode
+     --version, -V         Print version
 
-      action:
-        Valid action
+   action:
+     Valid action
 
-        {config,backup,restore,archive,list}
-                              Available actions
-          config              Configuration options
-          backup              Backup options
-          restore             Restore options
-          archive             Archive options
-          list                List options
+     {config,backup,restore,archive,list}
+                           Available actions
+       config              Configuration options
+       backup              Backup options
+       restore             Restore options
+       archive             Archive options
+       list                List options
 
 Valid action
 
@@ -129,6 +132,7 @@ It also has three flags that can be very useful, especially in case of error.
         -h, --help            show help message and exit
         --verbose, -v         Enable verbosity
         --log, -l             Create a log
+        --dry-run, -N         Dry run mode, test your command
         --version, -V         Print version...and more
 
 
@@ -145,13 +149,14 @@ Let's see how to go about looking at the help:
 .. code-block:: bash
 
    arthur@goldenheart$ bb config --help
-   usage: bb config [-h] [--verbose] [--log] [--new | --remove]
+   usage: bb config [-h] [--verbose] [--log] [--dry-run] [--new | --remove]
                     [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
 
    optional arguments:
      -h, --help            show this help message and exit
      --verbose, -v         Enable verbosity
      --log, -l             Create a log
+     --dry-run, -N         Dry run mode
 
    Init configuration:
      --new, -n             Generate new configuration
@@ -162,7 +167,6 @@ Let's see how to go about looking at the help:
                            Deploy configuration to client: hostname or ip address
      --user DEPLOY_USER, -u DEPLOY_USER
                            User of the remote machine
-
 
 Two macro-options are available:
 
@@ -217,13 +221,12 @@ If you want to use a different user (e.g.: root), run this:
 
 .. code-block:: bash
 
-   "
    arthur@goldenheart$ bb config --deploy host1 --user root
-   Copying configuration to host1; write the password:
+   "Copying configuration to host1; write the password:"
    /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/arthur/.ssh/id_rsa.pub"
    /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
    /usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
-   root@host1's password:
+   "root@host1's password:"
 
    Number of key(s) added: 1
 
@@ -231,7 +234,6 @@ If you want to use a different user (e.g.: root), run this:
    and check to make sure that only the key(s) you wanted were added.
 
    SUCCESS: Configuration copied successfully on host1!
-   "
 
 Cygwin on Windows
 -----------------
@@ -286,17 +288,19 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 .. code-block:: bash
 
    arthur@goldenheart$ bb backup --help
-   usage: bb backup [-h] [--verbose] [--log] (--computer HOSTNAME | --list LIST)
-                 --destination DESTINATION [--mode {Full,Incremental,Mirror}]
-                 (--data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...])
-                 [--user USER] --type {Unix,Windows,MacOS} [--compress]
-                 [--retention RETENTION] [--parallel PARALLEL]
-                 [--timeout TIMEOUT]
+   usage: bb backup [-h] [--verbose] [--log] [--dry-run]
+                    (--computer HOSTNAME | --list LIST) --destination DESTINATION
+                    [--mode {Full,Incremental,Mirror}]
+                    (--data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...])
+                    [--user USER] --type {Unix,Windows,MacOS} [--compress]
+                    [--retention RETENTION] [--parallel PARALLEL]
+                    [--timeout TIMEOUT]
 
    optional arguments:
      -h, --help            show this help message and exit
      --verbose, -v         Enable verbosity
      --log, -l             Create a log
+     --dry-run, -N         Dry run mode
 
    Backup options:
      --computer HOSTNAME, -c HOSTNAME
@@ -310,7 +314,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                            Data of which you want to backup
      --custom-data CUSTOMDATA [CUSTOMDATA ...], -C CUSTOMDATA [CUSTOMDATA ...]
                            Custom path of which you want to backup
-     --user USER, -u USER  login name used to log into the remote host (being backed up)
+     --user USER, -u USER  Login name used to log into the remote host (being
+                           backed up)
      --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
                            Type of operating system to backup
      --compress, -z        Compress data
@@ -322,46 +327,45 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                            I/O timeout in seconds
 
 
-* [**--computer**, **-c**]: Select the ip or hostname where to perform backup.
-* [**--list**, **-l**]: Select the file list of the ip or hostnames, where to perform backups.
+* **Backup options**
+   --computer, -c          Select the ip or hostname where to perform backup.
+   --list, -l              Select the file list of the ip or hostnames, where to perform backups.
 
-.. code-block:: bash
+                           [File_list.txt]
 
-   [File_list.txt]
-   host1
-   192.168.0.1
-   host2
-   ...
+                           host1
 
-* **--destination**, **-d**: Select the destination folder (root).
-* **--mode**, **-m**: Select how rsync perform backup:
+                           192.168.0.1
 
-    * **Full** -> Complete (fll) backup.
-    * **Incremental** -> Incremental backup is based on the latest Full (the same files are linked with hard link).
-                         A Full backup is executed if this mode fails to find one.
-    * **Mirror** -> Complete mirror backup. If a file in the source no longer exists, BB deletes it from the destination.
-* [**--data**, **-D**]: Select the type of data to put under backup:
+                           host2
 
-    The values change depending on the type of operating system:
+                           ...
+   --destination           Select the destination folder (root).
+   --mode, -m              Select how rsync perform backup:
 
-    * **User** -> folder containing the home.
-    * **Config** -> folder containing the configurations of the machine.
-    * **Log** -> folder containing the log.
-    * **Application** -> folder containing applications.
-    * **System** -> the entire system starting from the root.
+    * Full: Complete (full) backup.
+    * Incremental: Incremental backup is based on the latest Full (the same files are linked with hard link).
+         A Full backup is executed if this mode fails to find one.
+    * Mirror: Complete mirror backup. If a file in the source no longer exists, BB deletes it from the destination.
+   --data, -D              Select the type of data to put under backup:
+       The values change depending on the type of operating system:
 
-* [**--custom-data**, **-C**]: Select the absolute paths to put under backup.
-* **--user**, **-u**: login name used to log into the remote host (being backed up)
-* **--type**, **-t**: Type of operating system to put under backup:
+       * **User** -> folder containing the home.
+       * **Config** -> folder containing the configurations of the machine.
+       * **Log** -> folder containing the log.
+       * **Application** -> folder containing applications.
+       * **System** -> the entire system starting from the root.
+   --custom-data           Select the absolute paths to put under backup.
+   --user, -u              Login name used to log into the remote host (being backed up)
+   --type, -t              Type of operating system to put under backup:
 
-    * **Unix** -> All UNIX os (Linux, BSD, Solaris).
-    * **Windows** -> Windows Vista or higher with cygwin installed.
-    * **MacOS** -> MacOSX 10.8 or higher.
-
-* **--compress**, **-z**: Compresses the data transmitted.
-* **--retention**, **-r**: Number of days for which you want to keep your backups.
-* **--parallel**, **-p**: Maximum number of concurrent rsync processes. By default is 5 jobs.
-* **--timeout**, **-T**: Specify number of seconds of I/O timeout.
+       * **Unix** -> All UNIX os (Linux, BSD, Solaris).
+       * **Windows** -> Windows Vista or higher with cygwin installed.
+       * **MacOS** -> MacOSX 10.8 or higher.
+   --compress, -z          Compresses the data transmitted.
+   --retention, -r         Number of days for which you want to keep your backups.
+   --parallel, -p          Maximum number of concurrent rsync processes. By default is 5 jobs.
+   --timeout, -T           Specify number of seconds of I/O timeout.
 
 
 .. _backup_computer:
@@ -388,12 +392,10 @@ This is a few examples:
 
 .. code-block:: bash
 
-   "
    arthur@goldenheart$ bb backup --computer host1 --destination /mnt/backup --mode Full --data User Config --type MacOS --user root
-   root@host1's password:
+   "root@host1's password:"
    Start backup on host1
    SUCCESS: Command rsync -ah --no-links root@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_30
-   "
 
 .. code-block:: bash
 
@@ -503,13 +505,14 @@ To query this catalog, the list command exists.
 .. code-block:: bash
 
    arthur@goldenheart$ bb list --help
-   usage: bb list [-h] [--verbose] [--log] --catalog CATALOG [--backup-id ID]
-                  [--archived] [--cleaned]
+   usage: bb list [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
+                  [--backup-id ID] [--archived] [--cleaned]
 
    optional arguments:
      -h, --help            show this help message and exit
      --verbose, -v         Enable verbosity
      --log, -l             Create a log
+     --dry-run, -N         Dry run mode
 
    List options:
      --catalog CATALOG, -C CATALOG
@@ -519,11 +522,11 @@ To query this catalog, the list command exists.
      --archived, -a        List only archived backup
      --cleaned, -c         List only cleaned backup
 
-
-* **--catalog**, **-C**: Select the backups folder (root).
-* **--backup-id**, **-i**: Select backup id in the catalog.
-* **--archived**, **-a**: List only archived backups.
-* **--cleaned**, **-c**: List only cleaned backups.
+* **List options**
+   --catalog, -C           Select the backups folder (root).
+   --backup-id, -i         Select backup id in the catalog.
+   --archived, -a          List only archived backups.
+   --cleaned, -c           List only cleaned backups.
 
 First, let's query the catalog:
 
@@ -583,14 +586,15 @@ The restore process is the exact opposite of the backup process. It takes the fi
 .. code-block:: bash
 
    arthur@goldenheart$ bb restore --help
-   usage: bb restore [-h] [--verbose] [--log] --catalog CATALOG
-                      (--backup-id ID | --last) [--user USER] --computer HOSTNAME
-                      [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
+   usage: bb restore [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
+                     (--backup-id ID | --last) [--user USER] --computer HOSTNAME
+                     [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
 
    optional arguments:
      -h, --help            show this help message and exit
      --verbose, -v         Enable verbosity
      --log, -l             Create a log
+     --dry-run, -N         Dry run mode
 
    Restore options:
      --catalog CATALOG, -C CATALOG
@@ -608,19 +612,20 @@ The restore process is the exact opposite of the backup process. It takes the fi
                            I/O timeout in seconds
      --mirror, -m          Mirror mode
 
-* **--catalog**, **-C**: Select the backups folder (root).
-* [**--backup-id**, **-i**]: Select backup id in the catalog.
-* [**--last**, **-L**]: Select last available backup in the catalog for same hostname or ip address.
-* **--user**, **-u**: User of remote machine where you want to restore files.
-* **--computer**, **-c**: Select the ip or hostname where to perform restore.
-* **--type**, **-t**: Type of operating system to put under backup:
+* **Restore options**
+   --catalog, -C           Select the backups folder (root).
+   --backup-id             Select backup id in the catalog.
+   --last, -L              Select last available backup in the catalog for same hostname or ip address.
+   --user, -u              User of remote machine where you want to restore files.
+   --computer, -c          Select the ip or hostname where to perform restore.
+   --type, -t              Type of operating system to put under backup:
 
-    * **Unix** -> All UNIX os (Linux, BSD, Solaris).
-    * **Windows** -> Windows Vista or higher with cygwin installed.
-    * **MacOS** -> MacOSX 10.8 or higher.
+       * **Unix** -> All UNIX os (Linux, BSD, Solaris).
+       * **Windows** -> Windows Vista or higher with cygwin installed.
+       * **MacOS** -> MacOSX 10.8 or higher.
 
-* **--timeout**, **-T**: Specify number of seconds of I/O timeout.
-* **--mirror**, **-m**: Mirror mode. If a file or folder not exist in destination, will delete it. Overwrite files.
+   --timeout, -T           Specify number of seconds of I/O timeout.
+   --mirror, -m            Mirror mode. If a file or folder not exist in destination, will delete it. Overwrite files.
 
 This is a few examples:
 
@@ -683,13 +688,14 @@ Archive operations are used to store backups by saving disk space. Backups older
 .. code-block:: bash
 
    arthur@goldenheart$ bb archive --help
-   usage: bb archive [-h] [--verbose] [--log] --catalog CATALOG [--days DAYS]
-                     --destination DESTINATION
+   usage: bb archive [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
+                     [--days DAYS] --destination DESTINATION
 
    optional arguments:
      -h, --help            show this help message and exit
      --verbose, -v         Enable verbosity
      --log, -l             Create a log
+     --dry-run, -N         Dry run mode
 
    Archive options:
      --catalog CATALOG, -C CATALOG
@@ -699,9 +705,10 @@ Archive operations are used to store backups by saving disk space. Backups older
                            Archive destination path
 
 
-* **--catalog**, **-C**: Select the backups folder (root).
-* **--days**, **-D**: Number of days for which you want to keep your backups. Default is 30.
-* **--destination**, **-d**: New destination for compress zipped backup.
+* **Archive options**
+   --catalog, -C           Select the backups folder (root).
+   --days, -D              Number of days for which you want to keep your backups. Default is 30.
+   --destination           New destination for compress zipped backup.
 
 Archive old backup of 3 days:
 
@@ -717,7 +724,7 @@ Archive old backup of 3 days:
    arthur@goldenheart$ ls /mnt/archive/host1
    2018_08_06__07_26.zip
 
-The backup-id f65e5afe-9734-11e8-b0bb-005056a664e0 it is not considered, because it falls within the established time.
+The backup-id *f65e5afe-9734-11e8-b0bb-005056a664e0* it is not considered, because it falls within the established time.
 The other, however, is zipped and deleted.
 
 Lastly, let's look in the catalog and see that the backup was actually archived:

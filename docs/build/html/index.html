@@ -1,33 +1,168 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Welcome to Butterfly Backup’s documentation! &#8212; Butterfly Backup 1.0.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to Butterfly Backup’s documentation! &mdash; Butterfly Backup 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
 
-  </head><body>
-  
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+            <a href="#" class="icon icon-home"> Butterfly Backup
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Welcome to Butterfly Backup’s documentation!</a><ul>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#core-concept">Core concept</a></li>
+<li><a class="reference internal" href="#config">Config</a><ul>
+<li><a class="reference internal" href="#cygwin-on-windows">Cygwin on Windows</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#backup">Backup</a><ul>
+<li><a class="reference internal" href="#single-backup">Single backup</a></li>
+<li><a class="reference internal" href="#bulk-backup">Bulk backup</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#list">List</a></li>
+<li><a class="reference internal" href="#restore">Restore</a></li>
+<li><a class="reference internal" href="#archive">Archive</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Butterfly Backup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Welcome to Butterfly Backup’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="welcome-to-butterfly-backup-s-documentation">
 <h1>Welcome to Butterfly Backup’s documentation!<a class="headerlink" href="#welcome-to-butterfly-backup-s-documentation" title="Permalink to this headline">¶</a></h1>
@@ -60,6 +195,7 @@ arthur@goldenheart$ sudo python3 setup.py
 arthur@goldenheart$ bb --help
 </pre></div>
 </div>
+<p>The upgrade is also simple; type the same commands.</p>
 </div>
 </div>
 <div class="section" id="core-concept">
@@ -101,27 +237,28 @@ the server pushes files into the client.</p>
 </div>
 <p>Backup butterfly has, in its core, five main operations:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb --help
-   usage: bb <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--version<span class="o">]</span>
-             <span class="o">{</span>config,backup,restore,archive,list<span class="o">}</span> ...
+usage: bb <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span> <span class="o">[</span>--version<span class="o">]</span>
+          <span class="o">{</span>config,backup,restore,archive,list<span class="o">}</span> ...
 
-   Butterfly Backup
+Butterfly Backup
 
-   optional arguments:
-     -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
-     --verbose, -v         Enable verbosity
-     --log, -l             Create a log
-     --version, -V         Print version
+optional arguments:
+  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
+  --verbose, -v         Enable verbosity
+  --log, -l             Create a log
+  --dry-run, -N         Dry run mode
+  --version, -V         Print version
 
-   action:
-     Valid action
+action:
+  Valid action
 
-     <span class="o">{</span>config,backup,restore,archive,list<span class="o">}</span>
-                           Available actions
-       config              Configuration options
-       backup              Backup options
-       restore             Restore options
-       archive             Archive options
-       list                List options
+  <span class="o">{</span>config,backup,restore,archive,list<span class="o">}</span>
+                        Available actions
+    config              Configuration options
+    backup              Backup options
+    restore             Restore options
+    archive             Archive options
+    list                List options
 </pre></div>
 </div>
 <p>Valid action</p>
@@ -148,6 +285,9 @@ the server pushes files into the client.</p>
 <kbd><span class="option">--log</span>, <span class="option">-l</span></kbd></td>
 <td>Create a log</td></tr>
 <tr><td class="option-group">
+<kbd><span class="option">--dry-run</span>, <span class="option">-N</span></kbd></td>
+<td>Dry run mode, test your command</td></tr>
+<tr><td class="option-group">
 <kbd><span class="option">--version</span>, <span class="option">-V</span></kbd></td>
 <td>Print version…and more</td></tr>
 </tbody>
@@ -160,13 +300,14 @@ the server pushes files into the client.</p>
 If you don’t want to discuss the merits of exchange keys and start, then go ahead. First, you must create a configuration (rsa keys).
 Let’s see how to go about looking at the help:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb config --help
-usage: bb config <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--new <span class="p">|</span> --remove<span class="o">]</span>
+usage: bb config <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span> <span class="o">[</span>--new <span class="p">|</span> --remove<span class="o">]</span>
                  <span class="o">[</span>--deploy DEPLOY_HOST<span class="o">]</span> <span class="o">[</span>--user DEPLOY_USER<span class="o">]</span>
 
 optional arguments:
   -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
   --verbose, -v         Enable verbosity
   --log, -l             Create a log
+  --dry-run, -N         Dry run mode
 
 Init configuration:
   --new, -n             Generate new configuration
@@ -255,21 +396,19 @@ want to backup.</p>
 </div>
 <p>This command will try to copy the configuration with the current user.
 If you want to use a different user (e.g.: root), run this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;</span>
-<span class="s2">arthur@goldenheart</span>$<span class="s2"> bb config --deploy host1 --user root</span>
-<span class="s2">Copying configuration to host1; write the password:</span>
-<span class="s2">/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: &quot;</span>/home/arthur/.ssh/id_rsa.pub<span class="s2">&quot;</span>
-<span class="s2">/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed</span>
-<span class="s2">/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys</span>
-<span class="s2">root@host1&#39;s password:</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb config --deploy host1 --user root
+<span class="s2">&quot;Copying configuration to host1; write the password:&quot;</span>
+/usr/bin/ssh-copy-id: INFO: Source of key<span class="o">(</span>s<span class="o">)</span> to be installed: <span class="s2">&quot;/home/arthur/.ssh/id_rsa.pub&quot;</span>
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key<span class="o">(</span>s<span class="o">)</span>, to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: <span class="m">1</span> key<span class="o">(</span>s<span class="o">)</span> remain to be installed -- <span class="k">if</span> you are prompted now it is to install the new keys
+<span class="s2">&quot;root@host1&#39;s password:&quot;</span>
 
-<span class="s2">Number of key(s) added: 1</span>
+Number of key<span class="o">(</span>s<span class="o">)</span> added: <span class="m">1</span>
 
-<span class="s2">Now try logging into the machine, with:   &quot;</span>ssh <span class="s1">&#39;root@host1&#39;</span><span class="s2">&quot;</span>
-<span class="s2">and check to make sure that only the key(s) you wanted were added.</span>
+Now try logging into the machine, with:   <span class="s2">&quot;ssh &#39;root@host1&#39;&quot;</span>
+and check to make sure that only the key<span class="o">(</span>s<span class="o">)</span> you wanted were added.
 
-<span class="s2">SUCCESS: Configuration copied successfully on host1!</span>
-<span class="s2">&quot;</span>
+SUCCESS: Configuration copied successfully on host1!
 </pre></div>
 </div>
 <div class="section" id="cygwin-on-windows">
@@ -314,17 +453,19 @@ cygrunsrv -S sshd
 <span id="id3"></span><h2>Backup<a class="headerlink" href="#backup" title="Permalink to this headline">¶</a></h2>
 <p>There are two backup modes: single and bulk. Let’s see how to go about looking at the help:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb backup --help
-usage: bb backup <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">(</span>--computer HOSTNAME <span class="p">|</span> --list LIST<span class="o">)</span>
-              --destination DESTINATION <span class="o">[</span>--mode <span class="o">{</span>Full,Incremental,Mirror<span class="o">}]</span>
-              <span class="o">(</span>--data <span class="o">{</span>User,Config,Application,System,Log<span class="o">}</span> <span class="o">[{</span>User,Config,Application,System,Log<span class="o">}</span> ...<span class="o">]</span> <span class="p">|</span> --custom-data CUSTOMDATA <span class="o">[</span>CUSTOMDATA ...<span class="o">])</span>
-              <span class="o">[</span>--user USER<span class="o">]</span> --type <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span> <span class="o">[</span>--compress<span class="o">]</span>
-              <span class="o">[</span>--retention RETENTION<span class="o">]</span> <span class="o">[</span>--parallel PARALLEL<span class="o">]</span>
-              <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span>
+usage: bb backup <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span>
+                 <span class="o">(</span>--computer HOSTNAME <span class="p">|</span> --list LIST<span class="o">)</span> --destination DESTINATION
+                 <span class="o">[</span>--mode <span class="o">{</span>Full,Incremental,Mirror<span class="o">}]</span>
+                 <span class="o">(</span>--data <span class="o">{</span>User,Config,Application,System,Log<span class="o">}</span> <span class="o">[{</span>User,Config,Application,System,Log<span class="o">}</span> ...<span class="o">]</span> <span class="p">|</span> --custom-data CUSTOMDATA <span class="o">[</span>CUSTOMDATA ...<span class="o">])</span>
+                 <span class="o">[</span>--user USER<span class="o">]</span> --type <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span> <span class="o">[</span>--compress<span class="o">]</span>
+                 <span class="o">[</span>--retention RETENTION<span class="o">]</span> <span class="o">[</span>--parallel PARALLEL<span class="o">]</span>
+                 <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span>
 
 optional arguments:
   -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
   --verbose, -v         Enable verbosity
   --log, -l             Create a log
+  --dry-run, -N         Dry run mode
 
 Backup options:
   --computer HOSTNAME, -c HOSTNAME
@@ -338,7 +479,8 @@ Backup options:
                         Data of which you want to backup
   --custom-data CUSTOMDATA <span class="o">[</span>CUSTOMDATA ...<span class="o">]</span>, -C CUSTOMDATA <span class="o">[</span>CUSTOMDATA ...<span class="o">]</span>
                         Custom path of which you want to backup
-  --user USER, -u USER  login name used to log into the remote host <span class="o">(</span>being backed up<span class="o">)</span>
+  --user USER, -u USER  Login name used to log into the remote host <span class="o">(</span>being
+                        backed up<span class="o">)</span>
   --type <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span>, -t <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span>
                         Type of operating system to backup
   --compress, -z        Compress data
@@ -350,65 +492,93 @@ Backup options:
                         I/O timeout in seconds
 </pre></div>
 </div>
-<ul class="simple">
-<li>[<strong>–computer</strong>, <strong>-c</strong>]: Select the ip or hostname where to perform backup.</li>
-<li>[<strong>–list</strong>, <strong>-l</strong>]: Select the file list of the ip or hostnames, where to perform backups.</li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>File_list.txt<span class="o">]</span>
-host1
-<span class="m">192</span>.168.0.1
-host2
-...
-</pre></div>
-</div>
 <ul>
-<li><p class="first"><strong>–destination</strong>, <strong>-d</strong>: Select the destination folder (root).</p>
-</li>
-<li><p class="first"><strong>–mode</strong>, <strong>-m</strong>: Select how rsync perform backup:</p>
-<blockquote>
-<div><ul class="simple">
-<li><strong>Full</strong> -&gt; Complete (fll) backup.</li>
 <li><dl class="first docutils">
-<dt><strong>Incremental</strong> -&gt; Incremental backup is based on the latest Full (the same files are linked with hard link).</dt>
+<dt><strong>Backup options</strong></dt>
+<dd><table class="first last docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">--computer</span>, <span class="option">-c</span></kbd></td>
+<td><p class="first last">Select the ip or hostname where to perform backup.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--list</span>, <span class="option">-l</span></kbd></td>
+<td><p class="first">Select the file list of the ip or hostnames, where to perform backups.</p>
+<p>[File_list.txt]</p>
+<p>host1</p>
+<p>192.168.0.1</p>
+<p>host2</p>
+<p class="last">…</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--destination</span></kbd></td>
+<td><p class="first last">Select the destination folder (root).</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--mode</span>, <span class="option">-m</span></kbd></td>
+<td><p class="first">Select how rsync perform backup:</p>
+<ul class="last simple">
+<li>Full: Complete (full) backup.</li>
+<li><dl class="first docutils">
+<dt>Incremental: Incremental backup is based on the latest Full (the same files are linked with hard link).</dt>
 <dd>A Full backup is executed if this mode fails to find one.</dd>
 </dl>
 </li>
-<li><strong>Mirror</strong> -&gt; Complete mirror backup. If a file in the source no longer exists, BB deletes it from the destination.</li>
+<li>Mirror: Complete mirror backup. If a file in the source no longer exists, BB deletes it from the destination.</li>
 </ul>
-</div></blockquote>
-</li>
-<li><p class="first">[<strong>–data</strong>, <strong>-D</strong>]: Select the type of data to put under backup:</p>
-<blockquote>
-<div><p>The values change depending on the type of operating system:</p>
-<ul class="simple">
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--data</span>, <span class="option">-D</span></kbd></td>
+<td><p class="first">Select the type of data to put under backup:
+The values change depending on the type of operating system:</p>
+<ul class="last simple">
 <li><strong>User</strong> -&gt; folder containing the home.</li>
 <li><strong>Config</strong> -&gt; folder containing the configurations of the machine.</li>
 <li><strong>Log</strong> -&gt; folder containing the log.</li>
 <li><strong>Application</strong> -&gt; folder containing applications.</li>
 <li><strong>System</strong> -&gt; the entire system starting from the root.</li>
 </ul>
-</div></blockquote>
-</li>
-<li><p class="first">[<strong>–custom-data</strong>, <strong>-C</strong>]: Select the absolute paths to put under backup.</p>
-</li>
-<li><p class="first"><strong>–user</strong>, <strong>-u</strong>: login name used to log into the remote host (being backed up)</p>
-</li>
-<li><p class="first"><strong>–type</strong>, <strong>-t</strong>: Type of operating system to put under backup:</p>
-<blockquote>
-<div><ul class="simple">
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--custom-data</span></kbd></td>
+<td><p class="first last">Select the absolute paths to put under backup.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--user</span>, <span class="option">-u</span></kbd></td>
+<td><p class="first last">Login name used to log into the remote host (being backed up)</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--type</span>, <span class="option">-t</span></kbd></td>
+<td><p class="first">Type of operating system to put under backup:</p>
+<ul class="last simple">
 <li><strong>Unix</strong> -&gt; All UNIX os (Linux, BSD, Solaris).</li>
 <li><strong>Windows</strong> -&gt; Windows Vista or higher with cygwin installed.</li>
 <li><strong>MacOS</strong> -&gt; MacOSX 10.8 or higher.</li>
 </ul>
-</div></blockquote>
-</li>
-<li><p class="first"><strong>–compress</strong>, <strong>-z</strong>: Compresses the data transmitted.</p>
-</li>
-<li><p class="first"><strong>–retention</strong>, <strong>-r</strong>: Number of days for which you want to keep your backups.</p>
-</li>
-<li><p class="first"><strong>–parallel</strong>, <strong>-p</strong>: Maximum number of concurrent rsync processes. By default is 5 jobs.</p>
-</li>
-<li><p class="first"><strong>–timeout</strong>, <strong>-T</strong>: Specify number of seconds of I/O timeout.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--compress</span>, <span class="option">-z</span></kbd></td>
+<td><p class="first last">Compresses the data transmitted.</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--retention</span>, <span class="option">-r</span></kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first last">Number of days for which you want to keep your backups.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--parallel</span>, <span class="option">-p</span></kbd></td>
+<td><p class="first last">Maximum number of concurrent rsync processes. By default is 5 jobs.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--timeout</span>, <span class="option">-T</span></kbd></td>
+<td><p class="first last">Specify number of seconds of I/O timeout.</p>
+</td></tr>
+</tbody>
+</table>
+</dd>
+</dl>
 </li>
 </ul>
 <div class="section" id="single-backup">
@@ -427,12 +597,10 @@ SUCCESS: Command rsync -ah --no-links arthur@host1:/Users :/private/etc /mnt/bac
 <p class="first admonition-title">Important</p>
 <p class="last">Without specifying the “mode” flag, Butterfly Backup by default selects <em>Incremental</em> mode</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;</span>
-<span class="s2">arthur@goldenheart</span>$<span class="s2"> bb backup --computer host1 --destination /mnt/backup --mode Full --data User Config --type MacOS --user root</span>
-<span class="s2">root@host1&#39;s password:</span>
-<span class="s2">Start backup on host1</span>
-<span class="s2">SUCCESS: Command rsync -ah --no-links root@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_30</span>
-<span class="s2">&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb backup --computer host1 --destination /mnt/backup --mode Full --data User Config --type MacOS --user root
+<span class="s2">&quot;root@host1&#39;s password:&quot;</span>
+Start backup on host1
+SUCCESS: Command rsync -ah --no-links root@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_30
 </pre></div>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb backup --computer host1 --destination /mnt/backup --data User Config --type MacOS --verbose --log
@@ -525,13 +693,14 @@ but only Increments. We recommend doing more Full for better retention managemen
 <p>When we run backup commands, a catalog is created. This serves both for future backups and all the restores that are made through Butterfly Backup.
 To query this catalog, the list command exists.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb list --help
-usage: bb list <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> --catalog CATALOG <span class="o">[</span>--backup-id ID<span class="o">]</span>
-               <span class="o">[</span>--archived<span class="o">]</span> <span class="o">[</span>--cleaned<span class="o">]</span>
+usage: bb list <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span> --catalog CATALOG
+               <span class="o">[</span>--backup-id ID<span class="o">]</span> <span class="o">[</span>--archived<span class="o">]</span> <span class="o">[</span>--cleaned<span class="o">]</span>
 
 optional arguments:
   -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
   --verbose, -v         Enable verbosity
   --log, -l             Create a log
+  --dry-run, -N         Dry run mode
 
 List options:
   --catalog CATALOG, -C CATALOG
@@ -542,11 +711,35 @@ List options:
   --cleaned, -c         List only cleaned backup
 </pre></div>
 </div>
-<ul class="simple">
-<li><strong>–catalog</strong>, <strong>-C</strong>: Select the backups folder (root).</li>
-<li><strong>–backup-id</strong>, <strong>-i</strong>: Select backup id in the catalog.</li>
-<li><strong>–archived</strong>, <strong>-a</strong>: List only archived backups.</li>
-<li><strong>–cleaned</strong>, <strong>-c</strong>: List only cleaned backups.</li>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>List options</strong></dt>
+<dd><table class="first last docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">--catalog</span>, <span class="option">-C</span></kbd></td>
+<td><p class="first last">Select the backups folder (root).</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--backup-id</span>, <span class="option">-i</span></kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first last">Select backup id in the catalog.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--archived</span>, <span class="option">-a</span></kbd></td>
+<td><p class="first last">List only archived backups.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--cleaned</span>, <span class="option">-c</span></kbd></td>
+<td><p class="first last">List only cleaned backups.</p>
+</td></tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</li>
 </ul>
 <p>First, let’s query the catalog:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb list --catalog /mnt/backup
@@ -593,14 +786,15 @@ arthur@goldenheart$ cat /mnt/backup/backup.list
 <span id="id6"></span><h2>Restore<a class="headerlink" href="#restore" title="Permalink to this headline">¶</a></h2>
 <p>The restore process is the exact opposite of the backup process. It takes the files from a specific backup and push it to the destination computer.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb restore --help
-usage: bb restore [-h] [--verbose] [--log] --catalog CATALOG
-                   (--backup-id ID | --last) [--user USER] --computer HOSTNAME
-                   [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
+usage: bb restore [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
+                  (--backup-id ID | --last) [--user USER] --computer HOSTNAME
+                  [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
 
 optional arguments:
   -h, --help            show this help message and exit
   --verbose, -v         Enable verbosity
   --log, -l             Create a log
+  --dry-run, -N         Dry run mode
 
 Restore options:
   --catalog CATALOG, -C CATALOG
@@ -620,28 +814,53 @@ Restore options:
 </pre></div>
 </div>
 <ul>
-<li><p class="first"><strong>–catalog</strong>, <strong>-C</strong>: Select the backups folder (root).</p>
-</li>
-<li><p class="first">[<strong>–backup-id</strong>, <strong>-i</strong>]: Select backup id in the catalog.</p>
-</li>
-<li><p class="first">[<strong>–last</strong>, <strong>-L</strong>]: Select last available backup in the catalog for same hostname or ip address.</p>
-</li>
-<li><p class="first"><strong>–user</strong>, <strong>-u</strong>: User of remote machine where you want to restore files.</p>
-</li>
-<li><p class="first"><strong>–computer</strong>, <strong>-c</strong>: Select the ip or hostname where to perform restore.</p>
-</li>
-<li><p class="first"><strong>–type</strong>, <strong>-t</strong>: Type of operating system to put under backup:</p>
-<blockquote>
-<div><ul class="simple">
+<li><dl class="first docutils">
+<dt><strong>Restore options</strong></dt>
+<dd><table class="first last docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">--catalog</span>, <span class="option">-C</span></kbd></td>
+<td><p class="first last">Select the backups folder (root).</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--backup-id</span></kbd></td>
+<td><p class="first last">Select backup id in the catalog.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--last</span>, <span class="option">-L</span></kbd></td>
+<td><p class="first last">Select last available backup in the catalog for same hostname or ip address.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--user</span>, <span class="option">-u</span></kbd></td>
+<td><p class="first last">User of remote machine where you want to restore files.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--computer</span>, <span class="option">-c</span></kbd></td>
+<td><p class="first last">Select the ip or hostname where to perform restore.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--type</span>, <span class="option">-t</span></kbd></td>
+<td><p class="first">Type of operating system to put under backup:</p>
+<ul class="last simple">
 <li><strong>Unix</strong> -&gt; All UNIX os (Linux, BSD, Solaris).</li>
 <li><strong>Windows</strong> -&gt; Windows Vista or higher with cygwin installed.</li>
 <li><strong>MacOS</strong> -&gt; MacOSX 10.8 or higher.</li>
 </ul>
-</div></blockquote>
-</li>
-<li><p class="first"><strong>–timeout</strong>, <strong>-T</strong>: Specify number of seconds of I/O timeout.</p>
-</li>
-<li><p class="first"><strong>–mirror</strong>, <strong>-m</strong>: Mirror mode. If a file or folder not exist in destination, will delete it. Overwrite files.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--timeout</span>, <span class="option">-T</span></kbd></td>
+<td><p class="first last">Specify number of seconds of I/O timeout.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--mirror</span>, <span class="option">-m</span></kbd></td>
+<td><p class="first last">Mirror mode. If a file or folder not exist in destination, will delete it. Overwrite files.</p>
+</td></tr>
+</tbody>
+</table>
+</dd>
+</dl>
 </li>
 </ul>
 <p>This is a few examples:</p>
@@ -693,13 +912,14 @@ SUCCESS: Command rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/ho
 <span id="id7"></span><h2>Archive<a class="headerlink" href="#archive" title="Permalink to this headline">¶</a></h2>
 <p>Archive operations are used to store backups by saving disk space. Backups older than n days are compressed into a zip file.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb archive --help
-usage: bb archive <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> --catalog CATALOG <span class="o">[</span>--days DAYS<span class="o">]</span>
-                  --destination DESTINATION
+usage: bb archive <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span> --catalog CATALOG
+                  <span class="o">[</span>--days DAYS<span class="o">]</span> --destination DESTINATION
 
 optional arguments:
   -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
   --verbose, -v         Enable verbosity
   --log, -l             Create a log
+  --dry-run, -N         Dry run mode
 
 Archive options:
   --catalog CATALOG, -C CATALOG
@@ -709,10 +929,30 @@ Archive options:
                         Archive destination path
 </pre></div>
 </div>
-<ul class="simple">
-<li><strong>–catalog</strong>, <strong>-C</strong>: Select the backups folder (root).</li>
-<li><strong>–days</strong>, <strong>-D</strong>: Number of days for which you want to keep your backups. Default is 30.</li>
-<li><strong>–destination</strong>, <strong>-d</strong>: New destination for compress zipped backup.</li>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>Archive options</strong></dt>
+<dd><table class="first last docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">--catalog</span>, <span class="option">-C</span></kbd></td>
+<td><p class="first last">Select the backups folder (root).</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--days</span>, <span class="option">-D</span></kbd></td>
+<td><p class="first last">Number of days for which you want to keep your backups. Default is 30.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--destination</span></kbd></td>
+<td><p class="first last">New destination for compress zipped backup.</p>
+</td></tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</li>
 </ul>
 <p>Archive old backup of 3 days:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb archive --catalog /mnt/backup/ --days <span class="m">3</span> --destination /mnt/archive/ --verbose --log
@@ -726,7 +966,7 @@ arthur@goldenheart$ ls /mnt/archive/host1
 2018_08_06__07_26.zip
 </pre></div>
 </div>
-<p>The backup-id f65e5afe-9734-11e8-b0bb-005056a664e0 it is not considered, because it falls within the established time.
+<p>The backup-id <em>f65e5afe-9734-11e8-b0bb-005056a664e0</em> it is not considered, because it falls within the established time.
 The other, however, is zipped and deleted.</p>
 <p>Lastly, let’s look in the catalog and see that the backup was actually archived:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@goldenheart$ bb list --catalog /mnt/backup/ -i 4f2b5f6e-9939-11e8-9ab6-005056a664e0
@@ -746,79 +986,62 @@ Archived: True
 </div>
 
 
+           </div>
+           
           </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Matteo Guadrini &lt;matteo.guadrini@hotmail.it&gt;.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Welcome to Butterfly Backup’s documentation!</a><ul>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
-<li><a class="reference internal" href="#requirements">Requirements</a><ul>
-<li><a class="reference internal" href="#installation">Installation</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#core-concept">Core concept</a></li>
-<li><a class="reference internal" href="#config">Config</a><ul>
-<li><a class="reference internal" href="#cygwin-on-windows">Cygwin on Windows</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#backup">Backup</a><ul>
-<li><a class="reference internal" href="#single-backup">Single backup</a></li>
-<li><a class="reference internal" href="#bulk-backup">Bulk backup</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#list">List</a></li>
-<li><a class="reference internal" href="#restore">Restore</a></li>
-<li><a class="reference internal" href="#archive">Archive</a></li>
-</ul>
-</li>
-</ul>
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="#">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/index.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2018, Matteo Guadrini <matteo.guadrini@hotmail.it>.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
-      
-      |
-      <a href="_sources/index.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
 
-    
+    </section>
 
-    
-  </body>
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>

@@ -101,6 +101,17 @@ Windows:                  install Cygwin
         exit()
 
 
+def dry_run(message):
+    """
+    Check if dry run mode
+    :param message: print message standard output
+    :return: boolean
+    """
+    if args.dry_run:
+        print_verbose(True, message)
+        return True
+
+
 def run_in_parallel(fn, commands, limit):
     """
     Run in parallel with limit
@@ -272,6 +283,10 @@ def compose_command(flags, host):
         # Set I/O timeout
         if flags.timeout:
             command.append('--timeout={0}'.format(flags.timeout))
+        # Set dry-run mode
+        if flags.dry_run:
+            command.append('--dry-run')
+            utility.write_log(log_args['status'], log_args['destination'], 'INFO', 'dry-run mode activate')
         if flags.log:
             log_path = os.path.join(compose_destination(host, flags.destination), 'backup.log')
             command.append(
@@ -280,7 +295,7 @@ def compose_command(flags, host):
             utility.write_log(log_args['status'], log_args['destination'], 'INFO',
                               'rsync log path: {0}'.format(log_path))
     elif flags.action == 'restore':
-        command.append('-ahu')
+        command.append('-ahu --no-perms --no-owner --no-group')
         if flags.verbose:
             command.append('-vP')
         # Set I/O timeout
@@ -290,6 +305,10 @@ def compose_command(flags, host):
         if flags.mirror:
             command.append('--delete')
             command.append('--ignore-times')
+        # Set dry-run mode
+        if flags.dry_run:
+            command.append('--dry-run')
+            utility.write_log(log_args['status'], log_args['destination'], 'INFO', 'dry-run mode activate')
         if flags.log:
             log_path = os.path.join(rpath, 'restore.log')
             command.append(
@@ -491,15 +510,16 @@ def write_catalog(catalog, section, key, value):
     :return:
     """
     config = read_catalog(catalog)
-    # Add new section
-    try:
-        config.add_section(section)
-        config.set(section, key, value)
-    except configparser.DuplicateSectionError:
-        config.set(section, key, value)
-    # Write new section
-    with open(catalog, 'w') as configfile:
-        config.write(configfile)
+    if not args.dry_run:
+        # Add new section
+        try:
+            config.add_section(section)
+            config.set(section, key, value)
+        except configparser.DuplicateSectionError:
+            config.set(section, key, value)
+        # Write new section
+        with open(catalog, 'w') as configfile:
+            config.write(configfile)
 
 
 def retention_policy(host, catalog, logpath):
@@ -511,6 +531,7 @@ def retention_policy(host, catalog, logpath):
     """
     config = read_catalog(catalog)
     full_count = count_full(config, host)
+    cleanup = -1
     for bid in config.sections():
         if (config.get(bid, 'cleaned', fallback='unset') == 'unset') and (config.get(bid, 'name') == host):
             type_backup = config.get(bid, 'type')
@@ -519,7 +540,8 @@ def retention_policy(host, catalog, logpath):
             utility.print_verbose(args.verbose, "Check cleanup this backup {0}. Folder {1}".format(bid, path))
             if (type_backup == 'Full') and (full_count <= 1):
                 continue
-            cleanup = utility.cleanup(path, date, args.retention)
+            if not dry_run("Cleanup {0} backup folder".format(path)):
+                cleanup = utility.cleanup(path, date, args.retention)
             if cleanup == 0:
                 write_catalog(catalog, bid, 'cleaned', 'True')
                 print(utility.PrintColor.GREEN + 'SUCCESS: Cleanup {0} successfully.'.format(path) +
@@ -542,6 +564,7 @@ def archive_policy(catalog, destination):
     :param destination: destination pth of archive file
     """
     config = read_catalog(catalog)
+    archive = -1
     for bid in config.sections():
         full_count = count_full(config, config.get(bid, 'name'))
         if (config.get(bid, 'archived', fallback='unset') == 'unset') and not \
@@ -553,7 +576,8 @@ def archive_policy(catalog, destination):
             utility.print_verbose(args.verbose, "Check archive this backup {0}. Folder {1}".format(bid, path))
             if (type_backup == 'Full') and (full_count <= 1):
                 continue
-            archive = utility.archive(path, date, args.days, destination)
+            if not dry_run("Archive {0} backup folder".format(path)):
+                archive = utility.archive(path, date, args.days, destination)
             if archive == 0:
                 write_catalog(catalog, bid, 'archived', 'True')
                 print(utility.PrintColor.GREEN + 'SUCCESS: Archive {0} successfully.'.format(path) +
@@ -581,22 +605,23 @@ def deploy_configuration(computer, user):
     # Remove private key file
     id_rsa_pub_file = os.path.join(ssh_folder, 'id_rsa.pub')
     print_verbose(args.verbose, 'Public id_rsa is {0}'.format(id_rsa_pub_file))
-    if os.path.exists(id_rsa_pub_file):
-        print('Copying configuration to' + utility.PrintColor.BOLD + ' {0}'.format(computer) + utility.PrintColor.END +
-              '; write the password:')
-        return_code = subprocess.call('ssh-copy-id -i {0} {1}@{2}'.format(id_rsa_pub_file, user, computer),
-                                      shell=True)
-        print_verbose(args.verbose, 'Return code of ssh-copy-id: {0}'.format(return_code))
-        if return_code == 0:
-            print(utility.PrintColor.GREEN + "SUCCESS: Configuration copied successfully on {0}!".format(computer) +
-                  utility.PrintColor.END)
+    if not dry_run('Copying configuration to {0}'.format(computer)):
+        if os.path.exists(id_rsa_pub_file):
+            print('Copying configuration to' + utility.PrintColor.BOLD + ' {0}'.format(computer) + utility.PrintColor.END +
+                  '; write the password:')
+            return_code = subprocess.call('ssh-copy-id -i {0} {1}@{2}'.format(id_rsa_pub_file, user, computer),
+                                          shell=True)
+            print_verbose(args.verbose, 'Return code of ssh-copy-id: {0}'.format(return_code))
+            if return_code == 0:
+                print(utility.PrintColor.GREEN + "SUCCESS: Configuration copied successfully on {0}!".format(computer) +
+                      utility.PrintColor.END)
+            else:
+                print(utility.PrintColor.RED + "ERROR: Configuration has not been copied successfully on {0}!".format(
+                    computer) +
+                      utility.PrintColor.END)
         else:
-            print(utility.PrintColor.RED + "ERROR: Configuration has not been copied successfully on {0}!".format(
-                computer) +
-                  utility.PrintColor.END)
-    else:
-        print(utility.PrintColor.YELLOW + "WARNING: Public key ~/.ssh/id_rsa.pub is not exist" + utility.PrintColor.END)
-        exit(2)
+            print(utility.PrintColor.YELLOW + "WARNING: Public key ~/.ssh/id_rsa.pub is not exist" + utility.PrintColor.END)
+            exit(2)
 
 
 def remove_configuration():
@@ -606,27 +631,28 @@ def remove_configuration():
     # Create home path
     home = os.path.expanduser('~')
     ssh_folder = os.path.join(home, '.ssh')
-    if utility.confirm('Are you sure to remove existing rsa keys?'):
-        # Remove private key file
-        id_rsa_file = os.path.join(ssh_folder, 'id_rsa')
-        print_verbose(args.verbose, 'Remove private id_rsa {0}'.format(id_rsa_file))
-        if os.path.exists(id_rsa_file):
-            os.remove(id_rsa_file)
-        else:
-            print(
-                utility.PrintColor.YELLOW + "WARNING: Private key ~/.ssh/id_rsa is not exist" + utility.PrintColor.END)
-            exit(2)
-        # Remove public key file
-        id_rsa_pub_file = os.path.join(ssh_folder, 'id_rsa.pub')
-        print_verbose(args.verbose, 'Remove public id_rsa {0}'.format(id_rsa_pub_file))
-        if os.path.exists(id_rsa_pub_file):
-            os.remove(id_rsa_pub_file)
-        else:
-            print(
-                utility.PrintColor.YELLOW + "WARNING: Public key ~/.ssh/id_rsa.pub is not exist" +
-                utility.PrintColor.END)
-            exit(2)
-        print(utility.PrintColor.GREEN + "SUCCESS: Removed configuration successfully!" + utility.PrintColor.END)
+    if not dry_run('Remove private id_rsa'):
+        if utility.confirm('Are you sure to remove existing rsa keys?'):
+            # Remove private key file
+            id_rsa_file = os.path.join(ssh_folder, 'id_rsa')
+            print_verbose(args.verbose, 'Remove private id_rsa {0}'.format(id_rsa_file))
+            if os.path.exists(id_rsa_file):
+                os.remove(id_rsa_file)
+            else:
+                print(
+                    utility.PrintColor.YELLOW + "WARNING: Private key ~/.ssh/id_rsa is not exist" + utility.PrintColor.END)
+                exit(2)
+            # Remove public key file
+            id_rsa_pub_file = os.path.join(ssh_folder, 'id_rsa.pub')
+            print_verbose(args.verbose, 'Remove public id_rsa {0}'.format(id_rsa_pub_file))
+            if os.path.exists(id_rsa_pub_file):
+                os.remove(id_rsa_pub_file)
+            else:
+                print(
+                    utility.PrintColor.YELLOW + "WARNING: Public key ~/.ssh/id_rsa.pub is not exist" +
+                    utility.PrintColor.END)
+                exit(2)
+            print(utility.PrintColor.GREEN + "SUCCESS: Removed configuration successfully!" + utility.PrintColor.END)
 
 
 def new_configuration():
@@ -637,54 +663,55 @@ def new_configuration():
     from cryptography.hazmat.primitives.asymmetric import rsa
     from cryptography.hazmat.backends import default_backend
 
-    # Generate private/public key pair
-    print_verbose(args.verbose, 'Generate private/public key pair')
-    private_key = rsa.generate_private_key(backend=default_backend(), public_exponent=65537,
-                                           key_size=2048)
-    # Get public key in OpenSSH format
-    print_verbose(args.verbose, 'Get public key in OpenSSH format')
-    public_key = private_key.public_key().public_bytes(serialization.Encoding.OpenSSH,
-                                                       serialization.PublicFormat.OpenSSH)
-    # Get private key in PEM container format
-    print_verbose(args.verbose, 'Get private key in PEM container format')
-    pem = private_key.private_bytes(encoding=serialization.Encoding.PEM,
-                                    format=serialization.PrivateFormat.TraditionalOpenSSL,
-                                    encryption_algorithm=serialization.NoEncryption())
-    # Decode to printable strings
-    private_key_str = pem.decode('utf-8')
-    public_key_str = public_key.decode('utf-8')
-    # Create home path
-    home = os.path.expanduser('~')
-    # Create folder .ssh
-    ssh_folder = os.path.join(home, '.ssh')
-    print_verbose(args.verbose, 'Create folder {0}'.format(ssh_folder))
-    if not os.path.exists(ssh_folder):
-        os.mkdir(ssh_folder, mode=0o755)
-    # Create private key file
-    id_rsa_file = os.path.join(ssh_folder, 'id_rsa')
-    print_verbose(args.verbose, 'Create private key file {0}'.format(id_rsa_file))
-    if not os.path.exists(id_rsa_file):
-        with open(id_rsa_file, 'w') as id_rsa:
-            os.chmod(id_rsa_file, mode=0o600)
-            id_rsa.write(private_key_str)
-    else:
-        print(utility.PrintColor.YELLOW + "WARNING: Private key ~/.ssh/id_rsa exists" + utility.PrintColor.END)
-        print('If you want to use the existing key, run "bb config --deploy name_of_machine", otherwise to remove it, '
-              'run "bb config --remove"')
-        exit(2)
-    # Create private key file
-    id_rsa_pub_file = os.path.join(ssh_folder, 'id_rsa.pub')
-    print_verbose(args.verbose, 'Create public key file {0}'.format(id_rsa_pub_file))
-    if not os.path.exists(id_rsa_pub_file):
-        with open(id_rsa_pub_file, 'w') as id_rsa_pub:
-            os.chmod(id_rsa_pub_file, mode=0o644)
-            id_rsa_pub.write(public_key_str)
-    else:
-        print(utility.PrintColor.YELLOW + "WARNING: Public key ~/.ssh/id_rsa.pub exists" + utility.PrintColor.END)
-        print('If you want to use the existing key, run "bb config --deploy name_of_machine", otherwise to remove it, '
-              'run "bb config --remove"')
-        exit(2)
-    print(utility.PrintColor.GREEN + "SUCCESS: New configuration successfully created!" + utility.PrintColor.END)
+    if not dry_run('Generate private/public key pair'):
+        # Generate private/public key pair
+        print_verbose(args.verbose, 'Generate private/public key pair')
+        private_key = rsa.generate_private_key(backend=default_backend(), public_exponent=65537,
+                                               key_size=2048)
+        # Get public key in OpenSSH format
+        print_verbose(args.verbose, 'Get public key in OpenSSH format')
+        public_key = private_key.public_key().public_bytes(serialization.Encoding.OpenSSH,
+                                                           serialization.PublicFormat.OpenSSH)
+        # Get private key in PEM container format
+        print_verbose(args.verbose, 'Get private key in PEM container format')
+        pem = private_key.private_bytes(encoding=serialization.Encoding.PEM,
+                                        format=serialization.PrivateFormat.TraditionalOpenSSL,
+                                        encryption_algorithm=serialization.NoEncryption())
+        # Decode to printable strings
+        private_key_str = pem.decode('utf-8')
+        public_key_str = public_key.decode('utf-8')
+        # Create home path
+        home = os.path.expanduser('~')
+        # Create folder .ssh
+        ssh_folder = os.path.join(home, '.ssh')
+        print_verbose(args.verbose, 'Create folder {0}'.format(ssh_folder))
+        if not os.path.exists(ssh_folder):
+            os.mkdir(ssh_folder, mode=0o755)
+        # Create private key file
+        id_rsa_file = os.path.join(ssh_folder, 'id_rsa')
+        print_verbose(args.verbose, 'Create private key file {0}'.format(id_rsa_file))
+        if not os.path.exists(id_rsa_file):
+            with open(id_rsa_file, 'w') as id_rsa:
+                os.chmod(id_rsa_file, mode=0o600)
+                id_rsa.write(private_key_str)
+        else:
+            print(utility.PrintColor.YELLOW + "WARNING: Private key ~/.ssh/id_rsa exists" + utility.PrintColor.END)
+            print('If you want to use the existing key, run "bb config --deploy name_of_machine", otherwise to remove it, '
+                  'run "bb config --remove"')
+            exit(2)
+        # Create private key file
+        id_rsa_pub_file = os.path.join(ssh_folder, 'id_rsa.pub')
+        print_verbose(args.verbose, 'Create public key file {0}'.format(id_rsa_pub_file))
+        if not os.path.exists(id_rsa_pub_file):
+            with open(id_rsa_pub_file, 'w') as id_rsa_pub:
+                os.chmod(id_rsa_pub_file, mode=0o644)
+                id_rsa_pub.write(public_key_str)
+        else:
+            print(utility.PrintColor.YELLOW + "WARNING: Public key ~/.ssh/id_rsa.pub exists" + utility.PrintColor.END)
+            print('If you want to use the existing key, run "bb config --deploy name_of_machine", otherwise to remove it, '
+                  'run "bb config --remove"')
+            exit(2)
+        print(utility.PrintColor.GREEN + "SUCCESS: New configuration successfully created!" + utility.PrintColor.END)
 
 
 def check_configuration(ip):
@@ -715,6 +742,7 @@ def parse_arguments():
     parent_parser = argparse.ArgumentParser(add_help=False)
     parent_parser.add_argument('--verbose', '-v', help='Enable verbosity', dest='verbose', action='store_true')
     parent_parser.add_argument('--log', '-l', help='Create a log', dest='log', action='store_true')
+    parent_parser.add_argument('--dry-run', '-N', help='Dry run mode', dest='dry_run', action='store_true')
 
     # Create principal parser
     parser_object = argparse.ArgumentParser(prog='bb', description=utility.PrintColor.BOLD + 'Butterfly Backup'
