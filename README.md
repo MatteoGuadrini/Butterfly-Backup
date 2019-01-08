@@ -32,8 +32,8 @@ This list consists of only a few examples; applications can be endless:
 - Configuration for silently backup
 - All backup are organized into a catalog
 - List single or all backup by the catalog
-- Backup single PC, with Full,Incremental and Mirror mode;
-- Backup more PCs, with Full,Incremental and Mirror mode (with parallelism algorithm);
+- Backup single PC, with Full,Incremental,Differential and Mirror mode;
+- Backup more PCs, with Full,Incremental,Differential and Mirror mode (with parallelism algorithm);
 - Backup custom folder or predefined data (User,Config,Application,System,Log)
 - Restore backup on the same PC
 - Restore backup in other PC
@@ -64,7 +64,7 @@ bb --help
 Backup a single PC or server is a everyday task. 
 But most of the data may not change in the various backups made;
 then, in these cases, an incremental backup is needed.
-Butterfly Backup natively supports incremental backups, starting from a full.
+Butterfly Backup natively supports incremental and differential backups, starting from a full.
 In this case, the first backup to be performed on the machine will be as follows:
 ```bash
 bb backup --computer pc1 --destination /nas/mybackup --data User Config --type MacOS --mode Full
@@ -148,7 +148,7 @@ bb --help
 
 ## One more thing
 The name butterfly, is born precisely because agent-less; like a butterfly takes the pollen from a flower and brings it elsewhere.
-A backup or restore is performed without any iterationresponsibility on the part of the final machine.
+A backup or restore is performed without any iteration responsibility on the part of the final machine.
 The performances are not altered.
 While all the operations of Butterfly Backup are carried out, the impacted machine can continuously work with peace of mind.
 

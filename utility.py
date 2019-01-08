@@ -180,6 +180,8 @@ def make_symlink(source, destination):
     """
     import os
     try:
+        if os.path.exists(destination):
+            os.unlink(destination)
         os.symlink(source, destination)
     except OSError:
         print(PrintColor.YELLOW + "WARNING: MS-DOS file system doesn't support symlink file." + PrintColor.END)

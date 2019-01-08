@@ -24,6 +24,8 @@
 import shutil
 import os
 import platform
+manpath = '/usr/share/man/man1'
+manpage = 'bb.man'
 
 if platform.system() == 'Darwin':
     # Mac OS installation
@@ -41,8 +43,13 @@ else:
 if not os.path.exists(bb_path):
     os.mkdir(bb_path)
 
+# install Butterfly Backup
 shutil.copyfile(bb_core, os.path.join(bb_path, bb_core))
 shutil.copyfile(bb_utility, os.path.join(bb_path, bb_utility))
 os.chmod(os.path.join(bb_path, bb_core), mode=0o755)
 if not os.path.exists(bb_command):
     os.symlink(os.path.join(bb_path, bb_core), bb_command)
+
+# install man page
+shutil.copyfile(manpage, os.path.join(manpath, 'bb.1'))
+os.system('gzip -f {0}/bb.1'.format(manpath))

@@ -1,0 +1,179 @@
+.\" Manpage for Butterfly Backup.
+.\" Contact matteo.guadrini@hotmail.it to correct errors or typos.
+.TH man 1 "11 Dec 2018" "1.4.0" "bb man page"
+.SH NAME
+bb \- Butterfly Backup - backup/restore/archive tool , agentless
+.SH SYNOPSIS
+bb [ACTION] [OPTIONS]
+
+bb [-h] [--verbose] [--log] [--dry-run] [--version]
+          {config,backup,restore,archive,list,export} ...
+.SH DESCRIPTION
+Butterfly Backup is a simple command line wrapper of rsync for complex task, written in python. 
+.SH OPTIONS
+.TP
+action:
+  Valid action
+
+  {config,backup,restore,archive,list,export}
+                        Available actions
+    config              Configuration options
+    backup              Backup options
+    restore             Restore options
+    archive             Archive options
+    list                List options
+    export              Export options
+
+.B backup
+[ACTION]
+
+	--computer HOSTNAME, -c HOSTNAME
+                        	Hostname or ip address to backup
+ 	--list LIST, -L LIST    File list of computers or ip addresses to backup
+  	--destination DESTINATION, -d DESTINATION
+                        	Destination path
+  	--mode {Full,Incremental,Differential,Mirror}, -m {Full,Incremental,Differential,Mirror}
+                            Backup mode
+    --data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...], -D {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...]
+                        	Data of which you want to backup
+  	--custom-data, -D CUSTOMDATA [CUSTOMDATA ...], -C CUSTOMDATA [CUSTOMDATA ...]
+                        	Custom path of which you want to backup
+  	--user USER, -u USER    Login name used to log into the remote host (being
+                        	backed up)
+  	--type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
+                        	Type of operating system to backup
+  	--compress, -z          Compress data
+  	--retention RETENTION, -r RETENTION
+                        	Number of days of backup retention
+  	--parallel PARALLEL, -p PARALLEL
+                        	Number of parallel jobs
+  	--timeout TIMEOUT, -T TIMEOUT
+                        	I/O timeout in seconds
+    --skip-error, -e        Skip error.
+
+.B list 
+[ACTION]
+
+	--catalog CATALOG, -C CATALOG
+                        	Folder where is catalog file
+  	--backup-id ID, -i ID
+                        	Backup-id of backup
+  	--archived, -a        	List only archived backup
+  	--cleaned, -c         	List only cleaned backup
+  	--computer HOSTNAME, -H HOSTNAME
+                        	List only match hostname or ip
+  	--oneline, -o           One line output
+
+.B restore 
+[ACTION]
+
+	--catalog CATALOG, -C CATALOG
+                        	Folder where is catalog file
+  	--backup-id ID, -i ID
+                        	Backup-id of backup
+  	--last, -L            Last available backup
+  	--user USER, -u USER  Login name used to log into the remote host (where
+                        you're restoring)
+  	--computer HOSTNAME, -c HOSTNAME
+                        Hostname or ip address to perform restore
+  	--type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
+                        	Type of operating system to perform restore
+  	--timeout TIMEOUT, -T TIMEOUT
+                        	I/O timeout in seconds
+  	--mirror, -m            Mirror mode
+  	--skip-error, -e        Skip error.
+
+.B config 
+[ACTION]
+
+Init configuration:
+    --new, -n               Generate new configuration
+    --remove, -r            Remove exist configuration
+
+Deploy configuration:
+    --deploy DEPLOY_HOST, -d DEPLOY_HOST
+                            Deploy configuration to client: hostname or ip address
+    --user DEPLOY_USER, -u DEPLOY_USER
+                            User of the remote machine
+
+.B archive 
+[ACTION]
+
+    --catalog CATALOG, -C CATALOG
+                            Folder where is catalog file
+    --days DAYS, -D DAYS    Number of days of archive retention
+    --destination DESTINATION, -d DESTINATION
+                            Archive destination path
+
+.B export
+[ACTION]
+    --catalog CATALOG, -C CATALOG
+                           Folder where is catalog file
+    --backup-id ID, -i ID
+                          Backup-id of backup
+    --destination DESTINATION, -d DESTINATION
+                          Destination path
+    --mirror, -m          Mirror mode
+    --cut, -c             Cut mode. Delete source
+    --include INCLUDE [INCLUDE ...], -I INCLUDE [INCLUDE ...]
+                          Include pattern
+    --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
+                          Exclude pattern
+    --timeout TIMEOUT, -T TIMEOUT
+                          I/O timeout in seconds
+    --skip-error, -e      Skip error
+
+.B optional arguments 
+[OPTIONS]
+
+  -h, --help                show help message and exit
+  --verbose, -v             Enable verbosity
+  --log, -l                 Create a log
+  --dry-run, -N             Dry run mode
+  --version, -V             Print version
+
+.SH EXAMPLES
+Show full help:
+    O_O>$ bb --help
+
+Backup single machine:
+    O_O>$ bb backup --computer host1 --destination /mnt/backup --data User Config --type MacOS
+
+Backup multiple machine:
+    O_O>$ > hosts.txt
+    host1
+    host2
+    host3
+    ^D
+    O_O>$ bb backup --list hosts.txt --destination /mnt/backup --data User Config --type MacOS
+
+List catalog backups:
+    O_O>$ bb list --catalog /mnt/backup
+
+List backup details:
+    O_O>$ bb list --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0
+
+Restore machine with log:
+    O_O>$ bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host1 --log
+
+Archive backups older than 3 days:
+    O_O>$ bb archive --catalog /mnt/backup/ --days 3 --destination /mnt/archive/ --verbose
+
+Create configuration (RSA key):
+    O_O>$ bb config --new
+
+Deploy configuration to machine:
+    O_O>$ bb config --deploy host1
+
+Export a backup to another path:
+    O_O>$ bb export --catalog /mnt/backup/ --backup-id f0f700e8-0435-11e9-9e78-005056a664e0 --destination /mnt/export
+
+.SH SEE ALSO
+Full documentation is here:
+https://butterfly-backup.readthedocs.io/en/latest/
+.SH BUGS
+No known bugs.
+.SH AUTHOR
+Matteo Guadrini <matteo.guadrini@hotmail.it>
+.SH COPYRIGHT
+(c) Matteo Guadrini. All rights reserved.

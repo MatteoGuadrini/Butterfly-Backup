@@ -22,6 +22,7 @@ Indices and tables
 * :ref:`list`
 * :ref:`restore`
 * :ref:`archive`
+* :ref:`export`
 * :ref:`search`
 
 .. _requirements:
@@ -41,10 +42,11 @@ Install Butterfly Backup is very simple; run this:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
-   arthur@goldenheart$ cd Butterfly-Backup
-   arthur@goldenheart$ sudo python3 setup.py
-   arthur@goldenheart$ bb --help
+   arthur@heartofgold$ git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
+   arthur@heartofgold$ cd Butterfly-Backup
+   arthur@heartofgold$ sudo python3 setup.py
+   arthur@heartofgold$ bb --help
+   arthur@heartofgold$ man bb
 
 The upgrade is also simple; type the same commands.
 
@@ -62,7 +64,7 @@ Backups are organized according to precise cataloguing; this is an example:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ tree destination/of/backup
+   arthur@heartofgold$ tree destination/of/backup
    .
    ├── destination
    │   ├── hostname or ip of the PC under backup
@@ -91,13 +93,13 @@ This is how the operating system sees the backups on the file system:
 .. important::
    Be careful to not delete *.catalog.cfg* file.
 
-Backup butterfly has, in its core, five main operations:
+Butterfly Backup has, in its core, six main operations:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb --help
+   arthur@heartofgold$ bb --help
    usage: bb [-h] [--verbose] [--log] [--dry-run] [--version]
-             {config,backup,restore,archive,list} ...
+             {config,backup,restore,archive,list,export} ...
 
    Butterfly Backup
 
@@ -111,13 +113,14 @@ Backup butterfly has, in its core, five main operations:
    action:
      Valid action
 
-     {config,backup,restore,archive,list}
+     {config,backup,restore,archive,list,export}
                            Available actions
        config              Configuration options
        backup              Backup options
        restore             Restore options
        archive             Archive options
        list                List options
+       export              Export options
 
 Valid action
 
@@ -126,6 +129,7 @@ Valid action
 * **restore**: transactions that call rsync for pushing files to a client.
 * **archive**: transaction that zip old backups and move them to a new destination.
 * **list**: query the catalog.
+* **export**: export a single backup to other path.
 
 It also has three flags that can be very useful, especially in case of error.
 
@@ -148,7 +152,7 @@ Let's see how to go about looking at the help:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb config --help
+   arthur@heartofgold$ bb config --help
    usage: bb config [-h] [--verbose] [--log] [--dry-run] [--new | --remove]
                     [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
 
@@ -181,7 +185,7 @@ At this point, we create the configuration:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb config --new
+   arthur@heartofgold$ bb config --new
    WARNING: Private key ~/.ssh/id_rsa exists
    If you want to use the existing key, run "bb config --deploy name_of_machine", otherwise to remove it, run "bb config --remove"
 
@@ -189,10 +193,10 @@ In this case, the RSA key already exists. Now try delete and create a new keys:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb config --remove
+   arthur@heartofgold$ bb config --remove
    Are you sure to remove existing rsa keys? To continue [Y/N]? y
    SUCCESS: Removed configuration successfully!
-   arthur@goldenheart$ bb config --new
+   arthur@heartofgold$ bb config --new
    SUCCESS: New configuration successfully created!
 
 Once you have created the configuration, keys should be installed (copied) on the hosts you 
@@ -200,8 +204,7 @@ want to backup.
 
 .. code-block:: bash
 
-   "
-   arthur@goldenheart$ bb config --deploy host1
+   arthur@heartofgold$ bb config --deploy host1
    Copying configuration to host1; write the password:
    /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/arthur/.ssh/id_rsa.pub"
    /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
@@ -214,14 +217,13 @@ want to backup.
    and check to make sure that only the key(s) you wanted were added.
 
    SUCCESS: Configuration copied successfully on host1!
-   "
 
 This command will try to copy the configuration with the current user.
 If you want to use a different user (e.g.: root), run this:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb config --deploy host1 --user root
+   arthur@heartofgold$ bb config --deploy host1 --user root
    "Copying configuration to host1; write the password:"
    /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/arthur/.ssh/id_rsa.pub"
    /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
@@ -269,7 +271,7 @@ Download https://cygwin.com/ cygwin and follow this instructions to install the 
 
    C:
    chdir C:\cygwin\bin
-   mkpasswd -l > C:\cygwin\etc\passwd
+   mkpasswd -cl > C:\cygwin\etc\passwd
    bash ssh-host-config -y
    cygrunsrv -S sshd
 
@@ -287,10 +289,10 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb backup --help
+   arthur@heartofgold$ bb backup --help
    usage: bb backup [-h] [--verbose] [--log] [--dry-run]
                     (--computer HOSTNAME | --list LIST) --destination DESTINATION
-                    [--mode {Full,Incremental,Mirror}]
+                    [--mode {Full,Incremental,Differential,Mirror}]
                     (--data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...])
                     [--user USER] --type {Unix,Windows,MacOS} [--compress]
                     [--retention RETENTION] [--parallel PARALLEL]
@@ -308,7 +310,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
      --list LIST, -L LIST  File list of computers or ip addresses to backup
      --destination DESTINATION, -d DESTINATION
                            Destination path
-     --mode {Full,Incremental,Mirror}, -m {Full,Incremental,Mirror}
+     --mode {Full,Incremental,Differential,Mirror}, -m {Full,Incremental,Differential,Mirror}
                            Backup mode
      --data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...], -D {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...]
                            Data of which you want to backup
@@ -325,6 +327,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                            Number of parallel jobs
      --timeout TIMEOUT, -T TIMEOUT
                            I/O timeout in seconds
+     --skip-error, -e      Skip error
+
 
 
 * **Backup options**
@@ -340,13 +344,19 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                            host2
 
                            ...
-   --destination           Select the destination folder (root).
+   --destination, -d       Select the destination folder (root).
    --mode, -m              Select how rsync perform backup:
 
-    * Full: Complete (full) backup.
-    * Incremental: Incremental backup is based on the latest Full (the same files are linked with hard link).
+    * Full:
+         Complete (full) backup.
+    * Incremental:
+         Incremental backup is based on the latest backup (the same files are linked with hard link).
          A Full backup is executed if this mode fails to find one.
-    * Mirror: Complete mirror backup. If a file in the source no longer exists, BB deletes it from the destination.
+    * Differential:
+         Incremental backup is based on the latest Full backup (the same files are linked with hard link).
+         A Full backup is executed if this mode fails to find one.
+    * Mirror:
+         Complete mirror backup. If a file in the source no longer exists, BB deletes it from the destination.
    --data, -D              Select the type of data to put under backup:
        The values change depending on the type of operating system:
 
@@ -366,6 +376,23 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
    --retention, -r         Number of days for which you want to keep your backups.
    --parallel, -p          Maximum number of concurrent rsync processes. By default is 5 jobs.
    --timeout, -T           Specify number of seconds of I/O timeout.
+   --skip-error, -e        Skip error. Quiet mode.
+
+Flowchart of the differences between Differential and Incremental backup::
+
+   +----------+   +----------+   +----------+
+   |          |   |          |   |          |
+   |   Full   | <-+   Inc.   | <-+   Inc.   |
+   |          |   |          |   |          |
+   +----------+   +----------+   +----------+
+
+   +----------+   +----------+   +----------+
+   |          |   |          |   |          |
+   |   Full   | <-+   Dif.   |   |   Dif.   |
+   |          |   |          |   |          |
+   +----+-----+   +----------+   +----+-----+
+        ^                             |
+        +-----------------------------+
 
 
 .. _backup_computer:
@@ -380,7 +407,7 @@ This is a few examples:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb backup --computer host1 --destination /mnt/backup --data User Config --type MacOS
+   arthur@heartofgold$ bb backup --computer host1 --destination /mnt/backup --data User Config --type MacOS
    # host1 SSH-2.0-OpenSSH_7.5
    # host1 SSH-2.0-OpenSSH_7.5
    Start backup on host1
@@ -392,14 +419,14 @@ This is a few examples:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb backup --computer host1 --destination /mnt/backup --mode Full --data User Config --type MacOS --user root
+   arthur@heartofgold$ bb backup --computer host1 --destination /mnt/backup --mode Full --data User Config --type MacOS --user root
    "root@host1's password:"
    Start backup on host1
    SUCCESS: Command rsync -ah --no-links root@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_30
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb backup --computer host1 --destination /mnt/backup --data User Config --type MacOS --verbose --log
+   arthur@heartofgold$ bb backup --computer host1 --destination /mnt/backup --data User Config --type MacOS --verbose --log
    INFO: Build a rsync command
    INFO: Last full is 2018-08-08 10:30:32
    INFO: Command flags are: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_28 -vP
@@ -433,7 +460,7 @@ This is a few examples:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS
+   arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS
    # host1 SSH-2.0-OpenSSH_7.5
    # host1 SSH-2.0-OpenSSH_7.5
    ERROR: The port 22 on host2 is closed!
@@ -452,7 +479,7 @@ This means that maximum two backup jobs will run at the same time. When a first 
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel 2 --log
+   arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel 2 --log
    # host1 SSH-2.0-OpenSSH_7.5
    # host1 SSH-2.0-OpenSSH_7.5
    ERROR: The port 22 on host2 is closed!
@@ -464,7 +491,7 @@ This is the same example but specifying a retention at 3 (days). This means that
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel 2 --retention 3 --log --verbose
+   arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel 2 --retention 3 --log --verbose
    INFO: Build a rsync command
    INFO: Last full is 2018-08-08 10:30:32
    INFO: Command flags are: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 -vP
@@ -504,9 +531,10 @@ To query this catalog, the list command exists.
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb list --help
+   arthur@heartofgold$ bb list --help
    usage: bb list [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
-                  [--backup-id ID] [--archived] [--cleaned]
+                  [--backup-id ID | --archived | --cleaned | --computer HOSTNAME]
+                  [--oneline]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -521,18 +549,24 @@ To query this catalog, the list command exists.
                            Backup-id of backup
      --archived, -a        List only archived backup
      --cleaned, -c         List only cleaned backup
+     --computer HOSTNAME, -H HOSTNAME
+                           List only match hostname or ip
+     --oneline, -o         One line output
+
 
 * **List options**
    --catalog, -C           Select the backups folder (root).
    --backup-id, -i         Select backup id in the catalog.
    --archived, -a          List only archived backups.
    --cleaned, -c           List only cleaned backups.
+   --computer, -H          List only match hostname or ip.
+   --oneline, -o           One line and concise output.
 
 First, let's query the catalog:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb list --catalog /mnt/backup
+   arthur@heartofgold$ bb list --catalog /mnt/backup
 
    BUTTERFLY BACKUP CATALOG
 
@@ -552,7 +586,7 @@ Press ``q`` for exit. Then we select a backup-id:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb list --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0
+   arthur@heartofgold$ bb list --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0
    Backup id: dd6de2f2-9a1e-11e8-82b0-005056a664e0
    Hostname or ip: host1
    Type: Incremental
@@ -570,8 +604,8 @@ If you want to export the catalog list instead, include the log flag:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb list --catalog /mnt/backup --log
-   arthur@goldenheart$ cat /mnt/backup/backup.list
+   arthur@heartofgold$ bb list --catalog /mnt/backup --log
+   arthur@heartofgold$ cat /mnt/backup/backup.list
 
 Now that we have identified a backup, let's proceed with the restore
 
@@ -585,7 +619,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb restore --help
+   arthur@heartofgold$ bb restore --help
    usage: bb restore [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
                      (--backup-id ID | --last) [--user USER] --computer HOSTNAME
                      [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
@@ -611,6 +645,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
      --timeout TIMEOUT, -T TIMEOUT
                            I/O timeout in seconds
      --mirror, -m          Mirror mode
+     --skip-error, -e      Skip error
 
 * **Restore options**
    --catalog, -C           Select the backups folder (root).
@@ -626,6 +661,8 @@ The restore process is the exact opposite of the backup process. It takes the fi
 
    --timeout, -T           Specify number of seconds of I/O timeout.
    --mirror, -m            Mirror mode. If a file or folder not exist in destination, will delete it. Overwrite files.
+   --skip-error, -e        Skip error. Quiet mode.
+
 
 This is a few examples:
 
@@ -633,7 +670,7 @@ This command perform a restore on the same machine of the backup:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host1 --log
+   arthur@heartofgold$ bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host1 --log
    Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
    Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y
    SUCCESS: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc arthur@host1:/restore_2018_08_08__10_58
@@ -647,7 +684,7 @@ Now, select the last available backup on catalog; run this:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb restore --catalog /mnt/backup --last --computer host1 --log
+   arthur@heartofgold$ bb restore --catalog /mnt/backup --last --computer host1 --log
    Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
    Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y
    SUCCESS: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc arthur@host1:/restore_2018_08_08__10_59
@@ -657,7 +694,7 @@ This example, is the same as the previous one, but restore to other machine and 
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host2 --type Unix --log --verbose
+   arthur@heartofgold$ bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host2 --type Unix --log --verbose
    INFO: Build a rsync command
    INFO: Command flags are: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log
    Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
@@ -687,7 +724,7 @@ Archive operations are used to store backups by saving disk space. Backups older
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb archive --help
+   arthur@heartofgold$ bb archive --help
    usage: bb archive [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
                      [--days DAYS] --destination DESTINATION
 
@@ -708,20 +745,20 @@ Archive operations are used to store backups by saving disk space. Backups older
 * **Archive options**
    --catalog, -C           Select the backups folder (root).
    --days, -D              Number of days for which you want to keep your backups. Default is 30.
-   --destination           New destination for compress zipped backup.
+   --destination, -d       New destination for compress zipped backup.
 
 Archive old backup of 3 days:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb archive --catalog /mnt/backup/ --days 3 --destination /mnt/archive/ --verbose --log
+   arthur@heartofgold$ bb archive --catalog /mnt/backup/ --days 3 --destination /mnt/archive/ --verbose --log
    INFO: Check archive this backup f65e5afe-9734-11e8-b0bb-005056a664e0. Folder /mnt/backup/host2/2018_08_08__17_50
    INFO: Check archive this backup 4f2b5f6e-9939-11e8-9ab6-005056a664e0. Folder /mnt/backup/host2/2018_08_04__07_26
    SUCCESS: Delete /mnt/backup/host2/2018_08_04__07_26 successfully.
    SUCCESS: Archive /mnt/backup/host2/2018_08_04__07_26 successfully.
-   arthur@goldenheart$ ls /mnt/archive
+   arthur@heartofgold$ ls /mnt/archive
    host1
-   arthur@goldenheart$ ls /mnt/archive/host1
+   arthur@heartofgold$ ls /mnt/archive/host1
    2018_08_06__07_26.zip
 
 The backup-id *f65e5afe-9734-11e8-b0bb-005056a664e0* it is not considered, because it falls within the established time.
@@ -731,7 +768,7 @@ Lastly, let's look in the catalog and see that the backup was actually archived:
 
 .. code-block:: bash
 
-   arthur@goldenheart$ bb list --catalog /mnt/backup/ -i 4f2b5f6e-9939-11e8-9ab6-005056a664e0
+   arthur@heartofgold$ bb list --catalog /mnt/backup/ -i 4f2b5f6e-9939-11e8-9ab6-005056a664e0
    Backup id: 4f2b5f6e-9939-11e8-9ab6-005056a664e0
    Hostname or ip: host2
    Type: Incremental
@@ -742,3 +779,76 @@ Lastly, let's look in the catalog and see that the backup was actually archived:
    ExitCode: 0
    Path: /mnt/backup/host2/2018_08_04__07_26
    Archived: True
+
+.. _export:
+
+######
+Export
+######
+
+The export function is used to copy a particular backup to another path.
+
+.. code-block:: bash
+
+   arthur@heartofgold$ bb export -h
+   usage: bb export [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
+                    --backup-id ID --destination DESTINATION [--mirror] [--cut]
+                    [--include INCLUDE [INCLUDE ...]]
+                    [--exclude EXCLUDE [EXCLUDE ...]] [--timeout TIMEOUT]
+                    [--skip-error]
+
+   optional arguments:
+     -h, --help            show this help message and exit
+     --verbose, -v         Enable verbosity
+     --log, -l             Create a log
+     --dry-run, -N         Dry run mode
+
+   Export options:
+     --catalog CATALOG, -C CATALOG
+                           Folder where is catalog file
+     --backup-id ID, -i ID
+                           Backup-id of backup
+     --destination DESTINATION, -d DESTINATION
+                           Destination path
+     --mirror, -m          Mirror mode
+     --cut, -c             Cut mode. Delete source
+     --include INCLUDE [INCLUDE ...], -I INCLUDE [INCLUDE ...]
+                           Include pattern
+     --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
+                           Exclude pattern
+     --timeout TIMEOUT, -T TIMEOUT
+                           I/O timeout in seconds
+     --skip-error, -e      Skip error
+
+* **Export options**
+   --catalog, -C           Select the backups folder (root).
+   --backup-id, -i         Select backup id in the catalog.
+   --destination, -d       Destination path than export a backup.
+   --mirror, -m            Mirror mode.
+   --cut, -c               Cut mode. Delete source. Like a move function.
+   --include, -I           Include pattern. Accept wildcard character.
+   --exclude, -E           Exclude pattern. Accept wildcard character.
+   --timeout, -T           Specify number of seconds of I/O timeout.
+   --skip-error, -e        Skip error. Quiet mode.
+
+Export a backup in other directory:
+
+.. code-block:: bash
+
+   arthur@heartofgold$ bb export --catalog /mnt/backup/ --backup-id f0f700e8-0435-11e9-9e78-005056a664e0 --destination /mnt/backup/export --verbose
+   INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
+   INFO: Build a rsync command
+   Start export host1
+   INFO: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
+   SUCCESS: Command rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
+
+Export a backup with exclude pdf files:
+
+.. code-block:: bash
+
+   arthur@heartofgold$ bb export --catalog /mnt/backup/ --backup-id f0f700e8-0435-11e9-9e78-005056a664e0 --destination /backup/export --verbose --exclude *.pdf
+   INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
+   INFO: Build a rsync command
+   Start export host1
+   INFO: rsync command: rsync -ah --no-links -vP --exclude=*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
+   SUCCESS: Command rsync -ah --no-links -vP --exclude=*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
