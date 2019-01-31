@@ -31,7 +31,7 @@ from multiprocessing import Pool
 from utility import print_verbose
 
 # region Global Variables
-VERSION = '1.4.0'
+VERSION = '1.4.1'
 
 
 # endregion
@@ -151,6 +151,10 @@ def run_in_parallel(fn, commands, limit):
                 # Write catalog file
                 write_catalog(catalog_path, plog['id'], 'end', utility.time_for_log())
                 write_catalog(catalog_path, plog['id'], 'status', "{0}".format(p.get()))
+                if args.retention and args.skip_err:
+                    # Retention policy
+                    retention_policy(plog['hostname'], catalog_path, plog['destination'])
+
         else:
             print(utility.PrintColor.GREEN + 'SUCCESS: Command {0}'.format(command) + utility.PrintColor.END)
             utility.write_log(log_args['status'], plog['destination'], 'INFO',
