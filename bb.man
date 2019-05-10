@@ -1,6 +1,6 @@
 .\" Manpage for Butterfly Backup.
 .\" Contact matteo.guadrini@hotmail.it to correct errors or typos.
-.TH man 1 "11 Dec 2018" "1.4.0" "bb man page"
+.TH man 1 "10 May 2019" "1.5.0" "bb man page"
 .SH NAME
 bb \- Butterfly Backup - backup/restore/archive tool , agentless
 .SH SYNOPSIS
@@ -9,7 +9,7 @@ bb [ACTION] [OPTIONS]
 bb [-h] [--verbose] [--log] [--dry-run] [--version]
           {config,backup,restore,archive,list,export} ...
 .SH DESCRIPTION
-Butterfly Backup is a simple command line wrapper of rsync for complex task, written in python. 
+Butterfly Backup is a simple command line wrapper of rsync for complex task, written in python.
 .SH OPTIONS
 .TP
 action:
@@ -50,8 +50,9 @@ action:
   	--timeout TIMEOUT, -T TIMEOUT
                         	I/O timeout in seconds
     --skip-error, -e        Skip error.
+    --rsync-path, -R        Select a custom rsync path.
 
-.B list 
+.B list
 [ACTION]
 
 	--catalog CATALOG, -C CATALOG
@@ -64,31 +65,33 @@ action:
                         	List only match hostname or ip
   	--oneline, -o           One line output
 
-.B restore 
+.B restore
 [ACTION]
 
 	--catalog CATALOG, -C CATALOG
                         	Folder where is catalog file
   	--backup-id ID, -i ID
                         	Backup-id of backup
-  	--last, -L            Last available backup
-  	--user USER, -u USER  Login name used to log into the remote host (where
-                        you're restoring)
+  	--last, -L              Last available backup
+  	--user USER, -u USER    Login name used to log into the remote host (where
+                            you're restoring)
   	--computer HOSTNAME, -c HOSTNAME
-                        Hostname or ip address to perform restore
+                            Hostname or ip address to perform restore
   	--type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
                         	Type of operating system to perform restore
   	--timeout TIMEOUT, -T TIMEOUT
                         	I/O timeout in seconds
   	--mirror, -m            Mirror mode
   	--skip-error, -e        Skip error.
+    --rsync-path, -R        Select a custom rsync path.
 
-.B config 
+.B config
 [ACTION]
 
 Init configuration:
     --new, -n               Generate new configuration
     --remove, -r            Remove exist configuration
+    --init INIT, -i INIT    Reset catalog file. Specify path of backup folder.
 
 Deploy configuration:
     --deploy DEPLOY_HOST, -d DEPLOY_HOST
@@ -96,7 +99,7 @@ Deploy configuration:
     --user DEPLOY_USER, -u DEPLOY_USER
                             User of the remote machine
 
-.B archive 
+.B archive
 [ACTION]
 
     --catalog CATALOG, -C CATALOG
@@ -122,8 +125,9 @@ Deploy configuration:
     --timeout TIMEOUT, -T TIMEOUT
                           I/O timeout in seconds
     --skip-error, -e      Skip error
+    --rsync-path, -R        Select a custom rsync path.
 
-.B optional arguments 
+.B optional arguments
 [OPTIONS]
 
   -h, --help                show help message and exit
@@ -167,6 +171,9 @@ Deploy configuration to machine:
 
 Export a backup to another path:
     O_O>$ bb export --catalog /mnt/backup/ --backup-id f0f700e8-0435-11e9-9e78-005056a664e0 --destination /mnt/export
+
+Reset backup catalog:
+    O_O>$ bb config --init /mnt/backup/
 
 .SH SEE ALSO
 Full documentation is here:

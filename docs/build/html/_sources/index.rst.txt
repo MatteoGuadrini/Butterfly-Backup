@@ -23,6 +23,7 @@ Indices and tables
 * :ref:`restore`
 * :ref:`archive`
 * :ref:`export`
+* :ref:`donations`
 * :ref:`search`
 
 .. _requirements:
@@ -153,8 +154,9 @@ Let's see how to go about looking at the help:
 .. code-block:: bash
 
    arthur@heartofgold$ bb config --help
-   usage: bb config [-h] [--verbose] [--log] [--dry-run] [--new | --remove]
-                    [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
+   usage: bb config [-h] [--verbose] [--log] [--dry-run]
+                    [--new | --remove | --init INIT] [--deploy DEPLOY_HOST]
+                    [--user DEPLOY_USER]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -165,6 +167,7 @@ Let's see how to go about looking at the help:
    Init configuration:
      --new, -n             Generate new configuration
      --remove, -r          Remove exist configuration
+     --init INIT, -i INIT  Reset catalog file. Specify path of backup folder.
 
    Deploy configuration:
      --deploy DEPLOY_HOST, -d DEPLOY_HOST
@@ -177,9 +180,11 @@ Two macro-options are available:
 * **Init configuration**: Generate new or remove configuration.
      --new, -n             Generate new configuration.
      --remove, -r          Remove exist configuration.
+     --init INIT, -i INIT  Reset catalog file. Specify path of backup folder.
+
 * **Deploy configuration**: Deploy configuration to client: hostname or ip address.
-     --deploy, -d    Deploy configuration to client: hostname or ip address.
-     --user, -u      User of the remote machine.
+     --deploy, -d          Deploy configuration to client: hostname or ip address.
+     --user, -u            User of the remote machine.
 
 At this point, we create the configuration:
 
@@ -199,7 +204,7 @@ In this case, the RSA key already exists. Now try delete and create a new keys:
    arthur@heartofgold$ bb config --new
    SUCCESS: New configuration successfully created!
 
-Once you have created the configuration, keys should be installed (copied) on the hosts you 
+Once you have created the configuration, keys should be installed (copied) on the hosts you
 want to backup.
 
 .. code-block:: bash
@@ -278,6 +283,14 @@ Download https://cygwin.com/ cygwin and follow this instructions to install the 
 
 Verify if port 22 is in LISTEN
 
+If you want to initialize or reset the catalog file, run this:
+
+.. code-block:: bash
+
+   arthur@heartofgold$ bb config --init /mnt/backup -v
+
+.. important::
+    This command preserves existing backups on the file system. It will eliminate only those archived or deleted.
 
 .. _backup:
 
@@ -296,7 +309,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                     (--data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...])
                     [--user USER] --type {Unix,Windows,MacOS} [--compress]
                     [--retention RETENTION] [--parallel PARALLEL]
-                    [--timeout TIMEOUT]
+                    [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -328,6 +341,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
      --timeout TIMEOUT, -T TIMEOUT
                            I/O timeout in seconds
      --skip-error, -e      Skip error
+     --rsync-path RSYNC, -R RSYNC
+                           Custom rsync path
 
 
 
@@ -377,6 +392,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
    --parallel, -p          Maximum number of concurrent rsync processes. By default is 5 jobs.
    --timeout, -T           Specify number of seconds of I/O timeout.
    --skip-error, -e        Skip error. Quiet mode.
+   --rsync-path, -R        Select a custom rsync path.
 
 Flowchart of the differences between Differential and Incremental backup::
 
@@ -623,6 +639,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
    usage: bb restore [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
                      (--backup-id ID | --last) [--user USER] --computer HOSTNAME
                      [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
+                     [--skip-error] [--rsync-path RSYNC]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -646,6 +663,9 @@ The restore process is the exact opposite of the backup process. It takes the fi
                            I/O timeout in seconds
      --mirror, -m          Mirror mode
      --skip-error, -e      Skip error
+     --rsync-path RSYNC, -R RSYNC
+                           Custom rsync path
+
 
 * **Restore options**
    --catalog, -C           Select the backups folder (root).
@@ -662,6 +682,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
    --timeout, -T           Specify number of seconds of I/O timeout.
    --mirror, -m            Mirror mode. If a file or folder not exist in destination, will delete it. Overwrite files.
    --skip-error, -e        Skip error. Quiet mode.
+   --rsync-path, -R        Select a custom rsync path.
 
 
 This is a few examples:
@@ -793,9 +814,9 @@ The export function is used to copy a particular backup to another path.
    arthur@heartofgold$ bb export -h
    usage: bb export [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
                     --backup-id ID --destination DESTINATION [--mirror] [--cut]
-                    [--include INCLUDE [INCLUDE ...]]
-                    [--exclude EXCLUDE [EXCLUDE ...]] [--timeout TIMEOUT]
-                    [--skip-error]
+                    [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE
+                    [EXCLUDE ...]] [--timeout TIMEOUT] [--skip-error]
+                    [--rsync-path RSYNC]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -819,17 +840,9 @@ The export function is used to copy a particular backup to another path.
      --timeout TIMEOUT, -T TIMEOUT
                            I/O timeout in seconds
      --skip-error, -e      Skip error
+     --rsync-path RSYNC, -R RSYNC
+                           Custom rsync path
 
-* **Export options**
-   --catalog, -C           Select the backups folder (root).
-   --backup-id, -i         Select backup id in the catalog.
-   --destination, -d       Destination path than export a backup.
-   --mirror, -m            Mirror mode.
-   --cut, -c               Cut mode. Delete source. Like a move function.
-   --include, -I           Include pattern. Accept wildcard character.
-   --exclude, -E           Exclude pattern. Accept wildcard character.
-   --timeout, -T           Specify number of seconds of I/O timeout.
-   --skip-error, -e        Skip error. Quiet mode.
 
 Export a backup in other directory:
 
@@ -852,3 +865,32 @@ Export a backup with exclude pdf files:
    Start export host1
    INFO: rsync command: rsync -ah --no-links -vP --exclude=*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
    SUCCESS: Command rsync -ah --no-links -vP --exclude=*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
+
+
+.. _donations:
+
+#########
+Donations
+#########
+
+Donating is important.
+If you do not want to do it to me, do it to some companies that do not speculate.
+My main activity and the people of non-profit associations is to work for others, be they male or female, religious or non-religious, white or black or yellow or red, rich and poor.
+The only real purpose is to serve the humanity of one's experience.
+Below you will find some links to do it. **Thanks a lot**.
+
+For me
+
+.. figure:: https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif
+    :target: https://www.paypal.me/guos
+
+For `Telethon <http://www.telethon.it/>`_
+
+The Telethon Foundation is a non-profit organization recognized by the Ministry of University and Scientific and Technological Research.
+They were born in 1990 to respond to the appeal of patients suffering from rare diseases.
+Come today, we are organized to dare to listen to them and answers, every day of the year.
+
+.. figure:: http://www.telethon.it/sites/all/themes/telethon/images/svg/logo.svg
+    :height: 104 px
+    :width: 200 px
+    :target: https://dona.telethon.it/it/dona-ora

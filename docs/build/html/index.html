@@ -98,6 +98,7 @@
 <li><a class="reference internal" href="#restore">Restore</a></li>
 <li><a class="reference internal" href="#archive">Archive</a></li>
 <li><a class="reference internal" href="#export">Export</a></li>
+<li><a class="reference internal" href="#donations">Donations</a></li>
 </ul>
 </li>
 </ul>
@@ -179,6 +180,7 @@
 <li><a class="reference internal" href="#restore"><span class="std std-ref">Restore</span></a></li>
 <li><a class="reference internal" href="#archive"><span class="std std-ref">Archive</span></a></li>
 <li><a class="reference internal" href="#export"><span class="std std-ref">Export</span></a></li>
+<li><a class="reference internal" href="#donations"><span class="std std-ref">Donations</span></a></li>
 <li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
 </ul>
 </div>
@@ -304,8 +306,9 @@ action:
 If you don’t want to discuss the merits of exchange keys and start, then go ahead. First, you must create a configuration (rsa keys).
 Let’s see how to go about looking at the help:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb config --help
-usage: bb config <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span> <span class="o">[</span>--new <span class="p">|</span> --remove<span class="o">]</span>
-                 <span class="o">[</span>--deploy DEPLOY_HOST<span class="o">]</span> <span class="o">[</span>--user DEPLOY_USER<span class="o">]</span>
+usage: bb config <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span>
+                 <span class="o">[</span>--new <span class="p">|</span> --remove <span class="p">|</span> --init INIT<span class="o">]</span> <span class="o">[</span>--deploy DEPLOY_HOST<span class="o">]</span>
+                 <span class="o">[</span>--user DEPLOY_USER<span class="o">]</span>
 
 optional arguments:
   -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
@@ -316,6 +319,7 @@ optional arguments:
 Init configuration:
   --new, -n             Generate new configuration
   --remove, -r          Remove exist configuration
+  --init INIT, -i INIT  Reset catalog file. Specify path of backup folder.
 
 Deploy configuration:
   --deploy DEPLOY_HOST, -d DEPLOY_HOST
@@ -339,6 +343,11 @@ Deploy configuration:
 <tr><td class="option-group">
 <kbd><span class="option">--remove</span>, <span class="option">-r</span></kbd></td>
 <td><p class="first last">Remove exist configuration.</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--init <var>INIT</var></span>, <span class="option">-i <var>INIT</var></span></kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first last">Reset catalog file. Specify path of backup folder.</p>
 </td></tr>
 </tbody>
 </table>
@@ -449,6 +458,14 @@ cygrunsrv -S sshd
 </pre></div>
 </div>
 <p>Verify if port 22 is in LISTEN</p>
+<p>If you want to initialize or reset the catalog file, run this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb config --init /mnt/backup -v
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">This command preserves existing backups on the file system. It will eliminate only those archived or deleted.</p>
+</div>
 </div>
 </div>
 <div class="section" id="backup">
@@ -461,7 +478,7 @@ usage: bb backup <span class="o">[</span>-h<span class="o">]</span> <span class=
                  <span class="o">(</span>--data <span class="o">{</span>User,Config,Application,System,Log<span class="o">}</span> <span class="o">[{</span>User,Config,Application,System,Log<span class="o">}</span> ...<span class="o">]</span> <span class="p">|</span> --custom-data CUSTOMDATA <span class="o">[</span>CUSTOMDATA ...<span class="o">])</span>
                  <span class="o">[</span>--user USER<span class="o">]</span> --type <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span> <span class="o">[</span>--compress<span class="o">]</span>
                  <span class="o">[</span>--retention RETENTION<span class="o">]</span> <span class="o">[</span>--parallel PARALLEL<span class="o">]</span>
-                 <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span>
+                 <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span> <span class="o">[</span>--skip-error<span class="o">]</span> <span class="o">[</span>--rsync-path RSYNC<span class="o">]</span>
 
 optional arguments:
   -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
@@ -493,6 +510,8 @@ Backup options:
   --timeout TIMEOUT, -T TIMEOUT
                         I/O timeout in seconds
   --skip-error, -e      Skip error
+  --rsync-path RSYNC, -R RSYNC
+                        Custom rsync path
 </pre></div>
 </div>
 <ul>
@@ -598,6 +617,11 @@ The values change depending on the type of operating system:</p>
 <kbd><span class="option">--skip-error</span>, <span class="option">-e</span></kbd></td>
 </tr>
 <tr><td>&#160;</td><td><p class="first last">Skip error. Quiet mode.</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--rsync-path</span>, <span class="option">-R</span></kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first last">Select a custom rsync path.</p>
 </td></tr>
 </tbody>
 </table>
@@ -841,6 +865,7 @@ arthur@heartofgold$ cat /mnt/backup/backup.list
 usage: bb restore [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
                   (--backup-id ID | --last) [--user USER] --computer HOSTNAME
                   [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
+                  [--skip-error] [--rsync-path RSYNC]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -864,6 +889,8 @@ Restore options:
                         I/O timeout in seconds
   --mirror, -m          Mirror mode
   --skip-error, -e      Skip error
+  --rsync-path RSYNC, -R RSYNC
+                        Custom rsync path
 </pre></div>
 </div>
 <ul>
@@ -914,6 +941,11 @@ Restore options:
 <kbd><span class="option">--skip-error</span>, <span class="option">-e</span></kbd></td>
 </tr>
 <tr><td>&#160;</td><td><p class="first last">Skip error. Quiet mode.</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--rsync-path</span>, <span class="option">-R</span></kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first last">Select a custom rsync path.</p>
 </td></tr>
 </tbody>
 </table>
@@ -1048,9 +1080,9 @@ Archived: True
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb <span class="nb">export</span> -h
 usage: bb <span class="nb">export</span> <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span> --catalog CATALOG
                  --backup-id ID --destination DESTINATION <span class="o">[</span>--mirror<span class="o">]</span> <span class="o">[</span>--cut<span class="o">]</span>
-                 <span class="o">[</span>--include INCLUDE <span class="o">[</span>INCLUDE ...<span class="o">]]</span>
-                 <span class="o">[</span>--exclude EXCLUDE <span class="o">[</span>EXCLUDE ...<span class="o">]]</span> <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span>
-                 <span class="o">[</span>--skip-error<span class="o">]</span>
+                 <span class="o">[</span>--include INCLUDE <span class="o">[</span>INCLUDE ...<span class="o">]</span> <span class="p">|</span> --exclude EXCLUDE
+                 <span class="o">[</span>EXCLUDE ...<span class="o">]]</span> <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span> <span class="o">[</span>--skip-error<span class="o">]</span>
+                 <span class="o">[</span>--rsync-path RSYNC<span class="o">]</span>
 
 optional arguments:
   -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
@@ -1074,60 +1106,10 @@ Export options:
   --timeout TIMEOUT, -T TIMEOUT
                         I/O timeout in seconds
   --skip-error, -e      Skip error
+  --rsync-path RSYNC, -R RSYNC
+                        Custom rsync path
 </pre></div>
 </div>
-<ul>
-<li><dl class="first docutils">
-<dt><strong>Export options</strong></dt>
-<dd><table class="first last docutils option-list" frame="void" rules="none">
-<col class="option" />
-<col class="description" />
-<tbody valign="top">
-<tr><td class="option-group">
-<kbd><span class="option">--catalog</span>, <span class="option">-C</span></kbd></td>
-<td><p class="first last">Select the backups folder (root).</p>
-</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--backup-id</span>, <span class="option">-i</span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td><p class="first last">Select backup id in the catalog.</p>
-</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--destination</span>, <span class="option">-d</span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td><p class="first last">Destination path than export a backup.</p>
-</td></tr>
-<tr><td class="option-group">
-<kbd><span class="option">--mirror</span>, <span class="option">-m</span></kbd></td>
-<td><p class="first last">Mirror mode.</p>
-</td></tr>
-<tr><td class="option-group">
-<kbd><span class="option">--cut</span>, <span class="option">-c</span></kbd></td>
-<td><p class="first last">Cut mode. Delete source. Like a move function.</p>
-</td></tr>
-<tr><td class="option-group">
-<kbd><span class="option">--include</span>, <span class="option">-I</span></kbd></td>
-<td><p class="first last">Include pattern. Accept wildcard character.</p>
-</td></tr>
-<tr><td class="option-group">
-<kbd><span class="option">--exclude</span>, <span class="option">-E</span></kbd></td>
-<td><p class="first last">Exclude pattern. Accept wildcard character.</p>
-</td></tr>
-<tr><td class="option-group">
-<kbd><span class="option">--timeout</span>, <span class="option">-T</span></kbd></td>
-<td><p class="first last">Specify number of seconds of I/O timeout.</p>
-</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--skip-error</span>, <span class="option">-e</span></kbd></td>
-</tr>
-<tr><td>&#160;</td><td><p class="first last">Skip error. Quiet mode.</p>
-</td></tr>
-</tbody>
-</table>
-</dd>
-</dl>
-</li>
-</ul>
 <p>Export a backup in other directory:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb <span class="nb">export</span> --catalog /mnt/backup/ --backup-id f0f700e8-0435-11e9-9e78-005056a664e0 --destination /mnt/backup/export --verbose
 INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
@@ -1145,6 +1127,25 @@ Start <span class="nb">export</span> host1
 INFO: rsync command: rsync -ah --no-links -vP --exclude<span class="o">=</span>*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
 SUCCESS: Command rsync -ah --no-links -vP --exclude<span class="o">=</span>*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
 </pre></div>
+</div>
+</div>
+<div class="section" id="donations">
+<span id="id9"></span><h2>Donations<a class="headerlink" href="#donations" title="Permalink to this headline">¶</a></h2>
+<p>Donating is important.
+If you do not want to do it to me, do it to some companies that do not speculate.
+My main activity and the people of non-profit associations is to work for others, be they male or female, religious or non-religious, white or black or yellow or red, rich and poor.
+The only real purpose is to serve the humanity of one’s experience.
+Below you will find some links to do it. <strong>Thanks a lot</strong>.</p>
+<p>For me</p>
+<div class="figure">
+<a class="reference external image-reference" href="https://www.paypal.me/guos"><img alt="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" /></a>
+</div>
+<p>For <a class="reference external" href="http://www.telethon.it/">Telethon</a></p>
+<p>The Telethon Foundation is a non-profit organization recognized by the Ministry of University and Scientific and Technological Research.
+They were born in 1990 to respond to the appeal of patients suffering from rare diseases.
+Come today, we are organized to dare to listen to them and answers, every day of the year.</p>
+<div class="figure">
+<a class="reference external image-reference" href="https://dona.telethon.it/it/dona-ora"><img alt="http://www.telethon.it/sites/all/themes/telethon/images/svg/logo.svg" height="104px" src="http://www.telethon.it/sites/all/themes/telethon/images/svg/logo.svg" width="200px" /></a>
 </div>
 </div>
 </div>

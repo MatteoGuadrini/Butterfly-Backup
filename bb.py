@@ -31,7 +31,7 @@ from multiprocessing import Pool
 from utility import print_verbose
 
 # region Global Variables
-VERSION = '1.4.1'
+VERSION = '1.5.0'
 
 
 # endregion
@@ -252,7 +252,16 @@ def compose_command(flags, host):
     """
     print_verbose(args.verbose, 'Build a rsync command')
     # Set rsync binary
-    command = ['rsync']
+    if flags.rsync:
+        if os.path.exists(flags.rsync):
+            command = [flags.rsync]
+        else:
+            print(utility.PrintColor.YELLOW +
+                  'WARNING: rsync binary {0} not exist! Set default.'.format(args.rsync)
+                  + utility.PrintColor.END)
+            command = ['rsync']
+    else:
+        command = ['rsync']
     catalog = read_catalog(catalog_path)
     if flags.action == 'backup':
         # Set mode option
@@ -801,6 +810,20 @@ def check_configuration(ip):
         return False
 
 
+def init_catalog(catalog):
+    """
+    :param catalog: catalog file
+    """
+    config = read_catalog(catalog)
+    for cid in config.sections():
+        if not os.path.exists(config[cid]['path']):
+            print_verbose(args.verbose, "Backup-id {0} has been removed to catalog!".format(cid))
+            config.remove_section(cid)
+    # Write file
+    with open(catalog, 'w') as configfile:
+        config.write(configfile)
+
+
 def parse_arguments():
     """
     Function get arguments than specified in command line
@@ -828,6 +851,8 @@ def parse_arguments():
                                        action='store_true')
     group_config_mutually.add_argument('--remove', '-r', help='Remove exist configuration', dest='remove_conf',
                                        action='store_true')
+    group_config_mutually.add_argument('--init', '-i', help='Reset catalog file. Specify path of backup folder.',
+                                       dest='init', action='store')
     group_deploy = config.add_argument_group(title='Deploy configuration')
     group_deploy_mutually = group_deploy.add_mutually_exclusive_group()
     group_deploy_mutually.add_argument('--deploy', '-d', help='Deploy configuration to client: hostname or ip address',
@@ -864,6 +889,7 @@ def parse_arguments():
     group_backup.add_argument('--timeout', '-T', help='I/O timeout in seconds', dest='timeout', action='store',
                               type=int)
     group_backup.add_argument('--skip-error', '-e', help='Skip error', dest='skip_err', action='store_true')
+    group_backup.add_argument('--rsync-path', '-R', help='Custom rsync path', dest='rsync', action='store')
     # restore session
     restore = action.add_parser('restore', help='Restore options', parents=[parent_parser])
     group_restore = restore.add_argument_group(title='Restore options')
@@ -883,6 +909,7 @@ def parse_arguments():
                                type=int)
     group_restore.add_argument('--mirror', '-m', help='Mirror mode', dest='mirror', action='store_true')
     group_restore.add_argument('--skip-error', '-e', help='Skip error', dest='skip_err', action='store_true')
+    group_restore.add_argument('--rsync-path', '-R', help='Custom rsync path', dest='rsync', action='store')
     # archive session
     archive = action.add_parser('archive', help='Archive options', parents=[parent_parser])
     group_archive = archive.add_argument_group(title='Archive options')
@@ -924,6 +951,7 @@ def parse_arguments():
     group_export.add_argument('--timeout', '-T', help='I/O timeout in seconds', dest='timeout', action='store',
                               type=int)
     group_export.add_argument('--skip-error', '-e', help='Skip error', dest='skip_err', action='store_true')
+    group_export.add_argument('--rsync-path', '-R', help='Custom rsync path', dest='rsync', action='store')
     # Return all args
     parser_object.add_argument('--version', '-V', help='Print version', dest='version', action='store_true')
     return parser_object
@@ -949,6 +977,9 @@ if __name__ == '__main__':
             remove_configuration()
         elif args.deploy_host:
             deploy_configuration(args.deploy_host, args.deploy_user)
+        elif args.init:
+            catalog_path = os.path.join(args.init, '.catalog.cfg')
+            init_catalog(catalog_path)
         else:
             parser.print_usage()
             print('For ' + utility.PrintColor.BOLD + 'config' + utility.PrintColor.END + ' usage, "--help" or "-h"')
@@ -1305,8 +1336,16 @@ if __name__ == '__main__':
             logs = list()
             logs.append(log_args)
             # Set rsync binary and flags
-            expcmd = list()
-            expcmd.append('rsync')
+            if args.rsync:
+                if os.path.exists(args.rsync):
+                    expcmd = [args.rsync]
+                else:
+                    print(utility.PrintColor.YELLOW +
+                          'WARNING: rsync binary {0} not exist! Set default.'.format(args.rsync)
+                          + utility.PrintColor.END)
+                    expcmd = ['rsync']
+            else:
+                expcmd = ['rsync']
             expcmd.append('-ah')
             expcmd.append('--no-links')
             # Check flags
