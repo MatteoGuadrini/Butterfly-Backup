@@ -1040,8 +1040,13 @@ if __name__ == '__main__':
                 source_list = compose_source(args.action, args.type, srcs)
             else:
                 source_list = []
-            # Compose source <user>@<hostname> format
-            cmd.append('{0}@{1}'.format(args.user, hostname).__add__(" ".join(source_list)))
+            # Check if hostname is localhost or 127.0.0.1
+            if (hostname == "localhost") or (hostname == "LOCALHOST") or (hostname == "127.0.0.1"):
+                # Compose source with only path of folder list
+                cmd.append(" ".join(source_list)[1:])
+            else:
+                # Compose source <user>@<hostname> format
+                cmd.append('{0}@{1}'.format(args.user, hostname).__add__(" ".join(source_list)))
             # Compose destination
             bck_dst = compose_destination(hostname, args.destination)
             utility.write_log(log_args['status'], log_args['destination'], 'INFO',
@@ -1070,6 +1075,7 @@ if __name__ == '__main__':
             args.type = get_restore_os()
         # Read catalog file
         restore_catalog = read_catalog(os.path.join(args.catalog, '.catalog.cfg'))
+        catalog_path = os.path.join(args.catalog, '.catalog.cfg')
         # Check if select backup-id or last backup
         if args.last:
             rhost = hostname
@@ -1134,8 +1140,12 @@ if __name__ == '__main__':
                 # Compose source
                 cmd.append(os.path.join(rpath, src))
                 dst = src_dst[1]
-                # Compose destination <user>@<hostname> format
-                cmd.append('{0}@{1}:'.format(args.user, rhost).__add__(dst))
+                if (hostname == "localhost") or (hostname == "LOCALHOST") or (hostname == "127.0.0.1"):
+                    # Compose destination only with path of folder
+                    cmd.append('{}'.format(dst))
+                else:
+                    # Compose destination <user>@<hostname> format
+                    cmd.append('{0}@{1}:'.format(args.user, rhost).__add__(dst))
                 # Add command
                 if utility.confirm("Want to do restore path {0}?".format(os.path.join(rpath, src))):
                     cmds.append(' '.join(cmd))
