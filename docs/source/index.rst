@@ -308,7 +308,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                     [--mode {Full,Incremental,Differential,Mirror}]
                     (--data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...])
                     [--user USER] --type {Unix,Windows,MacOS} [--compress]
-                    [--retention RETENTION] [--parallel PARALLEL]
+                    [--retention RETENTION [RETENTION ...]] [--parallel PARALLEL]
                     [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC]
 
    optional arguments:
@@ -334,8 +334,9 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
      --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
                            Type of operating system to backup
      --compress, -z        Compress data
-     --retention RETENTION, -r RETENTION
-                           Number of days of backup retention
+     --retention RETENTION [RETENTION ...], -r RETENTION [RETENTION ...]
+                           First argument is days of backup retention. Second
+                           argument is minimum number of backup retention
      --parallel PARALLEL, -p PARALLEL
                            Number of parallel jobs
      --timeout TIMEOUT, -T TIMEOUT
@@ -389,6 +390,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
        * **MacOS** -> MacOSX 10.8 or higher.
    --compress, -z          Compresses the data transmitted.
    --retention, -r         Number of days for which you want to keep your backups.
+
+                           The second number is a minimum number of backup which you want keep.
    --parallel, -p          Maximum number of concurrent rsync processes. By default is 5 jobs.
    --timeout, -T           Specify number of seconds of I/O timeout.
    --skip-error, -e        Skip error. Quiet mode.
@@ -508,6 +511,33 @@ This is the same example but specifying a retention at 3 (days). This means that
 .. code-block:: bash
 
    arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel 2 --retention 3 --log --verbose
+   INFO: Build a rsync command
+   INFO: Last full is 2018-08-08 10:30:32
+   INFO: Command flags are: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 -vP
+   INFO: Create a folder structure for MacOS os
+   INFO: Include this criteria: :/Users :/private/etc
+   INFO: Destination is /mnt/backup/host1/2018_08_08__10_30
+   Start backup on host1
+   ERROR: The port 22 on host2 is closed!
+   ERROR: The port 22 on host3 is closed!
+   INFO: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
+   receiving file list ...
+   39323 files to consider
+   Users/
+   ...
+   ...
+   SUCCESS: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
+   INFO: Check cleanup this backup aba860b0-9944-11e8-a93f-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_28
+   SUCCESS: Cleanup /mnt/backup/host1/2018_08_08__10_28 successfully.
+   INFO: Check cleanup this backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30
+   INFO: No cleanup backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30
+
+
+Here we find the same example above but specifying a retention at 2 (days) and 5 backup copies. This means that at least 5 backup copies will be kept, even if they are older than two days.
+
+.. code-block:: bash
+
+   arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel 2 --retention 3 5 --log --verbose
    INFO: Build a rsync command
    INFO: Last full is 2018-08-08 10:30:32
    INFO: Command flags are: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 -vP

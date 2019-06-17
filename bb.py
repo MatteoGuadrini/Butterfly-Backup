@@ -542,7 +542,7 @@ def get_last_backup(catalog):
 
 def count_full(config, name):
     """
-    Count all full in a catalog
+    Count all full (and Incremental) backup in a catalog
     :param config: configparser object
     :param name: hostname of machine
     :return: count (int)
@@ -550,9 +550,26 @@ def count_full(config, name):
     count = 0
     if config:
         for bid in config.sections():
-            if config.get(bid, 'type') == 'Full' and config.get(bid, 'name') == name:
+            if ((config.get(bid, 'type') == 'Full' or
+                config.get(bid, 'type') == 'Incremental') and
+                    config.get(bid, 'name') == name):
                 count += 1
     return count
+
+
+def list_backup(config, name):
+    """
+    Count all full in a catalog
+    :param config: configparser object
+    :param name: hostname of machine
+    :return: r_list (list)
+    """
+    r_list = list()
+    if config:
+        for bid in config.sections():
+            if config.get(bid, 'name') == name:
+                r_list.append(bid)
+    return r_list
 
 
 def read_catalog(catalog):
@@ -608,30 +625,44 @@ def retention_policy(host, catalog, logpath):
     """
     config = read_catalog(catalog)
     full_count = count_full(config, host)
+    if len(args.retention) >= 3:
+        print(utility.PrintColor.RED + 'ERROR: The "--retention or -r" parameter must have two integers. '
+                                       'Three or more arguments specified: {}'.format(args.retention) +
+              utility.PrintColor.END)
+        return
+    if args.retention[1]:
+        backup_list = list_backup(config, host)[-args.retention[1]:]
+    else:
+        backup_list = list()
     cleanup = -1
     for bid in config.sections():
-        if (config.get(bid, 'cleaned', fallback='unset') == 'unset') and (config.get(bid, 'name') == host):
-            type_backup = config.get(bid, 'type')
-            path = config.get(bid, 'path')
-            date = config.get(bid, 'timestamp')
-            utility.print_verbose(args.verbose, "Check cleanup this backup {0}. Folder {1}".format(bid, path))
-            if (type_backup == 'Full') and (full_count <= 1):
-                continue
-            if not dry_run("Cleanup {0} backup folder".format(path)):
-                cleanup = utility.cleanup(path, date, args.retention)
-            if cleanup == 0:
-                write_catalog(catalog, bid, 'cleaned', 'True')
-                print(utility.PrintColor.GREEN + 'SUCCESS: Cleanup {0} successfully.'.format(path) +
-                      utility.PrintColor.END)
-                utility.write_log(log_args['status'], logpath, 'INFO',
-                                  'Cleanup {0} successfully.'.format(path))
-            elif cleanup == 1:
-                print(utility.PrintColor.RED + 'ERROR: Cleanup {0} failed.'.format(path) +
-                      utility.PrintColor.END)
-                utility.write_log(log_args['status'], logpath, 'ERROR',
-                                  'Cleanup {0} failed.'.format(path))
-            else:
-                utility.print_verbose(args.verbose, "No cleanup backup {0}. Folder {1}".format(bid, path))
+        if bid not in backup_list:
+            if (config.get(bid, 'cleaned', fallback='unset') == 'unset') and (config.get(bid, 'name') == host):
+                type_backup = config.get(bid, 'type')
+                path = config.get(bid, 'path')
+                date = config.get(bid, 'timestamp')
+                if (type_backup == 'Full' or type_backup == 'Incremental') and (full_count <= 1):
+                    continue
+                utility.print_verbose(args.verbose, "Check cleanup this backup {0}. Folder {1}".format(bid, path))
+                if not dry_run("Cleanup {0} backup folder".format(path)):
+                    cleanup = utility.cleanup(path, date, args.retention[0])
+                if not os.path.exists(path):
+                    utility.print_verbose(args.verbose, "This folder {0} does not exist. "
+                                                        "The backup has already been cleaned.".format(path))
+                    cleanup = 0
+                if cleanup == 0:
+                    write_catalog(catalog, bid, 'cleaned', 'True')
+                    print(utility.PrintColor.GREEN + 'SUCCESS: Cleanup {0} successfully.'.format(path) +
+                          utility.PrintColor.END)
+                    utility.write_log(log_args['status'], logpath, 'INFO',
+                                      'Cleanup {0} successfully.'.format(path))
+                elif cleanup == 1:
+                    print(utility.PrintColor.RED + 'ERROR: Cleanup {0} failed.'.format(path) +
+                          utility.PrintColor.END)
+                    utility.write_log(log_args['status'], logpath, 'ERROR',
+                                      'Cleanup {0} failed.'.format(path))
+                else:
+                    utility.print_verbose(args.verbose, "No cleanup backup {0}. Folder {1}".format(bid, path))
 
 
 def archive_policy(catalog, destination):
@@ -882,8 +913,9 @@ def parse_arguments():
                               choices=['Unix', 'Windows', 'MacOS'], required=True)
     group_backup.add_argument('--compress', '-z', help='Compress data', dest='compress',
                               action='store_true')
-    group_backup.add_argument('--retention', '-r', help='Number of days of backup retention', dest='retention',
-                              action='store', type=int)
+    group_backup.add_argument('--retention', '-r', help='First argument is days of backup retention. '
+                                                        'Second argument is minimum number of backup retention',
+                              dest='retention', action='store', nargs='+', type=int)
     group_backup.add_argument('--parallel', '-p', help='Number of parallel jobs', dest='parallel', action='store',
                               type=int, default=5)
     group_backup.add_argument('--timeout', '-T', help='I/O timeout in seconds', dest='timeout', action='store',
@@ -1171,7 +1203,7 @@ if __name__ == '__main__':
             'status': args.log,
             'destination': os.path.join(args.catalog, 'backup.list')
         }
-        # Read catalog file
+        # Read catalog filehey are o
         list_catalog = read_catalog(os.path.join(args.catalog, '.catalog.cfg'))
         # Check specified argument backup-id
         if args.id:

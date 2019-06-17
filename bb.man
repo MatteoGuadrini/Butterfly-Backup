@@ -43,8 +43,9 @@ action:
   	--type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
                         	Type of operating system to backup
   	--compress, -z          Compress data
-  	--retention RETENTION, -r RETENTION
-                        	Number of days of backup retention
+  	--retention RETENTION [RETENTION ...], -r RETENTION [RETENTION ...]
+                           First argument is days of backup retention. Second
+                           argument is minimum number of backup retention
   	--parallel PARALLEL, -p PARALLEL
                         	Number of parallel jobs
   	--timeout TIMEOUT, -T TIMEOUT

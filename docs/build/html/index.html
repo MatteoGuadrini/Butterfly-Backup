@@ -477,7 +477,7 @@ usage: bb backup <span class="o">[</span>-h<span class="o">]</span> <span class=
                  <span class="o">[</span>--mode <span class="o">{</span>Full,Incremental,Differential,Mirror<span class="o">}]</span>
                  <span class="o">(</span>--data <span class="o">{</span>User,Config,Application,System,Log<span class="o">}</span> <span class="o">[{</span>User,Config,Application,System,Log<span class="o">}</span> ...<span class="o">]</span> <span class="p">|</span> --custom-data CUSTOMDATA <span class="o">[</span>CUSTOMDATA ...<span class="o">])</span>
                  <span class="o">[</span>--user USER<span class="o">]</span> --type <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span> <span class="o">[</span>--compress<span class="o">]</span>
-                 <span class="o">[</span>--retention RETENTION<span class="o">]</span> <span class="o">[</span>--parallel PARALLEL<span class="o">]</span>
+                 <span class="o">[</span>--retention RETENTION <span class="o">[</span>RETENTION ...<span class="o">]]</span> <span class="o">[</span>--parallel PARALLEL<span class="o">]</span>
                  <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span> <span class="o">[</span>--skip-error<span class="o">]</span> <span class="o">[</span>--rsync-path RSYNC<span class="o">]</span>
 
 optional arguments:
@@ -503,8 +503,9 @@ Backup options:
   --type <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span>, -t <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span>
                         Type of operating system to backup
   --compress, -z        Compress data
-  --retention RETENTION, -r RETENTION
-                        Number of days of backup retention
+  --retention RETENTION <span class="o">[</span>RETENTION ...<span class="o">]</span>, -r RETENTION <span class="o">[</span>RETENTION ...<span class="o">]</span>
+                        First argument is days of backup retention. Second
+                        argument is minimum number of backup retention
   --parallel PARALLEL, -p PARALLEL
                         Number of parallel <span class="nb">jobs</span>
   --timeout TIMEOUT, -T TIMEOUT
@@ -603,7 +604,8 @@ The values change depending on the type of operating system:</p>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--retention</span>, <span class="option">-r</span></kbd></td>
 </tr>
-<tr><td>&#160;</td><td><p class="first last">Number of days for which you want to keep your backups.</p>
+<tr><td>&#160;</td><td><p class="first">Number of days for which you want to keep your backups.</p>
+<p class="last">The second number is a minimum number of backup which you want keep.</p>
 </td></tr>
 <tr><td class="option-group">
 <kbd><span class="option">--parallel</span>, <span class="option">-p</span></kbd></td>
@@ -723,6 +725,30 @@ SUCCESS: Command rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/b
 </div>
 <p>This is the same example but specifying a retention at 3 (days). This means that in doing so we want to keep only 3 days backups.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel <span class="m">2</span> --retention <span class="m">3</span> --log --verbose
+INFO: Build a rsync <span class="nb">command</span>
+INFO: Last full is <span class="m">2018</span>-08-08 <span class="m">10</span>:30:32
+INFO: Command flags are: rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_30 -vP
+INFO: Create a folder structure <span class="k">for</span> MacOS os
+INFO: Include this criteria: :/Users :/private/etc
+INFO: Destination is /mnt/backup/host1/2018_08_08__10_30
+Start backup on host1
+ERROR: The port <span class="m">22</span> on host2 is closed!
+ERROR: The port <span class="m">22</span> on host3 is closed!
+INFO: rsync command: rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
+receiving file list ...
+<span class="m">39323</span> files to consider
+Users/
+...
+...
+SUCCESS: Command rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
+INFO: Check cleanup this backup aba860b0-9944-11e8-a93f-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_28
+SUCCESS: Cleanup /mnt/backup/host1/2018_08_08__10_28 successfully.
+INFO: Check cleanup this backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30
+INFO: No cleanup backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30
+</pre></div>
+</div>
+<p>Here we find the same example above but specifying a retention at 2 (days) and 5 backup copies. This means that at least 5 backup copies will be kept, even if they are older than two days.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel <span class="m">2</span> --retention <span class="m">3</span> <span class="m">5</span> --log --verbose
 INFO: Build a rsync <span class="nb">command</span>
 INFO: Last full is <span class="m">2018</span>-08-08 <span class="m">10</span>:30:32
 INFO: Command flags are: rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_30 -vP
