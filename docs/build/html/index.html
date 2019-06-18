@@ -479,6 +479,7 @@ usage: bb backup <span class="o">[</span>-h<span class="o">]</span> <span class=
                  <span class="o">[</span>--user USER<span class="o">]</span> --type <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span> <span class="o">[</span>--compress<span class="o">]</span>
                  <span class="o">[</span>--retention RETENTION <span class="o">[</span>RETENTION ...<span class="o">]]</span> <span class="o">[</span>--parallel PARALLEL<span class="o">]</span>
                  <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span> <span class="o">[</span>--skip-error<span class="o">]</span> <span class="o">[</span>--rsync-path RSYNC<span class="o">]</span>
+                 <span class="o">[</span>--bwlimit BWLIMIT<span class="o">]</span>
 
 optional arguments:
   -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
@@ -513,6 +514,8 @@ Backup options:
   --skip-error, -e      Skip error
   --rsync-path RSYNC, -R RSYNC
                         Custom rsync path
+  --bwlimit BWLIMIT, -b BWLIMIT
+                        Bandwidth limit in KBPS.
 </pre></div>
 </div>
 <ul>
@@ -624,6 +627,10 @@ The values change depending on the type of operating system:</p>
 <kbd><span class="option">--rsync-path</span>, <span class="option">-R</span></kbd></td>
 </tr>
 <tr><td>&#160;</td><td><p class="first last">Select a custom rsync path.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--bwlimit</span>, <span class="option">-b</span></kbd></td>
+<td><p class="first last">Bandwidth limit in KBPS.</p>
 </td></tr>
 </tbody>
 </table>
@@ -891,7 +898,7 @@ arthur@heartofgold$ cat /mnt/backup/backup.list
 usage: bb restore [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
                   (--backup-id ID | --last) [--user USER] --computer HOSTNAME
                   [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
-                  [--skip-error] [--rsync-path RSYNC]
+                  [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -917,6 +924,8 @@ Restore options:
   --skip-error, -e      Skip error
   --rsync-path RSYNC, -R RSYNC
                         Custom rsync path
+  --bwlimit BWLIMIT, -b BWLIMIT
+                        Bandwidth limit in KBPS.
 </pre></div>
 </div>
 <ul>
@@ -972,6 +981,10 @@ Restore options:
 <kbd><span class="option">--rsync-path</span>, <span class="option">-R</span></kbd></td>
 </tr>
 <tr><td>&#160;</td><td><p class="first last">Select a custom rsync path.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--bwlimit</span>, <span class="option">-b</span></kbd></td>
+<td><p class="first last">Bandwidth limit in KBPS.</p>
 </td></tr>
 </tbody>
 </table>
@@ -1108,7 +1121,7 @@ usage: bb <span class="nb">export</span> <span class="o">[</span>-h<span class="
                  --backup-id ID --destination DESTINATION <span class="o">[</span>--mirror<span class="o">]</span> <span class="o">[</span>--cut<span class="o">]</span>
                  <span class="o">[</span>--include INCLUDE <span class="o">[</span>INCLUDE ...<span class="o">]</span> <span class="p">|</span> --exclude EXCLUDE
                  <span class="o">[</span>EXCLUDE ...<span class="o">]]</span> <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span> <span class="o">[</span>--skip-error<span class="o">]</span>
-                 <span class="o">[</span>--rsync-path RSYNC<span class="o">]</span>
+                 <span class="o">[</span>--rsync-path RSYNC<span class="o">]</span> <span class="o">[</span>--bwlimit BWLIMIT<span class="o">]</span>
 
 optional arguments:
   -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
@@ -1134,6 +1147,8 @@ Export options:
   --skip-error, -e      Skip error
   --rsync-path RSYNC, -R RSYNC
                         Custom rsync path
+  --bwlimit BWLIMIT, -b BWLIMIT
+                        Bandwidth limit in KBPS.
 </pre></div>
 </div>
 <p>Export a backup in other directory:</p>

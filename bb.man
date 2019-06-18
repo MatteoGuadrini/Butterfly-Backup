@@ -52,6 +52,7 @@ action:
                         	I/O timeout in seconds
     --skip-error, -e        Skip error.
     --rsync-path, -R        Select a custom rsync path.
+    --bwlimit, -b           Bandwidth limit in KBPS.
 
 .B list
 [ACTION]
@@ -85,6 +86,7 @@ action:
   	--mirror, -m            Mirror mode
   	--skip-error, -e        Skip error.
     --rsync-path, -R        Select a custom rsync path.
+    --bwlimit, -b           Bandwidth limit in KBPS.
 
 .B config
 [ACTION]
@@ -126,7 +128,8 @@ Deploy configuration:
     --timeout TIMEOUT, -T TIMEOUT
                           I/O timeout in seconds
     --skip-error, -e      Skip error
-    --rsync-path, -R        Select a custom rsync path.
+    --rsync-path, -R      Select a custom rsync path.
+    --bwlimit, -b         Bandwidth limit in KBPS.
 
 .B optional arguments
 [OPTIONS]

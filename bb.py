@@ -310,6 +310,9 @@ def compose_command(flags, host):
         # Set compress mode
         if flags.compress:
             command.append('-z')
+        # Set bandwidth limit
+        if flags.bwlimit:
+            command.append('--bwlimit={0}'.format(flags.bwlimit))
         # Set I/O timeout
         if flags.timeout:
             command.append('--timeout={0}'.format(flags.timeout))
@@ -338,6 +341,9 @@ def compose_command(flags, host):
         if flags.mirror:
             command.append('--delete')
             command.append('--ignore-times')
+        # Set bandwidth limit
+        if flags.bwlimit:
+            command.append('--bwlimit={0}'.format(flags.bwlimit))
         # Set dry-run mode
         if flags.dry_run:
             command.append('--dry-run')
@@ -363,6 +369,9 @@ def compose_command(flags, host):
         if flags.mirror:
             command.append('--delete')
             command.append('--ignore-times')
+        # Set bandwidth limit
+        if flags.bwlimit:
+            command.append('--bwlimit={0}'.format(flags.bwlimit))
         # Set dry-run mode
         if flags.dry_run:
             command.append('--dry-run')
@@ -922,6 +931,8 @@ def parse_arguments():
                               type=int)
     group_backup.add_argument('--skip-error', '-e', help='Skip error', dest='skip_err', action='store_true')
     group_backup.add_argument('--rsync-path', '-R', help='Custom rsync path', dest='rsync', action='store')
+    group_backup.add_argument('--bwlimit', '-b', help='Bandwidth limit in KBPS.', dest='bwlimit', action='store',
+                              type=int)
     # restore session
     restore = action.add_parser('restore', help='Restore options', parents=[parent_parser])
     group_restore = restore.add_argument_group(title='Restore options')
@@ -942,6 +953,8 @@ def parse_arguments():
     group_restore.add_argument('--mirror', '-m', help='Mirror mode', dest='mirror', action='store_true')
     group_restore.add_argument('--skip-error', '-e', help='Skip error', dest='skip_err', action='store_true')
     group_restore.add_argument('--rsync-path', '-R', help='Custom rsync path', dest='rsync', action='store')
+    group_restore.add_argument('--bwlimit', '-b', help='Bandwidth limit in KBPS.', dest='bwlimit', action='store',
+                               type=int)
     # archive session
     archive = action.add_parser('archive', help='Archive options', parents=[parent_parser])
     group_archive = archive.add_argument_group(title='Archive options')
@@ -984,6 +997,8 @@ def parse_arguments():
                               type=int)
     group_export.add_argument('--skip-error', '-e', help='Skip error', dest='skip_err', action='store_true')
     group_export.add_argument('--rsync-path', '-R', help='Custom rsync path', dest='rsync', action='store')
+    group_export.add_argument('--bwlimit', '-b', help='Bandwidth limit in KBPS.', dest='bwlimit', action='store',
+                              type=int)
     # Return all args
     parser_object.add_argument('--version', '-V', help='Print version', dest='version', action='store_true')
     return parser_object
