@@ -20,6 +20,36 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+"""
+NAME
+    Butterfly Backup - backup/restore/archive tool , agentless
+
+DESCRIPTION
+    Butterfly Backup is a simple command line wrapper of rsync for complex task, written in python
+
+SYNOPSIS
+    bb [ACTION] [OPTIONS]
+
+    bb [-h] [--verbose] [--log] [--dry-run] [--version]
+              {config,backup,restore,archive,list,export} ...
+
+OPTIONS
+    action:
+      Valid action
+
+      {config,backup,restore,archive,list,export}
+                            Available actions
+        config              Configuration options
+        backup              Backup options
+        restore             Restore options
+        archive             Archive options
+        list                List options
+        export              Export options
+
+EXAMPLES
+    Show full help:
+        O_O>$ bb --help
+"""
 
 import argparse
 import configparser
