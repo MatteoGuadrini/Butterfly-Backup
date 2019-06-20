@@ -310,7 +310,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                     [--user USER] --type {Unix,Windows,MacOS} [--compress]
                     [--retention RETENTION [RETENTION ...]] [--parallel PARALLEL]
                     [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC]
-                    [--bwlimit BWLIMIT]
+                    [--bwlimit BWLIMIT] [--ssh-port PORT]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -347,6 +347,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                            Custom rsync path
      --bwlimit BWLIMIT, -b BWLIMIT
                            Bandwidth limit in KBPS.
+     --ssh-port PORT, -P PORT
+                           Custom ssh port.
 
 
 
@@ -399,7 +401,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
    --timeout, -T           Specify number of seconds of I/O timeout.
    --skip-error, -e        Skip error. Quiet mode.
    --rsync-path, -R        Select a custom rsync path.
-   --bwlimit, -b   Bandwidth limit in KBPS.
+   --bwlimit, -b           Bandwidth limit in KBPS.
+   --ssh-port, -P          Custom ssh port.
 
 Flowchart of the differences between Differential and Incremental backup::
 
@@ -674,6 +677,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
                      (--backup-id ID | --last) [--user USER] --computer HOSTNAME
                      [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
                      [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT]
+                     [--ssh-port PORT]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -701,6 +705,9 @@ The restore process is the exact opposite of the backup process. It takes the fi
                            Custom rsync path
      --bwlimit BWLIMIT, -b BWLIMIT
                            Bandwidth limit in KBPS.
+     --ssh-port PORT, -P PORT
+                           Custom ssh port.
+
 
 
 
@@ -720,7 +727,8 @@ The restore process is the exact opposite of the backup process. It takes the fi
    --mirror, -m            Mirror mode. If a file or folder not exist in destination, will delete it. Overwrite files.
    --skip-error, -e        Skip error. Quiet mode.
    --rsync-path, -R        Select a custom rsync path.
-   --bwlimit, -b   Bandwidth limit in KBPS.
+   --bwlimit, -b           Bandwidth limit in KBPS.
+   --ssh-port, -P          Custom ssh port.
 
 
 This is a few examples:
@@ -854,7 +862,7 @@ The export function is used to copy a particular backup to another path.
                     --backup-id ID --destination DESTINATION [--mirror] [--cut]
                     [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE
                     [EXCLUDE ...]] [--timeout TIMEOUT] [--skip-error]
-                    [--rsync-path RSYNC] [--bwlimit BWLIMIT]
+                    [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -882,6 +890,8 @@ The export function is used to copy a particular backup to another path.
                            Custom rsync path
      --bwlimit BWLIMIT, -b BWLIMIT
                            Bandwidth limit in KBPS.
+     --ssh-port PORT, -P PORT
+                           Custom ssh port.
 
 
 

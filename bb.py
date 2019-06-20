@@ -61,7 +61,7 @@ from multiprocessing import Pool
 from utility import print_verbose
 
 # region Global Variables
-VERSION = '1.5.0'
+VERSION = '1.6.0'
 
 
 # endregion
@@ -343,6 +343,9 @@ def compose_command(flags, host):
         # Set bandwidth limit
         if flags.bwlimit:
             command.append('--bwlimit={0}'.format(flags.bwlimit))
+        # Set ssh custom port
+        if flags.port:
+            command.append('--rsh "ssh -p {0}"'.format(flags.port))
         # Set I/O timeout
         if flags.timeout:
             command.append('--timeout={0}'.format(flags.timeout))
@@ -374,6 +377,9 @@ def compose_command(flags, host):
         # Set bandwidth limit
         if flags.bwlimit:
             command.append('--bwlimit={0}'.format(flags.bwlimit))
+        # Set ssh custom port
+        if flags.port:
+            command.append('--rsh "ssh -p {0}"'.format(flags.port))
         # Set dry-run mode
         if flags.dry_run:
             command.append('--dry-run')
@@ -402,6 +408,9 @@ def compose_command(flags, host):
         # Set bandwidth limit
         if flags.bwlimit:
             command.append('--bwlimit={0}'.format(flags.bwlimit))
+        # Set ssh custom port
+        if flags.port:
+            command.append('--rsh "ssh -p {0}"'.format(flags.port))
         # Set dry-run mode
         if flags.dry_run:
             command.append('--dry-run')
@@ -963,6 +972,7 @@ def parse_arguments():
     group_backup.add_argument('--rsync-path', '-R', help='Custom rsync path', dest='rsync', action='store')
     group_backup.add_argument('--bwlimit', '-b', help='Bandwidth limit in KBPS.', dest='bwlimit', action='store',
                               type=int)
+    group_backup.add_argument('--ssh-port', '-P', help='Custom ssh port.', dest='port', action='store', type=int)
     # restore session
     restore = action.add_parser('restore', help='Restore options', parents=[parent_parser])
     group_restore = restore.add_argument_group(title='Restore options')
@@ -985,6 +995,7 @@ def parse_arguments():
     group_restore.add_argument('--rsync-path', '-R', help='Custom rsync path', dest='rsync', action='store')
     group_restore.add_argument('--bwlimit', '-b', help='Bandwidth limit in KBPS.', dest='bwlimit', action='store',
                                type=int)
+    group_restore.add_argument('--ssh-port', '-P', help='Custom ssh port.', dest='port', action='store', type=int)
     # archive session
     archive = action.add_parser('archive', help='Archive options', parents=[parent_parser])
     group_archive = archive.add_argument_group(title='Archive options')
@@ -1029,6 +1040,7 @@ def parse_arguments():
     group_export.add_argument('--rsync-path', '-R', help='Custom rsync path', dest='rsync', action='store')
     group_export.add_argument('--bwlimit', '-b', help='Bandwidth limit in KBPS.', dest='bwlimit', action='store',
                               type=int)
+    group_export.add_argument('--ssh-port', '-P', help='Custom ssh port.', dest='port', action='store', type=int)
     # Return all args
     parser_object.add_argument('--version', '-V', help='Print version', dest='version', action='store_true')
     return parser_object

@@ -1,6 +1,6 @@
 .\" Manpage for Butterfly Backup.
 .\" Contact matteo.guadrini@hotmail.it to correct errors or typos.
-.TH man 1 "19 Jun 2019" "1.5.0" "bb man page"
+.TH man 1 "20 Jun 2019" "1.6.0" "bb man page"
 .SH NAME
 bb \- Butterfly Backup - backup/restore/archive tool , agentless
 .SH SYNOPSIS
@@ -53,6 +53,7 @@ action:
     --skip-error, -e        Skip error.
     --rsync-path, -R        Select a custom rsync path.
     --bwlimit, -b           Bandwidth limit in KBPS.
+    --ssh-port, -P          Custom ssh port.
 
 .B list
 [ACTION]
@@ -87,6 +88,7 @@ action:
   	--skip-error, -e        Skip error.
     --rsync-path, -R        Select a custom rsync path.
     --bwlimit, -b           Bandwidth limit in KBPS.
+    --ssh-port, -P          Custom ssh port.
 
 .B config
 [ACTION]
@@ -130,6 +132,7 @@ Deploy configuration:
     --skip-error, -e      Skip error
     --rsync-path, -R      Select a custom rsync path.
     --bwlimit, -b         Bandwidth limit in KBPS.
+    --ssh-port, -P        Custom ssh port.
 
 .B optional arguments
 [OPTIONS]
