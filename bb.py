@@ -405,6 +405,21 @@ def compose_command(flags, host):
         if flags.mirror:
             command.append('--delete')
             command.append('--ignore-times')
+        # Set cut mode
+        if flags.cut:
+            command.append('--remove-source-files')
+        # Set includes
+        if flags.include:
+            for include in flags.include:
+                command.append('--include={0}'.format(include))
+            command.append('--exclude="*"')
+        # Set excludes
+        if flags.exclude:
+            for exclude in flags.exclude:
+                command.append('--exclude={0}'.format(exclude))
+        # Set timeout
+        if flags.timeout:
+            command.append('--timeout={0}'.format(flags.timeout))
         # Set bandwidth limit
         if flags.bwlimit:
             command.append('--bwlimit={0}'.format(flags.bwlimit))
@@ -1425,6 +1440,7 @@ if __name__ == '__main__':
             'status': args.log,
             'destination': os.path.join(export_catalog[args.id]['Path'], 'export.log')
         }
+        catalog_path = os.path.join(args.catalog, '.catalog.cfg')
         if os.path.exists(export_catalog[args.id]['Path']) and os.path.exists(args.destination):
             # Export
             utility.write_log(log_args['status'], log_args['destination'], 'INFO',
@@ -1434,50 +1450,15 @@ if __name__ == '__main__':
             print_verbose(args.verbose, 'Build a rsync command')
             logs = list()
             logs.append(log_args)
-            # Set rsync binary and flags
-            if args.rsync:
-                if os.path.exists(args.rsync):
-                    expcmd = [args.rsync]
-                else:
-                    print(utility.PrintColor.YELLOW +
-                          'WARNING: rsync binary {0} not exist! Set default.'.format(args.rsync)
-                          + utility.PrintColor.END)
-                    expcmd = ['rsync']
-            else:
-                expcmd = ['rsync']
-            expcmd.append('-ah')
-            expcmd.append('--no-links')
-            # Check flags
-            if args.verbose:
-                expcmd.append('-vP')
-            if args.mirror:
-                expcmd.append('--delete')
-            if args.cut:
-                expcmd.append('--remove-source-files')
-            if args.include:
-                for include in args.include:
-                    expcmd.append('--include={0}'.format(include))
-                expcmd.append('--exclude="*"')
-            if args.exclude:
-                for exclude in args.exclude:
-                    expcmd.append('--exclude={0}'.format(exclude))
-            if args.timeout:
-                expcmd.append('--timeout={0}'.format(args.timeout))
-            if args.skip_err:
-                expcmd.append('--quiet')
-            if args.log:
-                exp_log_path = os.path.join(args.destination, 'export.log')
-                expcmd.append(
-                    '--log-file={0}'.format(exp_log_path)
-                )
+            cmd = compose_command(args, None)
             # Add source
-            expcmd.append('{}'.format(export_catalog[args.id]['Path']))
+            cmd.append('{}'.format(export_catalog[args.id]['Path']))
             # Add destination
-            expcmd.append('{}'.format(os.path.join(args.destination, export_catalog[args.id]['Name'])))
+            cmd.append('{}'.format(os.path.join(args.destination, export_catalog[args.id]['Name'])))
             utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                              'Export command {0}.'.format(" ".join(expcmd)))
+                              'Export command {0}.'.format(" ".join(cmd)))
             # Start export
-            cmds.append(' '.join(expcmd))
+            cmds.append(' '.join(cmd))
             run_in_parallel(start_process, cmds, 1)
         else:
             print(utility.PrintColor.RED +
