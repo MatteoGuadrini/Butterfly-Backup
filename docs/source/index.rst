@@ -308,7 +308,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                     [--mode {Full,Incremental,Differential,Mirror}]
                     (--data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...])
                     [--user USER] --type {Unix,Windows,MacOS} [--compress]
-                    [--retention RETENTION [RETENTION ...]] [--parallel PARALLEL]
+                    [--retention days number] [--parallel PARALLEL]
                     [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC]
                     [--bwlimit BWLIMIT] [--ssh-port PORT]
 
@@ -335,7 +335,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
      --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
                            Type of operating system to backup
      --compress, -z        Compress data
-     --retention RETENTION [RETENTION ...], -r RETENTION [RETENTION ...]
+     --retention days number, -r days number
                            First argument is days of backup retention. Second
                            argument is minimum number of backup retention
      --parallel PARALLEL, -p PARALLEL
@@ -394,7 +394,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
        * **Windows** -> Windows Vista or higher with cygwin installed.
        * **MacOS** -> MacOSX 10.8 or higher.
    --compress, -z          Compresses the data transmitted.
-   --retention, -r         Number of days for which you want to keep your backups.
+   --retention, -r         Number of days for which you want to keep your backups and minimum number of backup retention.
 
                            The second number is a minimum number of backup which you want keep.
    --parallel, -p          Maximum number of concurrent rsync processes. By default is 5 jobs.

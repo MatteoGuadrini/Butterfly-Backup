@@ -61,9 +61,7 @@ from multiprocessing import Pool
 from utility import print_verbose
 
 # region Global Variables
-VERSION = '1.6.0'
-
-
+VERSION = '1.6.1'
 # endregion
 
 
@@ -978,7 +976,7 @@ def parse_arguments():
                               action='store_true')
     group_backup.add_argument('--retention', '-r', help='First argument is days of backup retention. '
                                                         'Second argument is minimum number of backup retention',
-                              dest='retention', action='store', nargs='+', type=int)
+                              dest='retention', action='store', nargs=2, metavar=('days', 'number'), type=int)
     group_backup.add_argument('--parallel', '-p', help='Number of parallel jobs', dest='parallel', action='store',
                               type=int, default=5)
     group_backup.add_argument('--timeout', '-T', help='I/O timeout in seconds', dest='timeout', action='store',

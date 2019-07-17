@@ -477,7 +477,7 @@ usage: bb backup <span class="o">[</span>-h<span class="o">]</span> <span class=
                  <span class="o">[</span>--mode <span class="o">{</span>Full,Incremental,Differential,Mirror<span class="o">}]</span>
                  <span class="o">(</span>--data <span class="o">{</span>User,Config,Application,System,Log<span class="o">}</span> <span class="o">[{</span>User,Config,Application,System,Log<span class="o">}</span> ...<span class="o">]</span> <span class="p">|</span> --custom-data CUSTOMDATA <span class="o">[</span>CUSTOMDATA ...<span class="o">])</span>
                  <span class="o">[</span>--user USER<span class="o">]</span> --type <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span> <span class="o">[</span>--compress<span class="o">]</span>
-                 <span class="o">[</span>--retention RETENTION <span class="o">[</span>RETENTION ...<span class="o">]]</span> <span class="o">[</span>--parallel PARALLEL<span class="o">]</span>
+                 <span class="o">[</span>--retention days number<span class="o">]</span> <span class="o">[</span>--parallel PARALLEL<span class="o">]</span>
                  <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span> <span class="o">[</span>--skip-error<span class="o">]</span> <span class="o">[</span>--rsync-path RSYNC<span class="o">]</span>
                  <span class="o">[</span>--bwlimit BWLIMIT<span class="o">]</span> <span class="o">[</span>--ssh-port PORT<span class="o">]</span>
 
@@ -504,7 +504,7 @@ Backup options:
   --type <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span>, -t <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span>
                         Type of operating system to backup
   --compress, -z        Compress data
-  --retention RETENTION <span class="o">[</span>RETENTION ...<span class="o">]</span>, -r RETENTION <span class="o">[</span>RETENTION ...<span class="o">]</span>
+  --retention days number, -r days number
                         First argument is days of backup retention. Second
                         argument is minimum number of backup retention
   --parallel PARALLEL, -p PARALLEL
@@ -609,7 +609,7 @@ The values change depending on the type of operating system:</p>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--retention</span>, <span class="option">-r</span></kbd></td>
 </tr>
-<tr><td>&#160;</td><td><p class="first">Number of days for which you want to keep your backups.</p>
+<tr><td>&#160;</td><td><p class="first">Number of days for which you want to keep your backups and minimum number of backup retention.</p>
 <p class="last">The second number is a minimum number of backup which you want keep.</p>
 </td></tr>
 <tr><td class="option-group">
