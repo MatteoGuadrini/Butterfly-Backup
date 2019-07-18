@@ -155,8 +155,8 @@ Let's see how to go about looking at the help:
 
    arthur@heartofgold$ bb config --help
    usage: bb config [-h] [--verbose] [--log] [--dry-run]
-                    [--new | --remove | --init INIT] [--deploy DEPLOY_HOST]
-                    [--user DEPLOY_USER]
+                    [--new | --remove | --init INIT | --delete-host CATALOG HOST]
+                    [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -168,12 +168,15 @@ Let's see how to go about looking at the help:
      --new, -n             Generate new configuration
      --remove, -r          Remove exist configuration
      --init INIT, -i INIT  Reset catalog file. Specify path of backup folder.
+     --delete-host CATALOG HOST, -D CATALOG HOST
+                           Delete all entry for a single HOST in catalog.
 
    Deploy configuration:
      --deploy DEPLOY_HOST, -d DEPLOY_HOST
                            Deploy configuration to client: hostname or ip address
      --user DEPLOY_USER, -u DEPLOY_USER
                            User of the remote machine
+
 
 Two macro-options are available:
 
@@ -207,7 +210,7 @@ In this case, the RSA key already exists. Now try delete and create a new keys:
 Once you have created the configuration, keys should be installed (copied) on the hosts you
 want to backup.
 
-.. code-block:: bash
+::
 
    arthur@heartofgold$ bb config --deploy host1
    Copying configuration to host1; write the password:
@@ -226,14 +229,14 @@ want to backup.
 This command will try to copy the configuration with the current user.
 If you want to use a different user (e.g.: root), run this:
 
-.. code-block:: bash
+::
 
    arthur@heartofgold$ bb config --deploy host1 --user root
-   "Copying configuration to host1; write the password:"
+   Copying configuration to host1; write the password:
    /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/arthur/.ssh/id_rsa.pub"
    /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
    /usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
-   "root@host1's password:"
+   root@host1's password:
 
    Number of key(s) added: 1
 
@@ -308,7 +311,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                     [--mode {Full,Incremental,Differential,Mirror}]
                     (--data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...])
                     [--user USER] --type {Unix,Windows,MacOS} [--compress]
-                    [--retention days number] [--parallel PARALLEL]
+                    [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL]
                     [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC]
                     [--bwlimit BWLIMIT] [--ssh-port PORT]
 
@@ -335,7 +338,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
      --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
                            Type of operating system to backup
      --compress, -z        Compress data
-     --retention days number, -r days number
+     --retention [DAYS [NUMBER ...]], -r [DAYS [NUMBER ...]]
                            First argument is days of backup retention. Second
                            argument is minimum number of backup retention
      --parallel PARALLEL, -p PARALLEL
@@ -394,7 +397,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
        * **Windows** -> Windows Vista or higher with cygwin installed.
        * **MacOS** -> MacOSX 10.8 or higher.
    --compress, -z          Compresses the data transmitted.
-   --retention, -r         Number of days for which you want to keep your backups and minimum number of backup retention.
+   --retention, -r         Number of days for which you want to keep your backups
+                           and minimum number of backup retention (optional).
 
                            The second number is a minimum number of backup which you want keep.
    --parallel, -p          Maximum number of concurrent rsync processes. By default is 5 jobs.
@@ -670,7 +674,7 @@ Restore
 
 The restore process is the exact opposite of the backup process. It takes the files from a specific backup and push it to the destination computer.
 
-.. code-block:: bash
+::
 
    arthur@heartofgold$ bb restore --help
    usage: bb restore [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG

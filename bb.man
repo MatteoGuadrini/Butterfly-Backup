@@ -1,6 +1,6 @@
 .\" Manpage for Butterfly Backup.
 .\" Contact matteo.guadrini@hotmail.it to correct errors or typos.
-.TH man 1 "20 Jun 2019" "1.6.0" "bb man page"
+.TH man 1 "18 Jul 2019" "1.6.1" "bb man page"
 .SH NAME
 bb \- Butterfly Backup - backup/restore/archive tool , agentless
 .SH SYNOPSIS
@@ -43,7 +43,7 @@ action:
   	--type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
                         	Type of operating system to backup
   	--compress, -z          Compress data
-  	--retention RETENTION [RETENTION ...], -r RETENTION [RETENTION ...]
+  	--retention [DAYS [NUMBER ...]], -r [DAYS [NUMBER ...]]
                            First argument is days of backup retention. Second
                            argument is minimum number of backup retention
   	--parallel PARALLEL, -p PARALLEL
@@ -97,6 +97,8 @@ Init configuration:
     --new, -n               Generate new configuration
     --remove, -r            Remove exist configuration
     --init INIT, -i INIT    Reset catalog file. Specify path of backup folder.
+    --delete-host CATALOG HOST, -D CATALOG HOST
+                           Delete all entry for a single HOST in catalog.
 
 Deploy configuration:
     --deploy DEPLOY_HOST, -d DEPLOY_HOST

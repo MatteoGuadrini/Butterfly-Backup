@@ -307,8 +307,8 @@ If you don’t want to discuss the merits of exchange keys and start, then go ah
 Let’s see how to go about looking at the help:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb config --help
 usage: bb config <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span>
-                 <span class="o">[</span>--new <span class="p">|</span> --remove <span class="p">|</span> --init INIT<span class="o">]</span> <span class="o">[</span>--deploy DEPLOY_HOST<span class="o">]</span>
-                 <span class="o">[</span>--user DEPLOY_USER<span class="o">]</span>
+                 <span class="o">[</span>--new <span class="p">|</span> --remove <span class="p">|</span> --init INIT <span class="p">|</span> --delete-host CATALOG HOST<span class="o">]</span>
+                 <span class="o">[</span>--deploy DEPLOY_HOST<span class="o">]</span> <span class="o">[</span>--user DEPLOY_USER<span class="o">]</span>
 
 optional arguments:
   -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
@@ -320,6 +320,8 @@ Init configuration:
   --new, -n             Generate new configuration
   --remove, -r          Remove exist configuration
   --init INIT, -i INIT  Reset catalog file. Specify path of backup folder.
+  --delete-host CATALOG HOST, -D CATALOG HOST
+                        Delete all entry <span class="k">for</span> a single HOST in catalog.
 
 Deploy configuration:
   --deploy DEPLOY_HOST, -d DEPLOY_HOST
@@ -390,7 +392,7 @@ SUCCESS: New configuration successfully created!
 </div>
 <p>Once you have created the configuration, keys should be installed (copied) on the hosts you
 want to backup.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb config --deploy host1
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb config --deploy host1
 Copying configuration to host1; write the password:
 /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: &quot;/home/arthur/.ssh/id_rsa.pub&quot;
 /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
@@ -407,17 +409,17 @@ SUCCESS: Configuration copied successfully on host1!
 </div>
 <p>This command will try to copy the configuration with the current user.
 If you want to use a different user (e.g.: root), run this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb config --deploy host1 --user root
-<span class="s2">&quot;Copying configuration to host1; write the password:&quot;</span>
-/usr/bin/ssh-copy-id: INFO: Source of key<span class="o">(</span>s<span class="o">)</span> to be installed: <span class="s2">&quot;/home/arthur/.ssh/id_rsa.pub&quot;</span>
-/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key<span class="o">(</span>s<span class="o">)</span>, to filter out any that are already installed
-/usr/bin/ssh-copy-id: INFO: <span class="m">1</span> key<span class="o">(</span>s<span class="o">)</span> remain to be installed -- <span class="k">if</span> you are prompted now it is to install the new keys
-<span class="s2">&quot;root@host1&#39;s password:&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb config --deploy host1 --user root
+Copying configuration to host1; write the password:
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: &quot;/home/arthur/.ssh/id_rsa.pub&quot;
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+root@host1&#39;s password:
 
-Number of key<span class="o">(</span>s<span class="o">)</span> added: <span class="m">1</span>
+Number of key(s) added: 1
 
-Now try logging into the machine, with:   <span class="s2">&quot;ssh &#39;root@host1&#39;&quot;</span>
-and check to make sure that only the key<span class="o">(</span>s<span class="o">)</span> you wanted were added.
+Now try logging into the machine, with:   &quot;ssh &#39;root@host1&#39;&quot;
+and check to make sure that only the key(s) you wanted were added.
 
 SUCCESS: Configuration copied successfully on host1!
 </pre></div>
@@ -477,7 +479,7 @@ usage: bb backup <span class="o">[</span>-h<span class="o">]</span> <span class=
                  <span class="o">[</span>--mode <span class="o">{</span>Full,Incremental,Differential,Mirror<span class="o">}]</span>
                  <span class="o">(</span>--data <span class="o">{</span>User,Config,Application,System,Log<span class="o">}</span> <span class="o">[{</span>User,Config,Application,System,Log<span class="o">}</span> ...<span class="o">]</span> <span class="p">|</span> --custom-data CUSTOMDATA <span class="o">[</span>CUSTOMDATA ...<span class="o">])</span>
                  <span class="o">[</span>--user USER<span class="o">]</span> --type <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span> <span class="o">[</span>--compress<span class="o">]</span>
-                 <span class="o">[</span>--retention days number<span class="o">]</span> <span class="o">[</span>--parallel PARALLEL<span class="o">]</span>
+                 <span class="o">[</span>--retention <span class="o">[</span>DAYS <span class="o">[</span>NUMBER ...<span class="o">]]]</span> <span class="o">[</span>--parallel PARALLEL<span class="o">]</span>
                  <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span> <span class="o">[</span>--skip-error<span class="o">]</span> <span class="o">[</span>--rsync-path RSYNC<span class="o">]</span>
                  <span class="o">[</span>--bwlimit BWLIMIT<span class="o">]</span> <span class="o">[</span>--ssh-port PORT<span class="o">]</span>
 
@@ -504,7 +506,7 @@ Backup options:
   --type <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span>, -t <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span>
                         Type of operating system to backup
   --compress, -z        Compress data
-  --retention days number, -r days number
+  --retention <span class="o">[</span>DAYS <span class="o">[</span>NUMBER ...<span class="o">]]</span>, -r <span class="o">[</span>DAYS <span class="o">[</span>NUMBER ...<span class="o">]]</span>
                         First argument is days of backup retention. Second
                         argument is minimum number of backup retention
   --parallel PARALLEL, -p PARALLEL
@@ -609,7 +611,8 @@ The values change depending on the type of operating system:</p>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--retention</span>, <span class="option">-r</span></kbd></td>
 </tr>
-<tr><td>&#160;</td><td><p class="first">Number of days for which you want to keep your backups and minimum number of backup retention.</p>
+<tr><td>&#160;</td><td><p class="first">Number of days for which you want to keep your backups
+and minimum number of backup retention (optional).</p>
 <p class="last">The second number is a minimum number of backup which you want keep.</p>
 </td></tr>
 <tr><td class="option-group">
@@ -900,7 +903,7 @@ arthur@heartofgold$ cat /mnt/backup/backup.list
 <div class="section" id="restore">
 <span id="id6"></span><h2>Restore<a class="headerlink" href="#restore" title="Permalink to this headline">¶</a></h2>
 <p>The restore process is the exact opposite of the backup process. It takes the files from a specific backup and push it to the destination computer.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb restore --help
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb restore --help
 usage: bb restore [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
                   (--backup-id ID | --last) [--user USER] --computer HOSTNAME
                   [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]

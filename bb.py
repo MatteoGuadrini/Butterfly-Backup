@@ -916,6 +916,34 @@ def init_catalog(catalog):
         config.write(configfile)
 
 
+def delete_host(catalog, host):
+    """
+    :param catalog: catalog file
+    :param host: hostname or ip address
+    """
+    config = read_catalog(catalog)
+    for cid in config.sections():
+        if config.get(cid, "name") == host:
+            if not os.path.exists(config[cid]['path']):
+                print_verbose(args.verbose, "Backup-id {0} has been removed to catalog!".format(cid))
+                config.remove_section(cid)
+            else:
+                path = config.get(cid, 'path')
+                date = config.get(cid, 'timestamp')
+                cleanup = utility.cleanup(path, date, 0)
+                if cleanup == 0:
+                    print(utility.PrintColor.GREEN + 'SUCCESS: Delete {0} successfully.'.format(path) +
+                          utility.PrintColor.END)
+                    print_verbose(args.verbose, "Backup-id {0} has been removed to catalog!".format(cid))
+                    config.remove_section(cid)
+                elif cleanup == 1:
+                    print(utility.PrintColor.RED + 'ERROR: Delete {0} failed.'.format(path) +
+                          utility.PrintColor.END)
+    # Write file
+    with open(catalog, 'w') as configfile:
+        config.write(configfile)
+
+
 def parse_arguments():
     """
     Function get arguments than specified in command line
@@ -945,6 +973,8 @@ def parse_arguments():
                                        action='store_true')
     group_config_mutually.add_argument('--init', '-i', help='Reset catalog file. Specify path of backup folder.',
                                        dest='init', action='store')
+    group_config_mutually.add_argument('--delete-host', '-D', help='Delete all entry for a single HOST in catalog.',
+                                       nargs=2, dest='delete', metavar=('CATALOG', 'HOST'), action='store')
     group_deploy = config.add_argument_group(title='Deploy configuration')
     group_deploy_mutually = group_deploy.add_mutually_exclusive_group()
     group_deploy_mutually.add_argument('--deploy', '-d', help='Deploy configuration to client: hostname or ip address',
@@ -976,7 +1006,7 @@ def parse_arguments():
                               action='store_true')
     group_backup.add_argument('--retention', '-r', help='First argument is days of backup retention. '
                                                         'Second argument is minimum number of backup retention',
-                              dest='retention', action='store', nargs=2, metavar=('days', 'number'), type=int)
+                              dest='retention', action='store', nargs='*', metavar=('DAYS', 'NUMBER'), type=int)
     group_backup.add_argument('--parallel', '-p', help='Number of parallel jobs', dest='parallel', action='store',
                               type=int, default=5)
     group_backup.add_argument('--timeout', '-T', help='I/O timeout in seconds', dest='timeout', action='store',
@@ -1082,6 +1112,9 @@ if __name__ == '__main__':
         elif args.init:
             catalog_path = os.path.join(args.init, '.catalog.cfg')
             init_catalog(catalog_path)
+        elif args.delete:
+            catalog_path = os.path.join(args.delete[0], '.catalog.cfg')
+            delete_host(catalog_path, args.delete[1])
         else:
             parser.print_usage()
             print('For ' + utility.PrintColor.BOLD + 'config' + utility.PrintColor.END + ' usage, "--help" or "-h"')
