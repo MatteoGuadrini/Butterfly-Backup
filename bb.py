@@ -61,7 +61,7 @@ from multiprocessing import Pool
 from utility import print_verbose
 
 # region Global Variables
-VERSION = '1.6.1'
+VERSION = '1.6.2'
 # endregion
 
 
@@ -944,6 +944,48 @@ def delete_host(catalog, host):
         config.write(configfile)
 
 
+def clean_catalog(catalog):
+    """
+    :param catalog: catalog file
+    """
+    config = read_catalog(catalog)
+    print_verbose(args.verbose, "Start check catalog file: {0}!".format(catalog))
+    for cid in config.sections():
+        print_verbose(args.verbose, "Check backup-id: {0}!".format(cid))
+        mod = False
+        if not config.get(cid, 'type', fallback=''):
+            config.set(cid, 'type', 'Incremental')
+            mod = True
+        if not config.get(cid, 'path', fallback=''):
+            config.remove_section(cid)
+            mod = True
+        if not config.get(cid, 'name', fallback=''):
+            config.set(cid, 'name', 'default')
+            mod = True
+        if not config.get(cid, 'os', fallback=''):
+            config.set(cid, 'os', 'Unix')
+            mod = True
+        if not config.get(cid, 'timestamp', fallback=''):
+            config.set(cid, 'timestamp', utility.time_for_log())
+            mod = True
+        if not config.get(cid, 'start', fallback=''):
+            config.set(cid, 'start', utility.time_for_log())
+            mod = True
+        if not config.get(cid, 'end', fallback=''):
+            config.set(cid, 'end', utility.time_for_log())
+            mod = True
+        if not config.get(cid, 'status', fallback=''):
+            config.set(cid, 'status', '0')
+            mod = True
+        if mod:
+            print(utility.PrintColor.YELLOW +
+                  'WARNING: The backup-id {0} has been set to default value, because he was corrupt. '
+                  'Check it!'.format(cid) + utility.PrintColor.END)
+    # Write file
+    with open(catalog, 'w') as configfile:
+        config.write(configfile)
+
+
 def parse_arguments():
     """
     Function get arguments than specified in command line
@@ -975,6 +1017,9 @@ def parse_arguments():
                                        dest='init', action='store')
     group_config_mutually.add_argument('--delete-host', '-D', help='Delete all entry for a single HOST in catalog.',
                                        nargs=2, dest='delete', metavar=('CATALOG', 'HOST'), action='store')
+    group_config_mutually.add_argument('--clean', '-c', help='Cleans the catalog if it is corrupt, '
+                                                             'setting default values.',
+                                       dest='clean', metavar='CATALOG', action='store')
     group_deploy = config.add_argument_group(title='Deploy configuration')
     group_deploy_mutually = group_deploy.add_mutually_exclusive_group()
     group_deploy_mutually.add_argument('--deploy', '-d', help='Deploy configuration to client: hostname or ip address',
@@ -1115,6 +1160,9 @@ if __name__ == '__main__':
         elif args.delete:
             catalog_path = os.path.join(args.delete[0], '.catalog.cfg')
             delete_host(catalog_path, args.delete[1])
+        elif args.clean:
+            catalog_path = os.path.join(args.clean, '.catalog.cfg')
+            clean_catalog(catalog_path)
         else:
             parser.print_usage()
             print('For ' + utility.PrintColor.BOLD + 'config' + utility.PrintColor.END + ' usage, "--help" or "-h"')

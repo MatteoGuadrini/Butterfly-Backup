@@ -307,7 +307,7 @@ If you don’t want to discuss the merits of exchange keys and start, then go ah
 Let’s see how to go about looking at the help:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb config --help
 usage: bb config <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span>
-                 <span class="o">[</span>--new <span class="p">|</span> --remove <span class="p">|</span> --init INIT <span class="p">|</span> --delete-host CATALOG HOST<span class="o">]</span>
+                 <span class="o">[</span>--new <span class="p">|</span> --remove <span class="p">|</span> --init INIT <span class="p">|</span> --delete-host CATALOG HOST <span class="p">|</span> --clean CATALOG<span class="o">]</span>
                  <span class="o">[</span>--deploy DEPLOY_HOST<span class="o">]</span> <span class="o">[</span>--user DEPLOY_USER<span class="o">]</span>
 
 optional arguments:
@@ -322,6 +322,9 @@ Init configuration:
   --init INIT, -i INIT  Reset catalog file. Specify path of backup folder.
   --delete-host CATALOG HOST, -D CATALOG HOST
                         Delete all entry <span class="k">for</span> a single HOST in catalog.
+  --clean CATALOG, -c CATALOG
+                        Cleans the catalog <span class="k">if</span> it is corrupt, setting default
+                        values.
 
 Deploy configuration:
   --deploy DEPLOY_HOST, -d DEPLOY_HOST

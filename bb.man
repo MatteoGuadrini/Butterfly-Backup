@@ -1,6 +1,6 @@
 .\" Manpage for Butterfly Backup.
 .\" Contact matteo.guadrini@hotmail.it to correct errors or typos.
-.TH man 1 "18 Jul 2019" "1.6.1" "bb man page"
+.TH man 1 "19 Jul 2019" "1.6.2" "bb man page"
 .SH NAME
 bb \- Butterfly Backup - backup/restore/archive tool , agentless
 .SH SYNOPSIS
@@ -99,6 +99,9 @@ Init configuration:
     --init INIT, -i INIT    Reset catalog file. Specify path of backup folder.
     --delete-host CATALOG HOST, -D CATALOG HOST
                            Delete all entry for a single HOST in catalog.
+    --clean CATALOG, -c CATALOG
+                           Cleans the catalog if it is corrupt, setting default
+                           values.
 
 Deploy configuration:
     --deploy DEPLOY_HOST, -d DEPLOY_HOST

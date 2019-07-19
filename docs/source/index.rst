@@ -155,7 +155,7 @@ Let's see how to go about looking at the help:
 
    arthur@heartofgold$ bb config --help
    usage: bb config [-h] [--verbose] [--log] [--dry-run]
-                    [--new | --remove | --init INIT | --delete-host CATALOG HOST]
+                    [--new | --remove | --init INIT | --delete-host CATALOG HOST | --clean CATALOG]
                     [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
 
    optional arguments:
@@ -170,6 +170,9 @@ Let's see how to go about looking at the help:
      --init INIT, -i INIT  Reset catalog file. Specify path of backup folder.
      --delete-host CATALOG HOST, -D CATALOG HOST
                            Delete all entry for a single HOST in catalog.
+     --clean CATALOG, -c CATALOG
+                           Cleans the catalog if it is corrupt, setting default
+                           values.
 
    Deploy configuration:
      --deploy DEPLOY_HOST, -d DEPLOY_HOST
