@@ -349,10 +349,18 @@ Deploy configuration:
 <kbd><span class="option">--remove</span>, <span class="option">-r</span></kbd></td>
 <td><p class="first last">Remove exist configuration.</p>
 </td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--init</span>, <span class="option">-i</span></kbd></td>
+<td><p class="first last">Reset catalog file. Specify path of backup folder.</p>
+</td></tr>
 <tr><td class="option-group" colspan="2">
-<kbd><span class="option">--init <var>INIT</var></span>, <span class="option">-i <var>INIT</var></span></kbd></td>
+<kbd><span class="option">--delete-host</span>, <span class="option">-D</span></kbd></td>
 </tr>
-<tr><td>&#160;</td><td><p class="first last">Reset catalog file. Specify path of backup folder.</p>
+<tr><td>&#160;</td><td><p class="first last">Delete all entry for a single HOST in catalog.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--clean</span>, <span class="option">-c</span></kbd></td>
+<td><p class="first last">Cleans the catalog if it is corrupt, setting default values.</p>
 </td></tr>
 </tbody>
 </table>
@@ -485,6 +493,7 @@ usage: bb backup <span class="o">[</span>-h<span class="o">]</span> <span class=
                  <span class="o">[</span>--retention <span class="o">[</span>DAYS <span class="o">[</span>NUMBER ...<span class="o">]]]</span> <span class="o">[</span>--parallel PARALLEL<span class="o">]</span>
                  <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span> <span class="o">[</span>--skip-error<span class="o">]</span> <span class="o">[</span>--rsync-path RSYNC<span class="o">]</span>
                  <span class="o">[</span>--bwlimit BWLIMIT<span class="o">]</span> <span class="o">[</span>--ssh-port PORT<span class="o">]</span>
+                 <span class="o">[</span>--exclude EXCLUDE <span class="o">[</span>EXCLUDE ...<span class="o">]]</span>
 
 optional arguments:
   -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
@@ -523,6 +532,8 @@ Backup options:
                         Bandwidth limit in KBPS.
   --ssh-port PORT, -P PORT
                         Custom ssh port.
+  --exclude EXCLUDE <span class="o">[</span>EXCLUDE ...<span class="o">]</span>, -E EXCLUDE <span class="o">[</span>EXCLUDE ...<span class="o">]</span>
+                        Exclude pattern
 </pre></div>
 </div>
 <ul>
@@ -643,6 +654,10 @@ and minimum number of backup retention (optional).</p>
 <tr><td class="option-group">
 <kbd><span class="option">--ssh-port</span>, <span class="option">-P</span></kbd></td>
 <td><p class="first last">Custom ssh port.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--exclude</span>, <span class="option">-E</span></kbd></td>
+<td><p class="first last">Exclude pattern. Follow rsync “Exclude Pattern Rules”</p>
 </td></tr>
 </tbody>
 </table>
@@ -911,7 +926,7 @@ usage: bb restore [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
                   (--backup-id ID | --last) [--user USER] --computer HOSTNAME
                   [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
                   [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT]
-                  [--ssh-port PORT]
+                  [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -941,6 +956,8 @@ Restore options:
                         Bandwidth limit in KBPS.
   --ssh-port PORT, -P PORT
                         Custom ssh port.
+  --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
+                        Exclude pattern
 </pre></div>
 </div>
 <ul>
@@ -1004,6 +1021,10 @@ Restore options:
 <tr><td class="option-group">
 <kbd><span class="option">--ssh-port</span>, <span class="option">-P</span></kbd></td>
 <td><p class="first last">Custom ssh port.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--exclude</span>, <span class="option">-E</span></kbd></td>
+<td><p class="first last">Exclude pattern. Follow rsync “Exclude Pattern Rules”</p>
 </td></tr>
 </tbody>
 </table>

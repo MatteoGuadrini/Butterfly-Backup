@@ -61,7 +61,7 @@ from multiprocessing import Pool
 from utility import print_verbose
 
 # region Global Variables
-VERSION = '1.6.2'
+VERSION = '1.6.3'
 # endregion
 
 
@@ -351,6 +351,10 @@ def compose_command(flags, host):
         if flags.dry_run:
             command.append('--dry-run')
             utility.write_log(log_args['status'], log_args['destination'], 'INFO', 'dry-run mode activate')
+        # Set excludes
+        if flags.exclude:
+            for exclude in flags.exclude:
+                command.append('--exclude={0}'.format(exclude))
         if flags.log:
             log_path = os.path.join(compose_destination(host, flags.destination), 'backup.log')
             command.append(
@@ -382,6 +386,10 @@ def compose_command(flags, host):
         if flags.dry_run:
             command.append('--dry-run')
             utility.write_log(log_args['status'], log_args['destination'], 'INFO', 'dry-run mode activate')
+        # Set excludes
+        if flags.exclude:
+            for exclude in flags.exclude:
+                command.append('--exclude={0}'.format(exclude))
         if flags.log:
             log_path = os.path.join(rpath, 'restore.log')
             command.append(
@@ -1061,6 +1069,7 @@ def parse_arguments():
     group_backup.add_argument('--bwlimit', '-b', help='Bandwidth limit in KBPS.', dest='bwlimit', action='store',
                               type=int)
     group_backup.add_argument('--ssh-port', '-P', help='Custom ssh port.', dest='port', action='store', type=int)
+    group_backup.add_argument('--exclude', '-E', help='Exclude pattern', dest='exclude', action='store', nargs='+')
     # restore session
     restore = action.add_parser('restore', help='Restore options', parents=[parent_parser])
     group_restore = restore.add_argument_group(title='Restore options')
@@ -1084,6 +1093,7 @@ def parse_arguments():
     group_restore.add_argument('--bwlimit', '-b', help='Bandwidth limit in KBPS.', dest='bwlimit', action='store',
                                type=int)
     group_restore.add_argument('--ssh-port', '-P', help='Custom ssh port.', dest='port', action='store', type=int)
+    group_restore.add_argument('--exclude', '-E', help='Exclude pattern', dest='exclude', action='store', nargs='+')
     # archive session
     archive = action.add_parser('archive', help='Archive options', parents=[parent_parser])
     group_archive = archive.add_argument_group(title='Archive options')

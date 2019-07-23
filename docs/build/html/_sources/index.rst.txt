@@ -186,7 +186,9 @@ Two macro-options are available:
 * **Init configuration**: Generate new or remove configuration.
      --new, -n             Generate new configuration.
      --remove, -r          Remove exist configuration.
-     --init INIT, -i INIT  Reset catalog file. Specify path of backup folder.
+     --init, -i            Reset catalog file. Specify path of backup folder.
+     --delete-host, -D     Delete all entry for a single HOST in catalog.
+     --clean, -c           Cleans the catalog if it is corrupt, setting default values.
 
 * **Deploy configuration**: Deploy configuration to client: hostname or ip address.
      --deploy, -d          Deploy configuration to client: hostname or ip address.
@@ -317,6 +319,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                     [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL]
                     [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC]
                     [--bwlimit BWLIMIT] [--ssh-port PORT]
+                    [--exclude EXCLUDE [EXCLUDE ...]]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -355,6 +358,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                            Bandwidth limit in KBPS.
      --ssh-port PORT, -P PORT
                            Custom ssh port.
+     --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
+                           Exclude pattern
 
 
 
@@ -410,6 +415,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
    --rsync-path, -R        Select a custom rsync path.
    --bwlimit, -b           Bandwidth limit in KBPS.
    --ssh-port, -P          Custom ssh port.
+   --exclude, -E           Exclude pattern. Follow rsync "Exclude Pattern Rules"
 
 Flowchart of the differences between Differential and Incremental backup::
 
@@ -684,7 +690,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
                      (--backup-id ID | --last) [--user USER] --computer HOSTNAME
                      [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
                      [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT]
-                     [--ssh-port PORT]
+                     [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -714,8 +720,8 @@ The restore process is the exact opposite of the backup process. It takes the fi
                            Bandwidth limit in KBPS.
      --ssh-port PORT, -P PORT
                            Custom ssh port.
-
-
+     --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
+                           Exclude pattern
 
 
 * **Restore options**
@@ -736,6 +742,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
    --rsync-path, -R        Select a custom rsync path.
    --bwlimit, -b           Bandwidth limit in KBPS.
    --ssh-port, -P          Custom ssh port.
+   --exclude, -E           Exclude pattern. Follow rsync "Exclude Pattern Rules"
 
 
 This is a few examples:
