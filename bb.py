@@ -61,7 +61,9 @@ from multiprocessing import Pool
 from utility import print_verbose
 
 # region Global Variables
-VERSION = '1.6.3'
+VERSION = '1.7.0'
+
+
 # endregion
 
 
@@ -153,7 +155,7 @@ def run_in_parallel(fn, commands, limit):
 
     for command, plog in zip(commands, logs):
         # Run the function
-        proc = pool.apply_async(func=fn, args=(command, ))
+        proc = pool.apply_async(func=fn, args=(command,))
         jobs.append(proc)
         print('Start {0} {1}'.format(args.action, plog['hostname']))
         print_verbose(args.verbose, "rsync command: {0}".format(command))
@@ -620,7 +622,7 @@ def count_full(config, name):
     if config:
         for bid in config.sections():
             if ((config.get(bid, 'type') == 'Full' or
-                config.get(bid, 'type') == 'Incremental') and
+                 config.get(bid, 'type') == 'Incremental') and
                     config.get(bid, 'name') == name):
                 count += 1
     return count
@@ -1007,9 +1009,7 @@ def parse_arguments():
 
     # Create principal parser
     parser_object = argparse.ArgumentParser(prog='bb', description=utility.PrintColor.BOLD + 'Butterfly Backup'
-                                            + utility.PrintColor.END, epilog=check_rsync(),
-                                            parents=[parent_parser])
-
+                                            + utility.PrintColor.END, epilog=check_rsync(), parents=[parent_parser])
     # Create sub_parser "action"
     action = parser_object.add_subparsers(title='action', description='Valid action', help='Available actions',
                                           dest='action')
