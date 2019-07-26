@@ -908,6 +908,20 @@ The export function is used to copy a particular backup to another path.
                            Custom ssh port.
 
 
+* **Export options**
+   --catalog, -C           Select the backups folder (root).
+   --backup-id, -i         Select backup id in the catalog.
+   --destination, -d       Destination path.
+   --mirror, -m            Mirror backup on destination.
+   --cut, -c               Delete source like a move.
+   --include, -I           Include pattern. Follow rsync "Include Pattern Rules"
+   --exclude, -E           Exclude pattern. Follow rsync "Exclude Pattern Rules"
+   --timeout, -T           Specify number of seconds of I/O timeout.
+   --mirror, -m            Mirror mode. If a file or folder not exist in destination, will delete it. Overwrite files.
+   --skip-error, -e        Skip error. Quiet mode.
+   --rsync-path, -R        Select a custom rsync path.
+   --bwlimit, -b           Bandwidth limit in KBPS.
+   --ssh-port, -P          Custom ssh port.
 
 Export a backup in other directory:
 

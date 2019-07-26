@@ -1193,6 +1193,75 @@ Export options:
                         Custom ssh port.
 </pre></div>
 </div>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>Export options</strong></dt>
+<dd><table class="first last docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">--catalog</span>, <span class="option">-C</span></kbd></td>
+<td><p class="first last">Select the backups folder (root).</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--backup-id</span>, <span class="option">-i</span></kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first last">Select backup id in the catalog.</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--destination</span>, <span class="option">-d</span></kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first last">Destination path.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--mirror</span>, <span class="option">-m</span></kbd></td>
+<td><p class="first last">Mirror backup on destination.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--cut</span>, <span class="option">-c</span></kbd></td>
+<td><p class="first last">Delete source like a move.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--include</span>, <span class="option">-I</span></kbd></td>
+<td><p class="first last">Include pattern. Follow rsync “Include Pattern Rules”</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--exclude</span>, <span class="option">-E</span></kbd></td>
+<td><p class="first last">Exclude pattern. Follow rsync “Exclude Pattern Rules”</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--timeout</span>, <span class="option">-T</span></kbd></td>
+<td><p class="first last">Specify number of seconds of I/O timeout.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--mirror</span>, <span class="option">-m</span></kbd></td>
+<td><p class="first last">Mirror mode. If a file or folder not exist in destination, will delete it. Overwrite files.</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--skip-error</span>, <span class="option">-e</span></kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first last">Skip error. Quiet mode.</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--rsync-path</span>, <span class="option">-R</span></kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first last">Select a custom rsync path.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--bwlimit</span>, <span class="option">-b</span></kbd></td>
+<td><p class="first last">Bandwidth limit in KBPS.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--ssh-port</span>, <span class="option">-P</span></kbd></td>
+<td><p class="first last">Custom ssh port.</p>
+</td></tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</li>
+</ul>
 <p>Export a backup in other directory:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb <span class="nb">export</span> --catalog /mnt/backup/ --backup-id f0f700e8-0435-11e9-9e78-005056a664e0 --destination /mnt/backup/export --verbose
 INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
