@@ -1546,6 +1546,9 @@ if __name__ == '__main__':
             cmd.append('{}'.format(os.path.join(args.destination, export_catalog[args.id]['Name'])))
             utility.write_log(log_args['status'], log_args['destination'], 'INFO',
                               'Export command {0}.'.format(" ".join(cmd)))
+            # Check cut option
+            if args.cut:
+                write_catalog(os.path.join(args.catalog, '.catalog.cfg'), args.id, 'cleaned', 'True')
             # Start export
             cmds.append(' '.join(cmd))
             run_in_parallel(start_process, cmds, 1)
