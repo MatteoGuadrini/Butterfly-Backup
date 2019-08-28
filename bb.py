@@ -61,7 +61,7 @@ from multiprocessing import Pool
 from utility import print_verbose
 
 # region Global Variables
-VERSION = '1.7.0'
+VERSION = '1.7.1'
 
 
 # endregion
@@ -305,7 +305,8 @@ def compose_command(flags, host):
             if last_bck:
                 command.append('-ahu')
                 command.append('--no-links')
-                command.append('--link-dest={0}'.format(last_bck[0]))
+                if not flags.sfrom:
+                    command.append('--link-dest={0}'.format(last_bck[0]))
                 # Write catalog file
                 write_catalog(catalog_path, backup_id, 'type', 'Incremental')
             else:
@@ -318,7 +319,8 @@ def compose_command(flags, host):
             if last_full:
                 command.append('-ahu')
                 command.append('--no-links')
-                command.append('--link-dest={0}'.format(last_full[0]))
+                if not flags.sfrom:
+                    command.append('--link-dest={0}'.format(last_full[0]))
                 # Write catalog file
                 write_catalog(catalog_path, backup_id, 'type', 'Differential')
             else:
@@ -1057,7 +1059,7 @@ def parse_arguments():
                               choices=['Unix', 'Windows', 'MacOS'], required=True)
     group_backup.add_argument('--compress', '-z', help='Compress data', dest='compress',
                               action='store_true')
-    group_backup.add_argument('--retention', '-r', help='First argument is days of backup retention. '
+    group_backup.add_argument('--retention', '-r', help='First argument are days of backup retention. '
                                                         'Second argument is minimum number of backup retention',
                               dest='retention', action='store', nargs='*', metavar=('DAYS', 'NUMBER'), type=int)
     group_backup.add_argument('--parallel', '-p', help='Number of parallel jobs', dest='parallel', action='store',
@@ -1070,6 +1072,8 @@ def parse_arguments():
                               type=int)
     group_backup.add_argument('--ssh-port', '-P', help='Custom ssh port.', dest='port', action='store', type=int)
     group_backup.add_argument('--exclude', '-E', help='Exclude pattern', dest='exclude', action='store', nargs='+')
+    group_backup.add_argument('--start-from', '-s', help='Backup id where start a new backup', dest='sfrom',
+                              action='store', metavar='ID')
     # restore session
     restore = action.add_parser('restore', help='Restore options', parents=[parent_parser])
     group_restore = restore.add_argument_group(title='Restore options')
@@ -1206,7 +1210,7 @@ if __name__ == '__main__':
                 continue
             if not args.verbose:
                 if check_configuration(hostname):
-                    print(utility.PrintColor.RED + '''ERROR: For bulk or silently backup to deploy configuration!
+                    print(utility.PrintColor.RED + '''ERROR: For bulk or silently backup, deploy configuration!
                             See bb deploy --help or specify --verbose''' + utility.PrintColor.END)
                     continue
             # Log information's
@@ -1219,8 +1223,24 @@ if __name__ == '__main__':
             }
             logs.append(log_args)
             catalog_path = os.path.join(args.destination, '.catalog.cfg')
+            backup_catalog = read_catalog(catalog_path)
             # Compose command
             cmd = compose_command(args, hostname)
+            # Check if start-from is specified
+            if args.sfrom:
+                if backup_catalog.has_section(args.sfrom):
+                    # Check if exist path of backup
+                    if os.path.exists(backup_catalog[args.sfrom]['path']):
+                        cmd.append('--copy-dest={0}'.format(backup_catalog[args.sfrom]['path']))
+                    else:
+                        print(utility.PrintColor.YELLOW +
+                              'WARNING: Backup folder {0} not exist!'.format(backup_catalog[args.sfrom]['path'])
+                              + utility.PrintColor.END)
+                else:
+                    print(utility.PrintColor.RED +
+                          'ERROR: Backup id {0} not exist in catalog {1}!'.format(args.sfrom, args.destination)
+                          + utility.PrintColor.END)
+                    exit(1)
             print_verbose(args.verbose, 'Create a folder structure for {0} os'.format(args.type))
             # Write catalog file
             write_catalog(catalog_path, backup_id, 'name', hostname)
@@ -1267,8 +1287,8 @@ if __name__ == '__main__':
         if not args.type and args.id:
             args.type = get_restore_os()
         # Read catalog file
-        restore_catalog = read_catalog(os.path.join(args.catalog, '.catalog.cfg'))
         catalog_path = os.path.join(args.catalog, '.catalog.cfg')
+        restore_catalog = read_catalog(catalog_path)
         # Check if select backup-id or last backup
         if args.last:
             rhost = hostname

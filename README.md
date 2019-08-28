@@ -9,43 +9,46 @@
 Butterfly Backup is a _simple_ command line wrapper of rsync for _complex_ task, written in python.
 
 ## Why butterfly?
-Butterfly Backup exploits the potential of rsync with maximum simplicity, and more.
+Butterfly Backup exploits the potential of rsync with maximum simplicity, maximum flexibility and more. Moreover,
+its greatest strength is the organization of backups in a catalog, easy to consult.
 
 ## What can I do?
-With Butterfly Backup I can perform single or group backups (Full, Incremental and Mirror), restore and archive old backups.
+With Butterfly Backup I can perform single or group backups (Full, Incremental, Differential and Mirror), restore, export, list and archive old backups.
 
 ## How can you do it?
-Naturally through the synergy of rsync and OpenSSH technology.
+Naturally through the synergy of rsync and OpenSSH technology and the power of Python..
 
 ## Which platforms support?
-Butterfly Backup run on Linux, BSD, MacOSX and Windows(with cygwin, see config [docs](https://Butterfly-Backup.readthedocs.io/en/latest/))
+Butterfly Backup run on Linux, BSD, MacOSX and Windows(with cygwin, see [config docs](https://Butterfly-Backup.readthedocs.io/en/latest/))
 
 ## Real uses
 This list consists of only a few examples; applications can be endless:
-* Backing up a folder where I store my photos over the years;
+* Backing up periodically (ex. once a month) a folder where I store my photos over the years;
 * Log's backup of one or more servers;
 * Backup of users of one or more machines;
 * Backup system config of much servers;
 * Create a backup snapshot of the my laptop;
-* Create a central server than backupping client and server
+* Create a central server than backupping client and server;
 * Backup a entire file server, incrementally;
 
 ## Real possibilities
-- Configuration for silently backup
+- Configuration for silently or bulk backup
 - All backup are organized into a catalog
 - List single or all backup by the catalog
+- List detail of a single backup
 - Backup single PC, with Full,Incremental,Differential and Mirror mode;
 - Backup more PCs, with Full,Incremental,Differential and Mirror mode (with parallelism algorithm);
-- Backup custom folder or predefined data (User,Config,Application,System,Log)
+- Backup custom folder or predefined data (User,Config,Application,System,Log): see [backup docs](https://butterfly-backup.readthedocs.io/en/latest/#backup)
 - Restore backup on the same PC
 - Restore backup in other PC
 - Restore backup in other operating system
 - Apply retention policy to delete old backup
 - Archive old backup in other file system or same (zip backup folder)
+- Export one backup to another file system
 
 
 # Butterfly Backup: in action
-**Transform rsync in a powerfully backup/restore tool**
+**Transform rsync in a powerfully backup/restore/archive tool**
 
 ## Operation
 All operation of Butterfly Backup are _server to client_, agent-less.
@@ -60,6 +63,7 @@ git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
 cd Butterfly-Backup
 sudo python3 setup.py
 bb --help
+man bb
 ```
 
 ### Backup machine
@@ -152,7 +156,7 @@ bb --help
 The name butterfly, is born precisely because agent-less; like a butterfly takes the pollen from a flower and brings it elsewhere.
 A backup or restore is performed without any iteration responsibility on the part of the final machine.
 The performances are not altered.
-While all the operations of Butterfly Backup are carried out, the impacted machine can continuously work with peace of mind.
+While all the operations of Butterfly Backup are carried out, the impacted machine can continuously work with _peace of mind_.
 
 ## Follow the project
 See the new features in development through this [link](https://tree.taiga.io/project/matteoguadrini-butterfly-backup/kanban).

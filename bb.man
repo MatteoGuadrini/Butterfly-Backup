@@ -1,6 +1,6 @@
 .\" Manpage for Butterfly Backup.
 .\" Contact matteo.guadrini@hotmail.it to correct errors or typos.
-.TH man 1 "25 Jul 2019" "1.7.0" "bb man page"
+.TH man 1 "28 Aug 2019" "1.7.1" "bb man page"
 .SH NAME
 bb \- Butterfly Backup - backup/restore/archive tool , agentless
 .SH SYNOPSIS
@@ -56,6 +56,8 @@ action:
     --ssh-port, -P          Custom ssh port.
     --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
                            Exclude pattern
+    --start-from ID, -s ID
+                           The new backup is based on another backup, specified by its ID.
 
 .B list
 [ACTION]

@@ -319,7 +319,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                     [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL]
                     [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC]
                     [--bwlimit BWLIMIT] [--ssh-port PORT]
-                    [--exclude EXCLUDE [EXCLUDE ...]]
+                    [--exclude EXCLUDE [EXCLUDE ...]] [--start-from ID]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -345,7 +345,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                            Type of operating system to backup
      --compress, -z        Compress data
      --retention [DAYS [NUMBER ...]], -r [DAYS [NUMBER ...]]
-                           First argument is days of backup retention. Second
+                           First argument are days of backup retention. Second
                            argument is minimum number of backup retention
      --parallel PARALLEL, -p PARALLEL
                            Number of parallel jobs
@@ -360,6 +360,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
                            Custom ssh port.
      --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
                            Exclude pattern
+     --start-from ID, -s ID
+                           Backup id where start a new backup
 
 
 
@@ -416,6 +418,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
    --bwlimit, -b           Bandwidth limit in KBPS.
    --ssh-port, -P          Custom ssh port.
    --exclude, -E           Exclude pattern. Follow rsync "Exclude Pattern Rules"
+   --start-from, -s        The new backup is based on another backup, specified by its ID.
 
 Flowchart of the differences between Differential and Incremental backup::
 

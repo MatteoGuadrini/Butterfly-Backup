@@ -493,7 +493,7 @@ usage: bb backup <span class="o">[</span>-h<span class="o">]</span> <span class=
                  <span class="o">[</span>--retention <span class="o">[</span>DAYS <span class="o">[</span>NUMBER ...<span class="o">]]]</span> <span class="o">[</span>--parallel PARALLEL<span class="o">]</span>
                  <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span> <span class="o">[</span>--skip-error<span class="o">]</span> <span class="o">[</span>--rsync-path RSYNC<span class="o">]</span>
                  <span class="o">[</span>--bwlimit BWLIMIT<span class="o">]</span> <span class="o">[</span>--ssh-port PORT<span class="o">]</span>
-                 <span class="o">[</span>--exclude EXCLUDE <span class="o">[</span>EXCLUDE ...<span class="o">]]</span>
+                 <span class="o">[</span>--exclude EXCLUDE <span class="o">[</span>EXCLUDE ...<span class="o">]]</span> <span class="o">[</span>--start-from ID<span class="o">]</span>
 
 optional arguments:
   -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
@@ -519,7 +519,7 @@ Backup options:
                         Type of operating system to backup
   --compress, -z        Compress data
   --retention <span class="o">[</span>DAYS <span class="o">[</span>NUMBER ...<span class="o">]]</span>, -r <span class="o">[</span>DAYS <span class="o">[</span>NUMBER ...<span class="o">]]</span>
-                        First argument is days of backup retention. Second
+                        First argument are days of backup retention. Second
                         argument is minimum number of backup retention
   --parallel PARALLEL, -p PARALLEL
                         Number of parallel <span class="nb">jobs</span>
@@ -534,6 +534,8 @@ Backup options:
                         Custom ssh port.
   --exclude EXCLUDE <span class="o">[</span>EXCLUDE ...<span class="o">]</span>, -E EXCLUDE <span class="o">[</span>EXCLUDE ...<span class="o">]</span>
                         Exclude pattern
+  --start-from ID, -s ID
+                        Backup id where start a new backup
 </pre></div>
 </div>
 <ul>
@@ -658,6 +660,11 @@ and minimum number of backup retention (optional).</p>
 <tr><td class="option-group">
 <kbd><span class="option">--exclude</span>, <span class="option">-E</span></kbd></td>
 <td><p class="first last">Exclude pattern. Follow rsync “Exclude Pattern Rules”</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--start-from</span>, <span class="option">-s</span></kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first last">The new backup is based on another backup, specified by its ID.</p>
 </td></tr>
 </tbody>
 </table>
