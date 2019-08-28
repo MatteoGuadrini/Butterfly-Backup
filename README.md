@@ -175,3 +175,5 @@ They were born in 1990 to respond to the appeal of patients suffering from rare 
 Come today, we are organized to dare to listen to them and answers, every day of the year.
 
 <a href="https://dona.telethon.it/it/dona-ora"> <img src="http://www.telethon.it/sites/all/themes/telethon/images/svg/logo.svg" alt="Telethon" title="Telethon" width="200" height="104" /> </a>
+
+[Adopt the future](https://www.ioadottoilfuturo.it/)

@@ -973,3 +973,5 @@ Come today, we are organized to dare to listen to them and answers, every day of
     :height: 104 px
     :width: 200 px
     :target: https://dona.telethon.it/it/dona-ora
+
+`Adopt the future <https://www.ioadottoilfuturo.it/>`_
