@@ -602,7 +602,7 @@ To query this catalog, the list command exists.
 
    arthur@heartofgold$ bb list --help
    usage: bb list [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
-                  [--backup-id ID | --archived | --cleaned | --computer HOSTNAME]
+                  [--backup-id ID | --archived | --cleaned | --computer HOSTNAME | --detail ID]
                   [--oneline]
 
    optional arguments:
@@ -620,6 +620,7 @@ To query this catalog, the list command exists.
      --cleaned, -c         List only cleaned backup
      --computer HOSTNAME, -H HOSTNAME
                            List only match hostname or ip
+     --detail ID, -d ID    List detail of file and folder of specific backup-id
      --oneline, -o         One line output
 
 
@@ -629,6 +630,7 @@ To query this catalog, the list command exists.
    --archived, -a          List only archived backups.
    --cleaned, -c           List only cleaned backups.
    --computer, -H          List only match hostname or ip.
+   --detail, -d            List detail of file and folder of specific backup-id.
    --oneline, -o           One line and concise output.
 
 First, let's query the catalog:
@@ -675,6 +677,12 @@ If you want to export the catalog list instead, include the log flag:
 
    arthur@heartofgold$ bb list --catalog /mnt/backup --log
    arthur@heartofgold$ cat /mnt/backup/backup.list
+
+Instead if you want to see the details of your backup, add details flag:
+
+.. code-block:: bash
+
+   arthur@heartofgold$ bb list --catalog /mnt/backup --detail dd6de2f2-9a1e-11e8-82b0-005056a664e0
 
 Now that we have identified a backup, let's proceed with the restore
 

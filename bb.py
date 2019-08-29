@@ -61,7 +61,7 @@ from multiprocessing import Pool
 from utility import print_verbose
 
 # region Global Variables
-VERSION = '1.7.1'
+VERSION = '1.7.2'
 
 
 # endregion
@@ -239,6 +239,9 @@ def get_std_out():
             stdout = 'STDOUT'
         else:
             stdout = 'DEVNULL'
+        return stdout
+    else:
+        stdout = 'STDOUT'
         return stdout
 
 
@@ -1120,6 +1123,8 @@ def parse_arguments():
                                      action='store_true')
     group_list_mutually.add_argument('--computer', '-H', help='List only match hostname or ip', dest='hostname',
                                      action='store')
+    group_list_mutually.add_argument('--detail', '-d', help='List detail of file and folder of specific backup-id',
+                                     dest='detail', action='store', metavar='ID')
     group_list.add_argument('--oneline', '-o', help='One line output', dest='oneline', action='store_true')
     # export session
     export_action = action.add_parser('export', help='Export options', parents=[parent_parser])
@@ -1384,7 +1389,7 @@ if __name__ == '__main__':
             'status': args.log,
             'destination': os.path.join(args.catalog, 'backup.list')
         }
-        # Read catalog filehey are o
+        # Read catalog file
         list_catalog = read_catalog(os.path.join(args.catalog, '.catalog.cfg'))
         # Check specified argument backup-id
         if args.id:
@@ -1455,6 +1460,24 @@ if __name__ == '__main__':
                 else:
                     print('List: ' + utility.PrintColor.DARKCYAN + ' '.join(os.listdir(list_catalog[args.id]['path'])) +
                           utility.PrintColor.END)
+        elif args.detail:
+            log_args['hostname'] = list_catalog[args.detail]['name']
+            logs = [log_args]
+            utility.print_verbose(args.verbose, "List detail of backup-id: {0}".format(args.detail))
+            print('Detail of backup folder: ' + utility.PrintColor.DARKCYAN
+                  + list_catalog[args.detail]['path'] + utility.PrintColor.END)
+            print('List: ' + utility.PrintColor.DARKCYAN + '\n'.join(os.listdir(list_catalog[args.detail]['path']))
+                           + utility.PrintColor.END)
+            if log_args['status']:
+                utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                                  'BUTTERFLY BACKUP DETAIL (BACKUP-ID: {0} PATH: {1})'.format(
+                                  args.detail, list_catalog[args.detail]['path'])
+                                  )
+                cmd = 'rsync --list-only -r --log-file={0} {1}'.format(log_args['destination'],
+                                                                       list_catalog[args.detail]['path'])
+            else:
+                cmd = 'rsync --list-only -r {0}'.format(list_catalog[args.detail]['path'])
+            start_process(cmd)
         elif args.archived:
             utility.print_verbose(args.verbose, "List all archived backup in catalog")
             text = 'BUTTERFLY BACKUP CATALOG (ARCHIVED)\n\n'

@@ -825,7 +825,7 @@ but only Increments. We recommend doing more Full for better retention managemen
 To query this catalog, the list command exists.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb list --help
 usage: bb list <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span> --catalog CATALOG
-               <span class="o">[</span>--backup-id ID <span class="p">|</span> --archived <span class="p">|</span> --cleaned <span class="p">|</span> --computer HOSTNAME<span class="o">]</span>
+               <span class="o">[</span>--backup-id ID <span class="p">|</span> --archived <span class="p">|</span> --cleaned <span class="p">|</span> --computer HOSTNAME <span class="p">|</span> --detail ID<span class="o">]</span>
                <span class="o">[</span>--oneline<span class="o">]</span>
 
 optional arguments:
@@ -843,6 +843,7 @@ List options:
   --cleaned, -c         List only cleaned backup
   --computer HOSTNAME, -H HOSTNAME
                         List only match hostname or ip
+  --detail ID, -d ID    List detail of file and folder of specific backup-id
   --oneline, -o         One line output
 </pre></div>
 </div>
@@ -873,6 +874,10 @@ List options:
 <tr><td class="option-group">
 <kbd><span class="option">--computer</span>, <span class="option">-H</span></kbd></td>
 <td><p class="first last">List only match hostname or ip.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--detail</span>, <span class="option">-d</span></kbd></td>
+<td><p class="first last">List detail of file and folder of specific backup-id.</p>
 </td></tr>
 <tr><td class="option-group">
 <kbd><span class="option">--oneline</span>, <span class="option">-o</span></kbd></td>
@@ -921,6 +926,10 @@ Users
 <p>If you want to export the catalog list instead, include the log flag:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb list --catalog /mnt/backup --log
 arthur@heartofgold$ cat /mnt/backup/backup.list
+</pre></div>
+</div>
+<p>Instead if you want to see the details of your backup, add details flag:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb list --catalog /mnt/backup --detail dd6de2f2-9a1e-11e8-82b0-005056a664e0
 </pre></div>
 </div>
 <p>Now that we have identified a backup, let’s proceed with the restore</p>
