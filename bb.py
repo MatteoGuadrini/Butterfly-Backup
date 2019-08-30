@@ -61,7 +61,7 @@ from multiprocessing import Pool
 from utility import print_verbose
 
 # region Global Variables
-VERSION = '1.7.2'
+VERSION = '1.7.3'
 
 
 # endregion
@@ -1014,7 +1014,8 @@ def parse_arguments():
 
     # Create principal parser
     parser_object = argparse.ArgumentParser(prog='bb', description=utility.PrintColor.BOLD + 'Butterfly Backup'
-                                            + utility.PrintColor.END, epilog=check_rsync(), parents=[parent_parser])
+                                                                   + utility.PrintColor.END, epilog=check_rsync(),
+                                            parents=[parent_parser])
     # Create sub_parser "action"
     action = parser_object.add_subparsers(title='action', description='Valid action', help='Available actions',
                                           dest='action')
@@ -1351,6 +1352,9 @@ if __name__ == '__main__':
             logs.append(log_args)
             # Compose command
             cmd = compose_command(args, rhost)
+            # ATTENTION: permit access to anyone users
+            if ros == 'Windows':
+                cmd.append('--chmod=ugo=rwX')
             # Compose source and destination
             src_dst = compose_restore_src_dst(bos, ros, os.path.basename(rf))
             if src_dst:
@@ -1467,11 +1471,11 @@ if __name__ == '__main__':
             print('Detail of backup folder: ' + utility.PrintColor.DARKCYAN
                   + list_catalog[args.detail]['path'] + utility.PrintColor.END)
             print('List: ' + utility.PrintColor.DARKCYAN + '\n'.join(os.listdir(list_catalog[args.detail]['path']))
-                           + utility.PrintColor.END)
+                  + utility.PrintColor.END)
             if log_args['status']:
                 utility.write_log(log_args['status'], log_args['destination'], 'INFO',
                                   'BUTTERFLY BACKUP DETAIL (BACKUP-ID: {0} PATH: {1})'.format(
-                                  args.detail, list_catalog[args.detail]['path'])
+                                      args.detail, list_catalog[args.detail]['path'])
                                   )
                 cmd = 'rsync --list-only -r --log-file={0} {1}'.format(log_args['destination'],
                                                                        list_catalog[args.detail]['path'])
