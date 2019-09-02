@@ -61,7 +61,7 @@ from multiprocessing import Pool
 from utility import print_verbose
 
 # region Global Variables
-VERSION = '1.7.3'
+VERSION = '1.8.0'
 
 
 # endregion
@@ -439,6 +439,9 @@ def compose_command(flags, host):
         # Set ssh custom port
         if flags.port:
             command.append('--rsh "ssh -p {0}"'.format(flags.port))
+        # No copy symbolic link
+        if flags.all:
+            command.append('--safe-links')
         # Set dry-run mode
         if flags.dry_run:
             command.append('--dry-run')
@@ -1132,7 +1135,9 @@ def parse_arguments():
     group_export = export_action.add_argument_group(title='Export options')
     group_export.add_argument('--catalog', '-C', help='Folder where is catalog file', dest='catalog', action='store',
                               required=True)
-    group_export.add_argument('--backup-id', '-i', help='Backup-id of backup', dest='id', action='store', required=True)
+    group_export_id_or_all = group_export.add_mutually_exclusive_group()
+    group_export_id_or_all.add_argument('--backup-id', '-i', help='Backup-id of backup', dest='id', action='store')
+    group_export_id_or_all.add_argument('--all', '-A', help='All backup', dest='all', action='store_true')
     group_export.add_argument('--destination', '-d', help='Destination path', dest='destination', action='store',
                               required=True)
     group_export.add_argument('--mirror', '-m', help='Mirror mode', dest='mirror', action='store_true')
@@ -1562,40 +1567,56 @@ if __name__ == '__main__':
     if args.action == 'export':
         cmds = list()
         # Read catalog file
-        export_catalog = read_catalog(os.path.join(args.catalog, '.catalog.cfg'))
-        # Check specified argument backup-id
-        if not export_catalog.has_section(args.id):
-            print(utility.PrintColor.RED +
-                  'ERROR: Backup-id {0} not exist!'.format(args.id)
-                  + utility.PrintColor.END)
-            exit(1)
-        print_verbose(args.verbose, 'Export backup with id {0}'.format(args.id))
-        # Log info
-        log_args = {
-            'hostname': export_catalog[args.id]['Name'],
-            'status': args.log,
-            'destination': os.path.join(export_catalog[args.id]['Path'], 'export.log')
-        }
         catalog_path = os.path.join(args.catalog, '.catalog.cfg')
-        if os.path.exists(export_catalog[args.id]['Path']) and os.path.exists(args.destination):
-            # Export
-            utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                              'Export {0}. Folder {1} to {2}'.format(args.id, export_catalog[args.id]['Path'],
-                                                                     args.destination))
+        export_catalog = read_catalog(catalog_path)
+        if os.path.exists(args.destination):
             # Compose command
             print_verbose(args.verbose, 'Build a rsync command')
-            logs = list()
-            logs.append(log_args)
             cmd = compose_command(args, None)
-            # Add source
-            cmd.append('{}'.format(export_catalog[args.id]['Path']))
-            # Add destination
-            cmd.append('{}'.format(os.path.join(args.destination, export_catalog[args.id]['Name'])))
-            utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                              'Export command {0}.'.format(" ".join(cmd)))
-            # Check cut option
-            if args.cut:
-                write_catalog(os.path.join(args.catalog, '.catalog.cfg'), args.id, 'cleaned', 'True')
+            # Check one export or all
+            if args.all:
+                # Log info
+                log_args = {
+                    'hostname': 'all_backup',
+                    'status': args.log,
+                    'destination': os.path.join(args.destination, 'export.log')
+                }
+                logs = list()
+                logs.append(log_args)
+                # Add source
+                cmd.append('{}'.format(os.path.join(args.catalog, '')))
+                # Add destination
+                cmd.append('{}'.format(args.destination))
+            else:
+                # Log info
+                log_args = {
+                    'hostname': export_catalog[args.id]['Name'],
+                    'status': args.log,
+                    'destination': os.path.join(export_catalog[args.id]['Path'], 'export.log')
+                }
+                logs = list()
+                logs.append(log_args)
+                # Check specified argument backup-id
+                if not export_catalog.has_section(args.id):
+                    print(utility.PrintColor.RED +
+                          'ERROR: Backup-id {0} not exist!'.format(args.id)
+                          + utility.PrintColor.END)
+                    exit(1)
+                # Export
+                utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                                  'Export {0}. Folder {1} to {2}'.format(args.id, export_catalog[args.id]['Path'],
+                                                                         args.destination))
+                print_verbose(args.verbose, 'Export backup with id {0}'.format(args.id))
+                if os.path.exists(export_catalog[args.id]['Path']):
+                    # Add source
+                    cmd.append('{}'.format(export_catalog[args.id]['Path']))
+                    # Add destination
+                    cmd.append('{}'.format(os.path.join(args.destination, export_catalog[args.id]['Name'])))
+                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                                      'Export command {0}.'.format(" ".join(cmd)))
+                    # Check cut option
+                    if args.cut:
+                        write_catalog(os.path.join(args.catalog, '.catalog.cfg'), args.id, 'cleaned', 'True')
             # Start export
             cmds.append(' '.join(cmd))
             run_in_parallel(start_process, cmds, 1)

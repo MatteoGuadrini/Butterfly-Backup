@@ -884,8 +884,8 @@ The export function is used to copy a particular backup to another path.
 
    arthur@heartofgold$ bb export -h
    usage: bb export [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
-                    --backup-id ID --destination DESTINATION [--mirror] [--cut]
-                    [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE
+                    [--backup-id ID | --all] --destination DESTINATION [--mirror]
+                    [--cut] [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE
                     [EXCLUDE ...]] [--timeout TIMEOUT] [--skip-error]
                     [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]
 
@@ -900,6 +900,7 @@ The export function is used to copy a particular backup to another path.
                            Folder where is catalog file
      --backup-id ID, -i ID
                            Backup-id of backup
+     --all, -A             All backup
      --destination DESTINATION, -d DESTINATION
                            Destination path
      --mirror, -m          Mirror mode
@@ -919,9 +920,11 @@ The export function is used to copy a particular backup to another path.
                            Custom ssh port.
 
 
+
 * **Export options**
    --catalog, -C           Select the backups folder (root).
    --backup-id, -i         Select backup id in the catalog.
+   --all, -A               All backup
    --destination, -d       Destination path.
    --mirror, -m            Mirror backup on destination.
    --cut, -c               Delete source like a move.
@@ -942,6 +945,19 @@ Export a backup in other directory:
    INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
    INFO: Build a rsync command
    Start export host1
+   ...
+   INFO: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
+   SUCCESS: Command rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
+
+Export all backup in other directory:
+
+.. code-block:: bash
+
+   arthur@heartofgold$ bb export --catalog /mnt/backup/ --all --destination /mnt/backup/export --verbose
+   INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
+   INFO: Build a rsync command
+   Start export host1
+   ...
    INFO: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
    SUCCESS: Command rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
 
@@ -953,6 +969,7 @@ Export a backup with exclude pdf files:
    INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
    INFO: Build a rsync command
    Start export host1
+   ...
    INFO: rsync command: rsync -ah --no-links -vP --exclude=*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
    SUCCESS: Command rsync -ah --no-links -vP --exclude=*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
 

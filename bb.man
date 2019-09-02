@@ -1,6 +1,6 @@
 .\" Manpage for Butterfly Backup.
 .\" Contact matteo.guadrini@hotmail.it to correct errors or typos.
-.TH man 1 "29 Aug 2019" "1.7.2" "bb man page"
+.TH man 1 "2 Sep 2019" "1.8.0" "bb man page"
 .SH NAME
 bb \- Butterfly Backup - backup/restore/archive tool , agentless
 .SH SYNOPSIS
@@ -131,6 +131,7 @@ Deploy configuration:
                            Folder where is catalog file
     --backup-id ID, -i ID
                           Backup-id of backup
+    --all, -A             All backup
     --destination DESTINATION, -d DESTINATION
                           Destination path
     --mirror, -m          Mirror mode

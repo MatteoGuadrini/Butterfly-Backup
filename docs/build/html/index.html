@@ -1174,8 +1174,8 @@ Archived: True
 <p>The export function is used to copy a particular backup to another path.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb <span class="nb">export</span> -h
 usage: bb <span class="nb">export</span> <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span> --catalog CATALOG
-                 --backup-id ID --destination DESTINATION <span class="o">[</span>--mirror<span class="o">]</span> <span class="o">[</span>--cut<span class="o">]</span>
-                 <span class="o">[</span>--include INCLUDE <span class="o">[</span>INCLUDE ...<span class="o">]</span> <span class="p">|</span> --exclude EXCLUDE
+                 <span class="o">[</span>--backup-id ID <span class="p">|</span> --all<span class="o">]</span> --destination DESTINATION <span class="o">[</span>--mirror<span class="o">]</span>
+                 <span class="o">[</span>--cut<span class="o">]</span> <span class="o">[</span>--include INCLUDE <span class="o">[</span>INCLUDE ...<span class="o">]</span> <span class="p">|</span> --exclude EXCLUDE
                  <span class="o">[</span>EXCLUDE ...<span class="o">]]</span> <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span> <span class="o">[</span>--skip-error<span class="o">]</span>
                  <span class="o">[</span>--rsync-path RSYNC<span class="o">]</span> <span class="o">[</span>--bwlimit BWLIMIT<span class="o">]</span> <span class="o">[</span>--ssh-port PORT<span class="o">]</span>
 
@@ -1190,6 +1190,7 @@ Export options:
                         Folder where is catalog file
   --backup-id ID, -i ID
                         Backup-id of backup
+  --all, -A             All backup
   --destination DESTINATION, -d DESTINATION
                         Destination path
   --mirror, -m          Mirror mode
@@ -1224,6 +1225,10 @@ Export options:
 <kbd><span class="option">--backup-id</span>, <span class="option">-i</span></kbd></td>
 </tr>
 <tr><td>&#160;</td><td><p class="first last">Select backup id in the catalog.</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--all</span>, <span class="option">-A</span></kbd></td>
+<td><p class="first last">All backup</p>
 </td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--destination</span>, <span class="option">-d</span></kbd></td>
@@ -1283,6 +1288,17 @@ Export options:
 INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
 INFO: Build a rsync <span class="nb">command</span>
 Start <span class="nb">export</span> host1
+...
+INFO: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
+SUCCESS: Command rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
+</pre></div>
+</div>
+<p>Export all backup in other directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb <span class="nb">export</span> --catalog /mnt/backup/ --all --destination /mnt/backup/export --verbose
+INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
+INFO: Build a rsync <span class="nb">command</span>
+Start <span class="nb">export</span> host1
+...
 INFO: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
 SUCCESS: Command rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
 </pre></div>
@@ -1292,6 +1308,7 @@ SUCCESS: Command rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /m
 INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
 INFO: Build a rsync <span class="nb">command</span>
 Start <span class="nb">export</span> host1
+...
 INFO: rsync command: rsync -ah --no-links -vP --exclude<span class="o">=</span>*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
 SUCCESS: Command rsync -ah --no-links -vP --exclude<span class="o">=</span>*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
 </pre></div>
