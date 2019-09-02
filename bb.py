@@ -447,7 +447,7 @@ def compose_command(flags, host):
             command.append('--dry-run')
             utility.write_log(log_args['status'], log_args['destination'], 'INFO', 'dry-run mode activate')
         if flags.log:
-            log_path = os.path.join(rpath, 'export.log')
+            log_path = os.path.join(flags.catalog, 'export.log')
             command.append(
                 '--log-file={0}'.format(log_path)
             )
@@ -1017,7 +1017,7 @@ def parse_arguments():
 
     # Create principal parser
     parser_object = argparse.ArgumentParser(prog='bb', description=utility.PrintColor.BOLD + 'Butterfly Backup'
-                                                                   + utility.PrintColor.END, epilog=check_rsync(),
+                                            + utility.PrintColor.END, epilog=check_rsync(),
                                             parents=[parent_parser])
     # Create sub_parser "action"
     action = parser_object.add_subparsers(title='action', description='Valid action', help='Available actions',
@@ -1570,9 +1570,6 @@ if __name__ == '__main__':
         catalog_path = os.path.join(args.catalog, '.catalog.cfg')
         export_catalog = read_catalog(catalog_path)
         if os.path.exists(args.destination):
-            # Compose command
-            print_verbose(args.verbose, 'Build a rsync command')
-            cmd = compose_command(args, None)
             # Check one export or all
             if args.all:
                 # Log info
@@ -1583,6 +1580,9 @@ if __name__ == '__main__':
                 }
                 logs = list()
                 logs.append(log_args)
+                # Compose command
+                print_verbose(args.verbose, 'Build a rsync command')
+                cmd = compose_command(args, None)
                 # Add source
                 cmd.append('{}'.format(os.path.join(args.catalog, '')))
                 # Add destination
@@ -1592,10 +1592,13 @@ if __name__ == '__main__':
                 log_args = {
                     'hostname': export_catalog[args.id]['Name'],
                     'status': args.log,
-                    'destination': os.path.join(export_catalog[args.id]['Path'], 'export.log')
+                    'destination': os.path.join(args.destination, 'export.log')
                 }
                 logs = list()
                 logs.append(log_args)
+                # Compose command
+                print_verbose(args.verbose, 'Build a rsync command')
+                cmd = compose_command(args, None)
                 # Check specified argument backup-id
                 if not export_catalog.has_section(args.id):
                     print(utility.PrintColor.RED +
@@ -1620,6 +1623,10 @@ if __name__ == '__main__':
             # Start export
             cmds.append(' '.join(cmd))
             run_in_parallel(start_process, cmds, 1)
+            if os.path.exists(os.path.join(args.destination, '.catalog.cfg')):
+                # Migrate catalog to new file system
+                utility.find_replace(os.path.join(args.destination, '.catalog.cfg'), args.catalog.rstrip('/'),
+                                     args.destination.rstrip('/'))
         else:
             print(utility.PrintColor.RED +
                   "ERROR: Source or destination path doesn't exist!" + utility.PrintColor.END)

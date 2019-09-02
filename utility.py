@@ -53,6 +53,21 @@ def touch(filename, times=None):
             os.utime(filename, times)
 
 
+def find_replace(filename, text_to_search, replacement_text):
+    """
+    Find and replace word in a text file
+    :param filename: path of file
+    :param text_to_search: word to search
+    :param replacement_text: word to replace
+    :return:  file
+    """
+    import fileinput
+
+    with fileinput.FileInput(filename, inplace=True) as file:
+        for line in file:
+            print(line.replace(text_to_search, replacement_text), end='')
+
+
 def write_log(status, log, level, message):
     """
     Write custom log in a custom path
