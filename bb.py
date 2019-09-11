@@ -1588,6 +1588,12 @@ if __name__ == '__main__':
                 # Add destination
                 cmd.append('{}'.format(args.destination))
             else:
+                # Check specified argument backup-id
+                if not export_catalog.has_section(args.id):
+                    print(utility.PrintColor.RED +
+                          'ERROR: Backup-id {0} not exist!'.format(args.id)
+                          + utility.PrintColor.END)
+                    exit(1)
                 # Log info
                 log_args = {
                     'hostname': export_catalog[args.id]['Name'],
@@ -1599,12 +1605,6 @@ if __name__ == '__main__':
                 # Compose command
                 print_verbose(args.verbose, 'Build a rsync command')
                 cmd = compose_command(args, None)
-                # Check specified argument backup-id
-                if not export_catalog.has_section(args.id):
-                    print(utility.PrintColor.RED +
-                          'ERROR: Backup-id {0} not exist!'.format(args.id)
-                          + utility.PrintColor.END)
-                    exit(1)
                 # Export
                 utility.write_log(log_args['status'], log_args['destination'], 'INFO',
                                   'Export {0}. Folder {1} to {2}'.format(args.id, export_catalog[args.id]['Path'],
