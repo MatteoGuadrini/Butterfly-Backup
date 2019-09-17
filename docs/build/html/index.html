@@ -242,30 +242,30 @@ the server pushes files into the client.</p>
 <p class="last">Be careful to not delete <em>.catalog.cfg</em> file.</p>
 </div>
 <p>Butterfly Backup has, in its core, six main operations:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb --help
-usage: bb <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span> <span class="o">[</span>--version<span class="o">]</span>
-          <span class="o">{</span>config,backup,restore,archive,list,export<span class="o">}</span> ...
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb --help
+<span class="go">usage: bb [-h] [--verbose] [--log] [--dry-run] [--version]</span>
+<span class="go">          {config,backup,restore,archive,list,export} ...</span>
 
-Butterfly Backup
+<span class="go">Butterfly Backup</span>
 
-optional arguments:
-  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
-  --verbose, -v         Enable verbosity
-  --log, -l             Create a log
-  --dry-run, -N         Dry run mode
-  --version, -V         Print version
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --verbose, -v         Enable verbosity</span>
+<span class="go">  --log, -l             Create a log</span>
+<span class="go">  --dry-run, -N         Dry run mode</span>
+<span class="go">  --version, -V         Print version</span>
 
-action:
-  Valid action
+<span class="go">action:</span>
+<span class="go">  Valid action</span>
 
-  <span class="o">{</span>config,backup,restore,archive,list,export<span class="o">}</span>
-                        Available actions
-    config              Configuration options
-    backup              Backup options
-    restore             Restore options
-    archive             Archive options
-    list                List options
-    <span class="nb">export</span>              Export options
+<span class="go">  {config,backup,restore,archive,list,export}</span>
+<span class="go">                        Available actions</span>
+<span class="go">    config              Configuration options</span>
+<span class="go">    backup              Backup options</span>
+<span class="go">    restore             Restore options</span>
+<span class="go">    archive             Archive options</span>
+<span class="go">    list                List options</span>
+<span class="go">    export              Export options</span>
 </pre></div>
 </div>
 <p>Valid action</p>
@@ -307,32 +307,32 @@ action:
 <p>Configuration mode is very simple; If you’re already familiar with the exchange keys and OpenSSH, you probably won’t need it.
 If you don’t want to discuss the merits of exchange keys and start, then go ahead. First, you must create a configuration (rsa keys).
 Let’s see how to go about looking at the help:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb config --help
-usage: bb config <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span>
-                 <span class="o">[</span>--new <span class="p">|</span> --remove <span class="p">|</span> --init INIT <span class="p">|</span> --delete-host CATALOG HOST <span class="p">|</span> --clean CATALOG<span class="o">]</span>
-                 <span class="o">[</span>--deploy DEPLOY_HOST<span class="o">]</span> <span class="o">[</span>--user DEPLOY_USER<span class="o">]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb config --help
+<span class="go">usage: bb config [-h] [--verbose] [--log] [--dry-run]</span>
+<span class="go">                 [--new | --remove | --init INIT | --delete-host CATALOG HOST | --clean CATALOG]</span>
+<span class="go">                 [--deploy DEPLOY_HOST] [--user DEPLOY_USER]</span>
 
-optional arguments:
-  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
-  --verbose, -v         Enable verbosity
-  --log, -l             Create a log
-  --dry-run, -N         Dry run mode
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --verbose, -v         Enable verbosity</span>
+<span class="go">  --log, -l             Create a log</span>
+<span class="go">  --dry-run, -N         Dry run mode</span>
 
-Init configuration:
-  --new, -n             Generate new configuration
-  --remove, -r          Remove exist configuration
-  --init INIT, -i INIT  Reset catalog file. Specify path of backup folder.
-  --delete-host CATALOG HOST, -D CATALOG HOST
-                        Delete all entry <span class="k">for</span> a single HOST in catalog.
-  --clean CATALOG, -c CATALOG
-                        Cleans the catalog <span class="k">if</span> it is corrupt, setting default
-                        values.
+<span class="go">Init configuration:</span>
+<span class="go">  --new, -n             Generate new configuration</span>
+<span class="go">  --remove, -r          Remove exist configuration</span>
+<span class="go">  --init INIT, -i INIT  Reset catalog file. Specify path of backup folder.</span>
+<span class="go">  --delete-host CATALOG HOST, -D CATALOG HOST</span>
+<span class="go">                        Delete all entry for a single HOST in catalog.</span>
+<span class="go">  --clean CATALOG, -c CATALOG</span>
+<span class="go">                        Cleans the catalog if it is corrupt, setting default</span>
+<span class="go">                        values.</span>
 
-Deploy configuration:
-  --deploy DEPLOY_HOST, -d DEPLOY_HOST
-                        Deploy configuration to client: hostname or ip address
-  --user DEPLOY_USER, -u DEPLOY_USER
-                        User of the remote machine
+<span class="go">Deploy configuration:</span>
+<span class="go">  --deploy DEPLOY_HOST, -d DEPLOY_HOST</span>
+<span class="go">                        Deploy configuration to client: hostname or ip address</span>
+<span class="go">  --user DEPLOY_USER, -u DEPLOY_USER</span>
+<span class="go">                        User of the remote machine</span>
 </pre></div>
 </div>
 <p>Two macro-options are available:</p>
@@ -405,36 +405,36 @@ SUCCESS: New configuration successfully created!
 </div>
 <p>Once you have created the configuration, keys should be installed (copied) on the hosts you
 want to backup.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb config --deploy host1
-Copying configuration to host1; write the password:
-/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: &quot;/home/arthur/.ssh/id_rsa.pub&quot;
-/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
-/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
-arthur@host1&#39;s password:
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb config --deploy host1
+<span class="go">Copying configuration to host1; write the password:</span>
+<span class="go">/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: &quot;/home/arthur/.ssh/id_rsa.pub&quot;</span>
+<span class="go">/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed</span>
+<span class="go">/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys</span>
+<span class="go">arthur@host1&#39;s password:</span>
 
-Number of key(s) added: 1
+<span class="go">Number of key(s) added: 1</span>
 
-Now try logging into the machine, with:   &quot;ssh &#39;arthur@host1&#39;&quot;
-and check to make sure that only the key(s) you wanted were added.
+<span class="go">Now try logging into the machine, with:   &quot;ssh &#39;arthur@host1&#39;&quot;</span>
+<span class="go">and check to make sure that only the key(s) you wanted were added.</span>
 
-SUCCESS: Configuration copied successfully on host1!
+<span class="go">SUCCESS: Configuration copied successfully on host1!</span>
 </pre></div>
 </div>
 <p>This command will try to copy the configuration with the current user.
 If you want to use a different user (e.g.: root), run this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb config --deploy host1 --user root
-Copying configuration to host1; write the password:
-/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: &quot;/home/arthur/.ssh/id_rsa.pub&quot;
-/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
-/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
-root@host1&#39;s password:
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb config --deploy host1 --user root
+<span class="go">Copying configuration to host1; write the password:</span>
+<span class="go">/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: &quot;/home/arthur/.ssh/id_rsa.pub&quot;</span>
+<span class="go">/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed</span>
+<span class="go">/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys</span>
+<span class="go">root@host1&#39;s password:</span>
 
-Number of key(s) added: 1
+<span class="go">Number of key(s) added: 1</span>
 
-Now try logging into the machine, with:   &quot;ssh &#39;root@host1&#39;&quot;
-and check to make sure that only the key(s) you wanted were added.
+<span class="go">Now try logging into the machine, with:   &quot;ssh &#39;root@host1&#39;&quot;</span>
+<span class="go">and check to make sure that only the key(s) you wanted were added.</span>
 
-SUCCESS: Configuration copied successfully on host1!
+<span class="go">SUCCESS: Configuration copied successfully on host1!</span>
 </pre></div>
 </div>
 <div class="section" id="cygwin-on-windows">
@@ -486,58 +486,58 @@ cygrunsrv -S sshd
 <div class="section" id="backup">
 <span id="id3"></span><h2>Backup<a class="headerlink" href="#backup" title="Permalink to this headline">¶</a></h2>
 <p>There are two backup modes: single and bulk. Let’s see how to go about looking at the help:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb backup --help
-usage: bb backup <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span>
-                 <span class="o">(</span>--computer HOSTNAME <span class="p">|</span> --list LIST<span class="o">)</span> --destination DESTINATION
-                 <span class="o">[</span>--mode <span class="o">{</span>Full,Incremental,Differential,Mirror<span class="o">}]</span>
-                 <span class="o">(</span>--data <span class="o">{</span>User,Config,Application,System,Log<span class="o">}</span> <span class="o">[{</span>User,Config,Application,System,Log<span class="o">}</span> ...<span class="o">]</span> <span class="p">|</span> --custom-data CUSTOMDATA <span class="o">[</span>CUSTOMDATA ...<span class="o">])</span>
-                 <span class="o">[</span>--user USER<span class="o">]</span> --type <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span> <span class="o">[</span>--compress<span class="o">]</span>
-                 <span class="o">[</span>--retention <span class="o">[</span>DAYS <span class="o">[</span>NUMBER ...<span class="o">]]]</span> <span class="o">[</span>--parallel PARALLEL<span class="o">]</span>
-                 <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span> <span class="o">[</span>--skip-error<span class="o">]</span> <span class="o">[</span>--rsync-path RSYNC<span class="o">]</span>
-                 <span class="o">[</span>--bwlimit BWLIMIT<span class="o">]</span> <span class="o">[</span>--ssh-port PORT<span class="o">]</span>
-                 <span class="o">[</span>--exclude EXCLUDE <span class="o">[</span>EXCLUDE ...<span class="o">]]</span> <span class="o">[</span>--start-from ID<span class="o">]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb backup --help
+<span class="go">usage: bb backup [-h] [--verbose] [--log] [--dry-run]</span>
+<span class="go">                 (--computer HOSTNAME | --list LIST) --destination DESTINATION</span>
+<span class="go">                 [--mode {Full,Incremental,Differential,Mirror}]</span>
+<span class="go">                 (--data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...])</span>
+<span class="go">                 [--user USER] --type {Unix,Windows,MacOS} [--compress]</span>
+<span class="go">                 [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL]</span>
+<span class="go">                 [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC]</span>
+<span class="go">                 [--bwlimit BWLIMIT] [--ssh-port PORT]</span>
+<span class="go">                 [--exclude EXCLUDE [EXCLUDE ...]] [--start-from ID]</span>
 
-optional arguments:
-  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
-  --verbose, -v         Enable verbosity
-  --log, -l             Create a log
-  --dry-run, -N         Dry run mode
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --verbose, -v         Enable verbosity</span>
+<span class="go">  --log, -l             Create a log</span>
+<span class="go">  --dry-run, -N         Dry run mode</span>
 
-Backup options:
-  --computer HOSTNAME, -c HOSTNAME
-                        Hostname or ip address to backup
-  --list LIST, -L LIST  File list of computers or ip addresses to backup
-  --destination DESTINATION, -d DESTINATION
-                        Destination path
-  --mode <span class="o">{</span>Full,Incremental,Differential,Mirror<span class="o">}</span>, -m <span class="o">{</span>Full,Incremental,Differential,Mirror<span class="o">}</span>
-                        Backup mode
-  --data <span class="o">{</span>User,Config,Application,System,Log<span class="o">}</span> <span class="o">[{</span>User,Config,Application,System,Log<span class="o">}</span> ...<span class="o">]</span>, -D <span class="o">{</span>User,Config,Application,System,Log<span class="o">}</span> <span class="o">[{</span>User,Config,Application,System,Log<span class="o">}</span> ...<span class="o">]</span>
-                        Data of which you want to backup
-  --custom-data CUSTOMDATA <span class="o">[</span>CUSTOMDATA ...<span class="o">]</span>, -C CUSTOMDATA <span class="o">[</span>CUSTOMDATA ...<span class="o">]</span>
-                        Custom path of which you want to backup
-  --user USER, -u USER  Login name used to log into the remote host <span class="o">(</span>being
-                        backed up<span class="o">)</span>
-  --type <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span>, -t <span class="o">{</span>Unix,Windows,MacOS<span class="o">}</span>
-                        Type of operating system to backup
-  --compress, -z        Compress data
-  --retention <span class="o">[</span>DAYS <span class="o">[</span>NUMBER ...<span class="o">]]</span>, -r <span class="o">[</span>DAYS <span class="o">[</span>NUMBER ...<span class="o">]]</span>
-                        First argument are days of backup retention. Second
-                        argument is minimum number of backup retention
-  --parallel PARALLEL, -p PARALLEL
-                        Number of parallel <span class="nb">jobs</span>
-  --timeout TIMEOUT, -T TIMEOUT
-                        I/O timeout in seconds
-  --skip-error, -e      Skip error
-  --rsync-path RSYNC, -R RSYNC
-                        Custom rsync path
-  --bwlimit BWLIMIT, -b BWLIMIT
-                        Bandwidth limit in KBPS.
-  --ssh-port PORT, -P PORT
-                        Custom ssh port.
-  --exclude EXCLUDE <span class="o">[</span>EXCLUDE ...<span class="o">]</span>, -E EXCLUDE <span class="o">[</span>EXCLUDE ...<span class="o">]</span>
-                        Exclude pattern
-  --start-from ID, -s ID
-                        Backup id where start a new backup
+<span class="go">Backup options:</span>
+<span class="go">  --computer HOSTNAME, -c HOSTNAME</span>
+<span class="go">                        Hostname or ip address to backup</span>
+<span class="go">  --list LIST, -L LIST  File list of computers or ip addresses to backup</span>
+<span class="go">  --destination DESTINATION, -d DESTINATION</span>
+<span class="go">                        Destination path</span>
+<span class="go">  --mode {Full,Incremental,Differential,Mirror}, -m {Full,Incremental,Differential,Mirror}</span>
+<span class="go">                        Backup mode</span>
+<span class="go">  --data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...], -D {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...]</span>
+<span class="go">                        Data of which you want to backup</span>
+<span class="go">  --custom-data CUSTOMDATA [CUSTOMDATA ...], -C CUSTOMDATA [CUSTOMDATA ...]</span>
+<span class="go">                        Custom path of which you want to backup</span>
+<span class="go">  --user USER, -u USER  Login name used to log into the remote host (being</span>
+<span class="go">                        backed up)</span>
+<span class="go">  --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}</span>
+<span class="go">                        Type of operating system to backup</span>
+<span class="go">  --compress, -z        Compress data</span>
+<span class="go">  --retention [DAYS [NUMBER ...]], -r [DAYS [NUMBER ...]]</span>
+<span class="go">                        First argument are days of backup retention. Second</span>
+<span class="go">                        argument is minimum number of backup retention</span>
+<span class="go">  --parallel PARALLEL, -p PARALLEL</span>
+<span class="go">                        Number of parallel jobs</span>
+<span class="go">  --timeout TIMEOUT, -T TIMEOUT</span>
+<span class="go">                        I/O timeout in seconds</span>
+<span class="go">  --skip-error, -e      Skip error</span>
+<span class="go">  --rsync-path RSYNC, -R RSYNC</span>
+<span class="go">                        Custom rsync path</span>
+<span class="go">  --bwlimit BWLIMIT, -b BWLIMIT</span>
+<span class="go">                        Bandwidth limit in KBPS.</span>
+<span class="go">  --ssh-port PORT, -P PORT</span>
+<span class="go">                        Custom ssh port.</span>
+<span class="go">  --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]</span>
+<span class="go">                        Exclude pattern</span>
+<span class="go">  --start-from ID, -s ID</span>
+<span class="go">                        Backup id where start a new backup</span>
 </pre></div>
 </div>
 <ul>
@@ -825,28 +825,28 @@ but only Increments. We recommend doing more Full for better retention managemen
 <span id="id5"></span><h2>List<a class="headerlink" href="#list" title="Permalink to this headline">¶</a></h2>
 <p>When we run backup commands, a catalog is created. This serves both for future backups and all the restores that are made through Butterfly Backup.
 To query this catalog, the list command exists.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb list --help
-usage: bb list <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span> --catalog CATALOG
-               <span class="o">[</span>--backup-id ID <span class="p">|</span> --archived <span class="p">|</span> --cleaned <span class="p">|</span> --computer HOSTNAME <span class="p">|</span> --detail ID<span class="o">]</span>
-               <span class="o">[</span>--oneline<span class="o">]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb list --help
+<span class="go">usage: bb list [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG</span>
+<span class="go">               [--backup-id ID | --archived | --cleaned | --computer HOSTNAME | --detail ID]</span>
+<span class="go">               [--oneline]</span>
 
-optional arguments:
-  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
-  --verbose, -v         Enable verbosity
-  --log, -l             Create a log
-  --dry-run, -N         Dry run mode
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --verbose, -v         Enable verbosity</span>
+<span class="go">  --log, -l             Create a log</span>
+<span class="go">  --dry-run, -N         Dry run mode</span>
 
-List options:
-  --catalog CATALOG, -C CATALOG
-                        Folder where is catalog file
-  --backup-id ID, -i ID
-                        Backup-id of backup
-  --archived, -a        List only archived backup
-  --cleaned, -c         List only cleaned backup
-  --computer HOSTNAME, -H HOSTNAME
-                        List only match hostname or ip
-  --detail ID, -d ID    List detail of file and folder of specific backup-id
-  --oneline, -o         One line output
+<span class="go">List options:</span>
+<span class="go">  --catalog CATALOG, -C CATALOG</span>
+<span class="go">                        Folder where is catalog file</span>
+<span class="go">  --backup-id ID, -i ID</span>
+<span class="go">                        Backup-id of backup</span>
+<span class="go">  --archived, -a        List only archived backup</span>
+<span class="go">  --cleaned, -c         List only cleaned backup</span>
+<span class="go">  --computer HOSTNAME, -H HOSTNAME</span>
+<span class="go">                        List only match hostname or ip</span>
+<span class="go">  --detail ID, -d ID    List detail of file and folder of specific backup-id</span>
+<span class="go">  --oneline, -o         One line output</span>
 </pre></div>
 </div>
 <ul>
@@ -939,43 +939,43 @@ arthur@heartofgold$ cat /mnt/backup/backup.list
 <div class="section" id="restore">
 <span id="id6"></span><h2>Restore<a class="headerlink" href="#restore" title="Permalink to this headline">¶</a></h2>
 <p>The restore process is the exact opposite of the backup process. It takes the files from a specific backup and push it to the destination computer.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb restore --help
-usage: bb restore [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
-                  (--backup-id ID | --last) [--user USER] --computer HOSTNAME
-                  [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]
-                  [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT]
-                  [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]]
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb restore --help
+<span class="go">usage: bb restore [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG</span>
+<span class="go">                  (--backup-id ID | --last) [--user USER] --computer HOSTNAME</span>
+<span class="go">                  [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror]</span>
+<span class="go">                  [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT]</span>
+<span class="go">                  [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]]</span>
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --verbose, -v         Enable verbosity
-  --log, -l             Create a log
-  --dry-run, -N         Dry run mode
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --verbose, -v         Enable verbosity</span>
+<span class="go">  --log, -l             Create a log</span>
+<span class="go">  --dry-run, -N         Dry run mode</span>
 
-Restore options:
-  --catalog CATALOG, -C CATALOG
-                        Folder where is catalog file
-  --backup-id ID, -i ID
-                        Backup-id of backup
-  --last, -L            Last available backup
-  --user USER, -u USER  Login name used to log into the remote host (where
-                        you&#39;re restoring)
-  --computer HOSTNAME, -c HOSTNAME
-                        Hostname or ip address to perform restore
-  --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
-                        Type of operating system to perform restore
-  --timeout TIMEOUT, -T TIMEOUT
-                        I/O timeout in seconds
-  --mirror, -m          Mirror mode
-  --skip-error, -e      Skip error
-  --rsync-path RSYNC, -R RSYNC
-                        Custom rsync path
-  --bwlimit BWLIMIT, -b BWLIMIT
-                        Bandwidth limit in KBPS.
-  --ssh-port PORT, -P PORT
-                        Custom ssh port.
-  --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
-                        Exclude pattern
+<span class="go">Restore options:</span>
+<span class="go">  --catalog CATALOG, -C CATALOG</span>
+<span class="go">                        Folder where is catalog file</span>
+<span class="go">  --backup-id ID, -i ID</span>
+<span class="go">                        Backup-id of backup</span>
+<span class="go">  --last, -L            Last available backup</span>
+<span class="go">  --user USER, -u USER  Login name used to log into the remote host (where</span>
+<span class="go">                        you&#39;re restoring)</span>
+<span class="go">  --computer HOSTNAME, -c HOSTNAME</span>
+<span class="go">                        Hostname or ip address to perform restore</span>
+<span class="go">  --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}</span>
+<span class="go">                        Type of operating system to perform restore</span>
+<span class="go">  --timeout TIMEOUT, -T TIMEOUT</span>
+<span class="go">                        I/O timeout in seconds</span>
+<span class="go">  --mirror, -m          Mirror mode</span>
+<span class="go">  --skip-error, -e      Skip error</span>
+<span class="go">  --rsync-path RSYNC, -R RSYNC</span>
+<span class="go">                        Custom rsync path</span>
+<span class="go">  --bwlimit BWLIMIT, -b BWLIMIT</span>
+<span class="go">                        Bandwidth limit in KBPS.</span>
+<span class="go">  --ssh-port PORT, -P PORT</span>
+<span class="go">                        Custom ssh port.</span>
+<span class="go">  --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]</span>
+<span class="go">                        Exclude pattern</span>
 </pre></div>
 </div>
 <ul>
@@ -1098,22 +1098,22 @@ SUCCESS: Command rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/ho
 <div class="section" id="archive">
 <span id="id7"></span><h2>Archive<a class="headerlink" href="#archive" title="Permalink to this headline">¶</a></h2>
 <p>Archive operations are used to store backups by saving disk space. Backups older than n days are compressed into a zip file.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb archive --help
-usage: bb archive <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span> --catalog CATALOG
-                  <span class="o">[</span>--days DAYS<span class="o">]</span> --destination DESTINATION
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb archive --help
+<span class="go">usage: bb archive [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG</span>
+<span class="go">                  [--days DAYS] --destination DESTINATION</span>
 
-optional arguments:
-  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
-  --verbose, -v         Enable verbosity
-  --log, -l             Create a log
-  --dry-run, -N         Dry run mode
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --verbose, -v         Enable verbosity</span>
+<span class="go">  --log, -l             Create a log</span>
+<span class="go">  --dry-run, -N         Dry run mode</span>
 
-Archive options:
-  --catalog CATALOG, -C CATALOG
-                        Folder where is catalog file
-  --days DAYS, -D DAYS  Number of days of archive retention
-  --destination DESTINATION, -d DESTINATION
-                        Archive destination path
+<span class="go">Archive options:</span>
+<span class="go">  --catalog CATALOG, -C CATALOG</span>
+<span class="go">                        Folder where is catalog file</span>
+<span class="go">  --days DAYS, -D DAYS  Number of days of archive retention</span>
+<span class="go">  --destination DESTINATION, -d DESTINATION</span>
+<span class="go">                        Archive destination path</span>
 </pre></div>
 </div>
 <ul>
@@ -1174,42 +1174,42 @@ Archived: True
 <div class="section" id="export">
 <span id="id8"></span><h2>Export<a class="headerlink" href="#export" title="Permalink to this headline">¶</a></h2>
 <p>The export function is used to copy a particular backup to another path.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb <span class="nb">export</span> -h
-usage: bb <span class="nb">export</span> <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--verbose<span class="o">]</span> <span class="o">[</span>--log<span class="o">]</span> <span class="o">[</span>--dry-run<span class="o">]</span> --catalog CATALOG
-                 <span class="o">[</span>--backup-id ID <span class="p">|</span> --all<span class="o">]</span> --destination DESTINATION <span class="o">[</span>--mirror<span class="o">]</span>
-                 <span class="o">[</span>--cut<span class="o">]</span> <span class="o">[</span>--include INCLUDE <span class="o">[</span>INCLUDE ...<span class="o">]</span> <span class="p">|</span> --exclude EXCLUDE
-                 <span class="o">[</span>EXCLUDE ...<span class="o">]]</span> <span class="o">[</span>--timeout TIMEOUT<span class="o">]</span> <span class="o">[</span>--skip-error<span class="o">]</span>
-                 <span class="o">[</span>--rsync-path RSYNC<span class="o">]</span> <span class="o">[</span>--bwlimit BWLIMIT<span class="o">]</span> <span class="o">[</span>--ssh-port PORT<span class="o">]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb <span class="nb">export</span> -h
+<span class="go">usage: bb export [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG</span>
+<span class="go">                 [--backup-id ID | --all] --destination DESTINATION [--mirror]</span>
+<span class="go">                 [--cut] [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE</span>
+<span class="go">                 [EXCLUDE ...]] [--timeout TIMEOUT] [--skip-error]</span>
+<span class="go">                 [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]</span>
 
-optional arguments:
-  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
-  --verbose, -v         Enable verbosity
-  --log, -l             Create a log
-  --dry-run, -N         Dry run mode
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  --verbose, -v         Enable verbosity</span>
+<span class="go">  --log, -l             Create a log</span>
+<span class="go">  --dry-run, -N         Dry run mode</span>
 
-Export options:
-  --catalog CATALOG, -C CATALOG
-                        Folder where is catalog file
-  --backup-id ID, -i ID
-                        Backup-id of backup
-  --all, -A             All backup
-  --destination DESTINATION, -d DESTINATION
-                        Destination path
-  --mirror, -m          Mirror mode
-  --cut, -c             Cut mode. Delete <span class="nb">source</span>
-  --include INCLUDE <span class="o">[</span>INCLUDE ...<span class="o">]</span>, -I INCLUDE <span class="o">[</span>INCLUDE ...<span class="o">]</span>
-                        Include pattern
-  --exclude EXCLUDE <span class="o">[</span>EXCLUDE ...<span class="o">]</span>, -E EXCLUDE <span class="o">[</span>EXCLUDE ...<span class="o">]</span>
-                        Exclude pattern
-  --timeout TIMEOUT, -T TIMEOUT
-                        I/O timeout in seconds
-  --skip-error, -e      Skip error
-  --rsync-path RSYNC, -R RSYNC
-                        Custom rsync path
-  --bwlimit BWLIMIT, -b BWLIMIT
-                        Bandwidth limit in KBPS.
-  --ssh-port PORT, -P PORT
-                        Custom ssh port.
+<span class="go">Export options:</span>
+<span class="go">  --catalog CATALOG, -C CATALOG</span>
+<span class="go">                        Folder where is catalog file</span>
+<span class="go">  --backup-id ID, -i ID</span>
+<span class="go">                        Backup-id of backup</span>
+<span class="go">  --all, -A             All backup</span>
+<span class="go">  --destination DESTINATION, -d DESTINATION</span>
+<span class="go">                        Destination path</span>
+<span class="go">  --mirror, -m          Mirror mode</span>
+<span class="go">  --cut, -c             Cut mode. Delete source</span>
+<span class="go">  --include INCLUDE [INCLUDE ...], -I INCLUDE [INCLUDE ...]</span>
+<span class="go">                        Include pattern</span>
+<span class="go">  --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]</span>
+<span class="go">                        Exclude pattern</span>
+<span class="go">  --timeout TIMEOUT, -T TIMEOUT</span>
+<span class="go">                        I/O timeout in seconds</span>
+<span class="go">  --skip-error, -e      Skip error</span>
+<span class="go">  --rsync-path RSYNC, -R RSYNC</span>
+<span class="go">                        Custom rsync path</span>
+<span class="go">  --bwlimit BWLIMIT, -b BWLIMIT</span>
+<span class="go">                        Bandwidth limit in KBPS.</span>
+<span class="go">  --ssh-port PORT, -P PORT</span>
+<span class="go">                        Custom ssh port.</span>
 </pre></div>
 </div>
 <ul>

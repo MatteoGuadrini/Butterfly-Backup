@@ -98,7 +98,7 @@ This is how the operating system sees the backups on the file system:
 
 Butterfly Backup has, in its core, six main operations:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb --help
    usage: bb [-h] [--verbose] [--log] [--dry-run] [--version]
@@ -153,7 +153,7 @@ Configuration mode is very simple; If you're already familiar with the exchange 
 If you don't want to discuss the merits of exchange keys and start, then go ahead. First, you must create a configuration (rsa keys).
 Let's see how to go about looking at the help:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb config --help
    usage: bb config [-h] [--verbose] [--log] [--dry-run]
@@ -217,7 +217,7 @@ In this case, the RSA key already exists. Now try delete and create a new keys:
 Once you have created the configuration, keys should be installed (copied) on the hosts you
 want to backup.
 
-::
+.. code-block:: console
 
    arthur@heartofgold$ bb config --deploy host1
    Copying configuration to host1; write the password:
@@ -236,7 +236,7 @@ want to backup.
 This command will try to copy the configuration with the current user.
 If you want to use a different user (e.g.: root), run this:
 
-::
+.. code-block:: console
 
    arthur@heartofgold$ bb config --deploy host1 --user root
    Copying configuration to host1; write the password:
@@ -310,7 +310,7 @@ Backup
 
 There are two backup modes: single and bulk. Let's see how to go about looking at the help:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb backup --help
    usage: bb backup [-h] [--verbose] [--log] [--dry-run]
@@ -600,7 +600,7 @@ List
 When we run backup commands, a catalog is created. This serves both for future backups and all the restores that are made through Butterfly Backup.
 To query this catalog, the list command exists.
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb list --help
    usage: bb list [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
@@ -696,7 +696,7 @@ Restore
 
 The restore process is the exact opposite of the backup process. It takes the files from a specific backup and push it to the destination computer.
 
-::
+.. code-block:: console
 
    arthur@heartofgold$ bb restore --help
    usage: bb restore [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
@@ -816,7 +816,7 @@ Archive
 
 Archive operations are used to store backups by saving disk space. Backups older than n days are compressed into a zip file.
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb archive --help
    usage: bb archive [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
@@ -882,7 +882,7 @@ Export
 
 The export function is used to copy a particular backup to another path.
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb export -h
    usage: bb export [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
