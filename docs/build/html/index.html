@@ -192,11 +192,11 @@ Ok, let’s go!</p>
 <div class="section" id="installation">
 <h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
 <p>Install Butterfly Backup is very simple; run this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
-arthur@heartofgold$ <span class="nb">cd</span> Butterfly-Backup
-arthur@heartofgold$ sudo python3 setup.py
-arthur@heartofgold$ bb --help
-arthur@heartofgold$ man bb
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
+<span class="gp">arthur@heartofgold$</span> <span class="nb">cd</span> Butterfly-Backup
+<span class="gp">arthur@heartofgold$</span> sudo python3 setup.py
+<span class="gp">arthur@heartofgold$</span> bb --help
+<span class="gp">arthur@heartofgold$</span> man bb
 </pre></div>
 </div>
 <p>The upgrade is also simple; type the same commands.</p>
@@ -208,20 +208,20 @@ arthur@heartofgold$ man bb
 from where it will contact the clients on which it will perform the backup. Also for the restore the concept is the same;
 the server pushes files into the client.</p>
 <p>Backups are organized according to precise cataloguing; this is an example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ tree destination/of/backup
-.
-├── destination
-│   ├── hostname or ip of the PC under backup
-│   │   ├── timestamp folder
-│   │   │   ├── backup folders
-│   │   │   ├── backup.log
-│   │   │   └── restore.log
-│   │   ├─── general.log
-│   │   └─── symlink of last backup
-│
-├── export.log
-├── backup.list
-└── .catalog.cfg
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> tree destination/of/backup
+<span class="go">.</span>
+<span class="go">├── destination</span>
+<span class="go">│   ├── hostname or ip of the PC under backup</span>
+<span class="go">│   │   ├── timestamp folder</span>
+<span class="go">│   │   │   ├── backup folders</span>
+<span class="go">│   │   │   ├── backup.log</span>
+<span class="go">│   │   │   └── restore.log</span>
+<span class="go">│   │   ├─── general.log</span>
+<span class="go">│   │   └─── symlink of last backup</span>
+<span class="go">│</span>
+<span class="go">├── export.log</span>
+<span class="go">├── backup.list</span>
+<span class="go">└── .catalog.cfg</span>
 </pre></div>
 </div>
 <p>This is how the operating system sees the backups on the file system:</p>
@@ -390,17 +390,17 @@ Let’s see how to go about looking at the help:</p>
 </li>
 </ul>
 <p>At this point, we create the configuration:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb config --new
-WARNING: Private key ~/.ssh/id_rsa exists
-If you want to use the existing key, run <span class="s2">&quot;bb config --deploy name_of_machine&quot;</span>, otherwise to remove it, run <span class="s2">&quot;bb config --remove&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb config --new
+<span class="go">WARNING: Private key ~/.ssh/id_rsa exists</span>
+<span class="go">If you want to use the existing key, run &quot;bb config --deploy name_of_machine&quot;, otherwise to remove it, run &quot;bb config --remove&quot;</span>
 </pre></div>
 </div>
 <p>In this case, the RSA key already exists. Now try delete and create a new keys:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb config --remove
-Are you sure to remove existing rsa keys? To <span class="k">continue</span> <span class="o">[</span>Y/N<span class="o">]</span>? y
-SUCCESS: Removed configuration successfully!
-arthur@heartofgold$ bb config --new
-SUCCESS: New configuration successfully created!
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb config --remove
+<span class="go">Are you sure to remove existing rsa keys? To continue [Y/N]? y</span>
+<span class="go">SUCCESS: Removed configuration successfully!</span>
+<span class="gp">arthur@heartofgold$</span> bb config --new
+<span class="go">SUCCESS: New configuration successfully created!</span>
 </pre></div>
 </div>
 <p>Once you have created the configuration, keys should be installed (copied) on the hosts you
@@ -474,7 +474,7 @@ cygrunsrv -S sshd
 </div>
 <p>Verify if port 22 is in LISTEN</p>
 <p>If you want to initialize or reset the catalog file, run this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb config --init /mnt/backup -v
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb config --init /mnt/backup -v
 </pre></div>
 </div>
 <div class="admonition important">
@@ -695,40 +695,40 @@ and minimum number of backup retention (optional).</p>
 <p>The backup of a single machine consists in taking the files and folders indicated in the command line,
 and put them in the cataloging structure indicated above.</p>
 <p>This is a few examples:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb backup --computer host1 --destination /mnt/backup --data User Config --type MacOS
-<span class="c1"># host1 SSH-2.0-OpenSSH_7.5</span>
-<span class="c1"># host1 SSH-2.0-OpenSSH_7.5</span>
-Start backup on host1
-SUCCESS: Command rsync -ah --no-links arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_28
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb backup --computer host1 --destination /mnt/backup --data User Config --type MacOS
+<span class="gp">#</span> host1 SSH-2.0-OpenSSH_7.5
+<span class="gp">#</span> host1 SSH-2.0-OpenSSH_7.5
+<span class="go">Start backup on host1</span>
+<span class="go">SUCCESS: Command rsync -ah --no-links arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_28</span>
 </pre></div>
 </div>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
 <p class="last">Without specifying the “mode” flag, Butterfly Backup by default selects <em>Incremental</em> mode</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb backup --computer host1 --destination /mnt/backup --mode Full --data User Config --type MacOS --user root
-<span class="s2">&quot;root@host1&#39;s password:&quot;</span>
-Start backup on host1
-SUCCESS: Command rsync -ah --no-links root@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_30
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb backup --computer host1 --destination /mnt/backup --mode Full --data User Config --type MacOS --user root
+<span class="go">&quot;root@host1&#39;s password:&quot;</span>
+<span class="go">Start backup on host1</span>
+<span class="go">SUCCESS: Command rsync -ah --no-links root@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_30</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb backup --computer host1 --destination /mnt/backup --data User Config --type MacOS --verbose --log
-INFO: Build a rsync <span class="nb">command</span>
-INFO: Last full is <span class="m">2018</span>-08-08 <span class="m">10</span>:30:32
-INFO: Command flags are: rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_28 -vP
-INFO: Create a folder structure <span class="k">for</span> MacOS os
-INFO: Include this criteria: :/Users :/private/etc
-INFO: Destination is /mnt/backup/host1/2018_08_08__10_42
-Start backup on host1
-INFO: rsync command: rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_42
-receiving file list ...
-<span class="m">39323</span> files to consider
-Users/
-...
-...
-sent <span class="m">18</span>.91K bytes  received <span class="m">1</span>.59M bytes  <span class="m">25</span>.74K bytes/sec
-total size is <span class="m">6</span>.67G  speedup is <span class="m">4143</span>.59
-SUCCESS: Command rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_42
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb backup --computer host1 --destination /mnt/backup --data User Config --type MacOS --verbose --log
+<span class="go">INFO: Build a rsync command</span>
+<span class="go">INFO: Last full is 2018-08-08 10:30:32</span>
+<span class="go">INFO: Command flags are: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_28 -vP</span>
+<span class="go">INFO: Create a folder structure for MacOS os</span>
+<span class="go">INFO: Include this criteria: :/Users :/private/etc</span>
+<span class="go">INFO: Destination is /mnt/backup/host1/2018_08_08__10_42</span>
+<span class="go">Start backup on host1</span>
+<span class="go">INFO: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_42</span>
+<span class="go">receiving file list ...</span>
+<span class="go">39323 files to consider</span>
+<span class="go">Users/</span>
+<span class="go">...</span>
+<span class="go">...</span>
+<span class="go">sent 18.91K bytes  received 1.59M bytes  25.74K bytes/sec</span>
+<span class="go">total size is 6.67G  speedup is 4143.59</span>
+<span class="go">SUCCESS: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_42</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -741,13 +741,13 @@ SUCCESS: Command rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/b
 <span id="id4"></span><h3>Bulk backup<a class="headerlink" href="#bulk-backup" title="Permalink to this headline">¶</a></h3>
 <p>Bulk backup follows the same logic and the same options as a single backup, but accepts a file containing the names or ips of the machine to be backed up.</p>
 <p>This is a few examples:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS
-<span class="c1"># host1 SSH-2.0-OpenSSH_7.5</span>
-<span class="c1"># host1 SSH-2.0-OpenSSH_7.5</span>
-ERROR: The port <span class="m">22</span> on host2 is closed!
-ERROR: The port <span class="m">22</span> on host3 is closed!
-Start backup on host1
-SUCCESS: Command rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_50
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS
+<span class="gp">#</span> host1 SSH-2.0-OpenSSH_7.5
+<span class="gp">#</span> host1 SSH-2.0-OpenSSH_7.5
+<span class="go">ERROR: The port 22 on host2 is closed!</span>
+<span class="go">ERROR: The port 22 on host3 is closed!</span>
+<span class="go">Start backup on host1</span>
+<span class="go">SUCCESS: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_50</span>
 </pre></div>
 </div>
 <div class="admonition important">
@@ -757,61 +757,61 @@ SUCCESS: Command rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/b
 </div>
 <p>This example, is the same as the previous one, with the only difference being that the parallel flag is specified at 2.
 This means that maximum two backup jobs will run at the same time. When a first process ends, another one is started.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel <span class="m">2</span> --log
-<span class="c1"># host1 SSH-2.0-OpenSSH_7.5</span>
-<span class="c1"># host1 SSH-2.0-OpenSSH_7.5</span>
-ERROR: The port <span class="m">22</span> on host2 is closed!
-ERROR: The port <span class="m">22</span> on host3 is closed!
-Start backup on host1
-SUCCESS: Command rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel <span class="m">2</span> --log
+<span class="gp">#</span> host1 SSH-2.0-OpenSSH_7.5
+<span class="gp">#</span> host1 SSH-2.0-OpenSSH_7.5
+<span class="go">ERROR: The port 22 on host2 is closed!</span>
+<span class="go">ERROR: The port 22 on host3 is closed!</span>
+<span class="go">Start backup on host1</span>
+<span class="go">SUCCESS: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58</span>
 </pre></div>
 </div>
 <p>This is the same example but specifying a retention at 3 (days). This means that in doing so we want to keep only 3 days backups.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel <span class="m">2</span> --retention <span class="m">3</span> --log --verbose
-INFO: Build a rsync <span class="nb">command</span>
-INFO: Last full is <span class="m">2018</span>-08-08 <span class="m">10</span>:30:32
-INFO: Command flags are: rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_30 -vP
-INFO: Create a folder structure <span class="k">for</span> MacOS os
-INFO: Include this criteria: :/Users :/private/etc
-INFO: Destination is /mnt/backup/host1/2018_08_08__10_30
-Start backup on host1
-ERROR: The port <span class="m">22</span> on host2 is closed!
-ERROR: The port <span class="m">22</span> on host3 is closed!
-INFO: rsync command: rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
-receiving file list ...
-<span class="m">39323</span> files to consider
-Users/
-...
-...
-SUCCESS: Command rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
-INFO: Check cleanup this backup aba860b0-9944-11e8-a93f-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_28
-SUCCESS: Cleanup /mnt/backup/host1/2018_08_08__10_28 successfully.
-INFO: Check cleanup this backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30
-INFO: No cleanup backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel <span class="m">2</span> --retention <span class="m">3</span> --log --verbose
+<span class="go">INFO: Build a rsync command</span>
+<span class="go">INFO: Last full is 2018-08-08 10:30:32</span>
+<span class="go">INFO: Command flags are: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 -vP</span>
+<span class="go">INFO: Create a folder structure for MacOS os</span>
+<span class="go">INFO: Include this criteria: :/Users :/private/etc</span>
+<span class="go">INFO: Destination is /mnt/backup/host1/2018_08_08__10_30</span>
+<span class="go">Start backup on host1</span>
+<span class="go">ERROR: The port 22 on host2 is closed!</span>
+<span class="go">ERROR: The port 22 on host3 is closed!</span>
+<span class="go">INFO: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58</span>
+<span class="go">receiving file list ...</span>
+<span class="go">39323 files to consider</span>
+<span class="go">Users/</span>
+<span class="go">...</span>
+<span class="go">...</span>
+<span class="go">SUCCESS: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58</span>
+<span class="go">INFO: Check cleanup this backup aba860b0-9944-11e8-a93f-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_28</span>
+<span class="go">SUCCESS: Cleanup /mnt/backup/host1/2018_08_08__10_28 successfully.</span>
+<span class="go">INFO: Check cleanup this backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30</span>
+<span class="go">INFO: No cleanup backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30</span>
 </pre></div>
 </div>
 <p>Here we find the same example above but specifying a retention at 2 (days) and 5 backup copies. This means that at least 5 backup copies will be kept, even if they are older than two days.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel <span class="m">2</span> --retention <span class="m">3</span> <span class="m">5</span> --log --verbose
-INFO: Build a rsync <span class="nb">command</span>
-INFO: Last full is <span class="m">2018</span>-08-08 <span class="m">10</span>:30:32
-INFO: Command flags are: rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_30 -vP
-INFO: Create a folder structure <span class="k">for</span> MacOS os
-INFO: Include this criteria: :/Users :/private/etc
-INFO: Destination is /mnt/backup/host1/2018_08_08__10_30
-Start backup on host1
-ERROR: The port <span class="m">22</span> on host2 is closed!
-ERROR: The port <span class="m">22</span> on host3 is closed!
-INFO: rsync command: rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
-receiving file list ...
-<span class="m">39323</span> files to consider
-Users/
-...
-...
-SUCCESS: Command rsync -ahu --no-links --link-dest<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
-INFO: Check cleanup this backup aba860b0-9944-11e8-a93f-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_28
-SUCCESS: Cleanup /mnt/backup/host1/2018_08_08__10_28 successfully.
-INFO: Check cleanup this backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30
-INFO: No cleanup backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel <span class="m">2</span> --retention <span class="m">3</span> <span class="m">5</span> --log --verbose
+<span class="go">INFO: Build a rsync command</span>
+<span class="go">INFO: Last full is 2018-08-08 10:30:32</span>
+<span class="go">INFO: Command flags are: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 -vP</span>
+<span class="go">INFO: Create a folder structure for MacOS os</span>
+<span class="go">INFO: Include this criteria: :/Users :/private/etc</span>
+<span class="go">INFO: Destination is /mnt/backup/host1/2018_08_08__10_30</span>
+<span class="go">Start backup on host1</span>
+<span class="go">ERROR: The port 22 on host2 is closed!</span>
+<span class="go">ERROR: The port 22 on host3 is closed!</span>
+<span class="go">INFO: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58</span>
+<span class="go">receiving file list ...</span>
+<span class="go">39323 files to consider</span>
+<span class="go">Users/</span>
+<span class="go">...</span>
+<span class="go">...</span>
+<span class="go">SUCCESS: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58</span>
+<span class="go">INFO: Check cleanup this backup aba860b0-9944-11e8-a93f-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_28</span>
+<span class="go">SUCCESS: Cleanup /mnt/backup/host1/2018_08_08__10_28 successfully.</span>
+<span class="go">INFO: Check cleanup this backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30</span>
+<span class="go">INFO: No cleanup backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30</span>
 </pre></div>
 </div>
 <div class="admonition important">
@@ -892,46 +892,46 @@ To query this catalog, the list command exists.</p>
 </li>
 </ul>
 <p>First, let’s query the catalog:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb list --catalog /mnt/backup
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb list --catalog /mnt/backup
 
-BUTTERFLY BACKUP CATALOG
+<span class="go">BUTTERFLY BACKUP CATALOG</span>
 
-Backup id: aba860b0-9944-11e8-a93f-005056a664e0
-Hostname or ip: host1
-Timestamp: <span class="m">2018</span>-08-08 <span class="m">10</span>:28:12
+<span class="go">Backup id: aba860b0-9944-11e8-a93f-005056a664e0</span>
+<span class="go">Hostname or ip: host1</span>
+<span class="go">Timestamp: 2018-08-08 10:28:12</span>
 
-Backup id: cc6e2744-9944-11e8-b82a-005056a664e0
-Hostname or ip: host1
-Timestamp: <span class="m">2018</span>-08-08 <span class="m">10</span>:30:59
+<span class="go">Backup id: cc6e2744-9944-11e8-b82a-005056a664e0</span>
+<span class="go">Hostname or ip: host1</span>
+<span class="go">Timestamp: 2018-08-08 10:30:59</span>
 
-Backup id: dd6de2f2-9a1e-11e8-82b0-005056a664e0
-Hostname or ip: host1
-Timestamp: <span class="m">2018</span>-08-08 <span class="m">10</span>:58:59
+<span class="go">Backup id: dd6de2f2-9a1e-11e8-82b0-005056a664e0</span>
+<span class="go">Hostname or ip: host1</span>
+<span class="go">Timestamp: 2018-08-08 10:58:59</span>
 </pre></div>
 </div>
 <p>Press <code class="docutils literal notranslate"><span class="pre">q</span></code> for exit. Then we select a backup-id:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb list --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0
-Backup id: dd6de2f2-9a1e-11e8-82b0-005056a664e0
-Hostname or ip: host1
-Type: Incremental
-Timestamp: <span class="m">2018</span>-08-08 <span class="m">10</span>:58:59
-Start: <span class="m">2018</span>-08-08 <span class="m">10</span>:58:59
-Finish: <span class="m">2018</span>-08-08 <span class="m">11</span>:02:49
-OS: MacOS
-ExitCode: <span class="m">0</span>
-Path: /mnt/backup/host1/2018_08_08__10_58
-List: backup.log
-etc
-Users
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb list --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0
+<span class="go">Backup id: dd6de2f2-9a1e-11e8-82b0-005056a664e0</span>
+<span class="go">Hostname or ip: host1</span>
+<span class="go">Type: Incremental</span>
+<span class="go">Timestamp: 2018-08-08 10:58:59</span>
+<span class="go">Start: 2018-08-08 10:58:59</span>
+<span class="go">Finish: 2018-08-08 11:02:49</span>
+<span class="go">OS: MacOS</span>
+<span class="go">ExitCode: 0</span>
+<span class="go">Path: /mnt/backup/host1/2018_08_08__10_58</span>
+<span class="go">List: backup.log</span>
+<span class="go">etc</span>
+<span class="go">Users</span>
 </pre></div>
 </div>
 <p>If you want to export the catalog list instead, include the log flag:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb list --catalog /mnt/backup --log
-arthur@heartofgold$ cat /mnt/backup/backup.list
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb list --catalog /mnt/backup --log
+<span class="gp">arthur@heartofgold$</span> cat /mnt/backup/backup.list
 </pre></div>
 </div>
 <p>Instead if you want to see the details of your backup, add details flag:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb list --catalog /mnt/backup --detail dd6de2f2-9a1e-11e8-82b0-005056a664e0
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb list --catalog /mnt/backup --detail dd6de2f2-9a1e-11e8-82b0-005056a664e0
 </pre></div>
 </div>
 <p>Now that we have identified a backup, let’s proceed with the restore</p>
@@ -1052,11 +1052,11 @@ arthur@heartofgold$ cat /mnt/backup/backup.list
 </ul>
 <p>This is a few examples:</p>
 <p>This command perform a restore on the same machine of the backup:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host1 --log
-Want to <span class="k">do</span> restore path /mnt/backup/host1/2018_08_08__10_58/etc? To <span class="k">continue</span> <span class="o">[</span>Y/N<span class="o">]</span>? y
-Want to <span class="k">do</span> restore path /mnt/backup/host1/2018_08_08__10_58/Users? To <span class="k">continue</span> <span class="o">[</span>Y/N<span class="o">]</span>? y
-SUCCESS: Command rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc arthur@host1:/restore_2018_08_08__10_58
-SUCCESS: Command rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host1:/Users
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host1 --log
+<span class="go">Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y</span>
+<span class="go">Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y</span>
+<span class="go">SUCCESS: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc arthur@host1:/restore_2018_08_08__10_58</span>
+<span class="go">SUCCESS: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host1:/Users</span>
 </pre></div>
 </div>
 <div class="admonition important">
@@ -1065,33 +1065,33 @@ SUCCESS: Command rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/ho
 Butterfly Backup will select it directly from the catalog via the backup-id.</p>
 </div>
 <p>Now, select the last available backup on catalog; run this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb restore --catalog /mnt/backup --last --computer host1 --log
-Want to <span class="k">do</span> restore path /mnt/backup/host1/2018_08_08__10_58/etc? To <span class="k">continue</span> <span class="o">[</span>Y/N<span class="o">]</span>? y
-Want to <span class="k">do</span> restore path /mnt/backup/host1/2018_08_08__10_58/Users? To <span class="k">continue</span> <span class="o">[</span>Y/N<span class="o">]</span>? y
-SUCCESS: Command rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc arthur@host1:/restore_2018_08_08__10_59
-SUCCESS: Command rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host1:/Users
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb restore --catalog /mnt/backup --last --computer host1 --log
+<span class="go">Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y</span>
+<span class="go">Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y</span>
+<span class="go">SUCCESS: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc arthur@host1:/restore_2018_08_08__10_59</span>
+<span class="go">SUCCESS: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host1:/Users</span>
 </pre></div>
 </div>
 <p>This example, is the same as the previous one, but restore to other machine and other operating system:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host2 --type Unix --log --verbose
-INFO: Build a rsync <span class="nb">command</span>
-INFO: Command flags are: rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_58/restore.log
-Want to <span class="k">do</span> restore path /mnt/backup/host1/2018_08_08__10_58/etc? To <span class="k">continue</span> <span class="o">[</span>Y/N<span class="o">]</span>? y
-INFO: Build a rsync <span class="nb">command</span>
-INFO: Command flags are: rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_58/restore.log
-Want to <span class="k">do</span> restore path /mnt/backup/host1/2018_08_08__10_58/Users? To <span class="k">continue</span> <span class="o">[</span>Y/N<span class="o">]</span>? y
-Start restore on host2
-INFO: rsync command: rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc/* arthur@host2:/etc
-Start restore on host2
-INFO: rsync command: rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host2:/home
-building file list ...
-<span class="m">26633</span> files to consider
-...
-...
-sent <span class="m">777</span>.53K bytes  received <span class="m">20</span> bytes  <span class="m">62</span>.20K bytes/sec
-total size is <span class="m">6</span>.66G  speedup is <span class="m">8566</span>.41
-SUCCESS: Command rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc/* arthur@host2:/etc
-SUCCESS: Command rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host2:/home
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host2 --type Unix --log --verbose
+<span class="go">INFO: Build a rsync command</span>
+<span class="go">INFO: Command flags are: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log</span>
+<span class="go">Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y</span>
+<span class="go">INFO: Build a rsync command</span>
+<span class="go">INFO: Command flags are: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log</span>
+<span class="go">Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y</span>
+<span class="go">Start restore on host2</span>
+<span class="go">INFO: rsync command: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc/* arthur@host2:/etc</span>
+<span class="go">Start restore on host2</span>
+<span class="go">INFO: rsync command: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host2:/home</span>
+<span class="go">building file list ...</span>
+<span class="go">26633 files to consider</span>
+<span class="go">...</span>
+<span class="go">...</span>
+<span class="go">sent 777.53K bytes  received 20 bytes  62.20K bytes/sec</span>
+<span class="go">total size is 6.66G  speedup is 8566.41</span>
+<span class="go">SUCCESS: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc/* arthur@host2:/etc</span>
+<span class="go">SUCCESS: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host2:/home</span>
 </pre></div>
 </div>
 </div>
@@ -1143,31 +1143,31 @@ SUCCESS: Command rsync -ahu -vP --log-file<span class="o">=</span>/mnt/backup/ho
 </li>
 </ul>
 <p>Archive old backup of 3 days:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb archive --catalog /mnt/backup/ --days <span class="m">3</span> --destination /mnt/archive/ --verbose --log
-INFO: Check archive this backup f65e5afe-9734-11e8-b0bb-005056a664e0. Folder /mnt/backup/host2/2018_08_08__17_50
-INFO: Check archive this backup 4f2b5f6e-9939-11e8-9ab6-005056a664e0. Folder /mnt/backup/host2/2018_08_04__07_26
-SUCCESS: Delete /mnt/backup/host2/2018_08_04__07_26 successfully.
-SUCCESS: Archive /mnt/backup/host2/2018_08_04__07_26 successfully.
-arthur@heartofgold$ ls /mnt/archive
-host1
-arthur@heartofgold$ ls /mnt/archive/host1
-2018_08_06__07_26.zip
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb archive --catalog /mnt/backup/ --days <span class="m">3</span> --destination /mnt/archive/ --verbose --log
+<span class="go">INFO: Check archive this backup f65e5afe-9734-11e8-b0bb-005056a664e0. Folder /mnt/backup/host2/2018_08_08__17_50</span>
+<span class="go">INFO: Check archive this backup 4f2b5f6e-9939-11e8-9ab6-005056a664e0. Folder /mnt/backup/host2/2018_08_04__07_26</span>
+<span class="go">SUCCESS: Delete /mnt/backup/host2/2018_08_04__07_26 successfully.</span>
+<span class="go">SUCCESS: Archive /mnt/backup/host2/2018_08_04__07_26 successfully.</span>
+<span class="gp">arthur@heartofgold$</span> ls /mnt/archive
+<span class="go">host1</span>
+<span class="gp">arthur@heartofgold$</span> ls /mnt/archive/host1
+<span class="go">2018_08_06__07_26.zip</span>
 </pre></div>
 </div>
 <p>The backup-id <em>f65e5afe-9734-11e8-b0bb-005056a664e0</em> it is not considered, because it falls within the established time.
 The other, however, is zipped and deleted.</p>
 <p>Lastly, let’s look in the catalog and see that the backup was actually archived:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb list --catalog /mnt/backup/ -i 4f2b5f6e-9939-11e8-9ab6-005056a664e0
-Backup id: 4f2b5f6e-9939-11e8-9ab6-005056a664e0
-Hostname or ip: host2
-Type: Incremental
-Timestamp: <span class="m">2018</span>-08-08 <span class="m">07</span>:26:46
-Start: <span class="m">2018</span>-08-08 <span class="m">07</span>:26:46
-Finish: <span class="m">2018</span>-08-08 <span class="m">08</span>:43:45
-OS: MacOS
-ExitCode: <span class="m">0</span>
-Path: /mnt/backup/host2/2018_08_04__07_26
-Archived: True
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb list --catalog /mnt/backup/ -i 4f2b5f6e-9939-11e8-9ab6-005056a664e0
+<span class="go">Backup id: 4f2b5f6e-9939-11e8-9ab6-005056a664e0</span>
+<span class="go">Hostname or ip: host2</span>
+<span class="go">Type: Incremental</span>
+<span class="go">Timestamp: 2018-08-08 07:26:46</span>
+<span class="go">Start: 2018-08-08 07:26:46</span>
+<span class="go">Finish: 2018-08-08 08:43:45</span>
+<span class="go">OS: MacOS</span>
+<span class="go">ExitCode: 0</span>
+<span class="go">Path: /mnt/backup/host2/2018_08_04__07_26</span>
+<span class="go">Archived: True</span>
 </pre></div>
 </div>
 </div>
@@ -1286,33 +1286,33 @@ Archived: True
 </li>
 </ul>
 <p>Export a backup in other directory:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb <span class="nb">export</span> --catalog /mnt/backup/ --backup-id f0f700e8-0435-11e9-9e78-005056a664e0 --destination /mnt/backup/export --verbose
-INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
-INFO: Build a rsync <span class="nb">command</span>
-Start <span class="nb">export</span> host1
-...
-INFO: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
-SUCCESS: Command rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb <span class="nb">export</span> --catalog /mnt/backup/ --backup-id f0f700e8-0435-11e9-9e78-005056a664e0 --destination /mnt/backup/export --verbose
+<span class="go">INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0</span>
+<span class="go">INFO: Build a rsync command</span>
+<span class="go">Start export host1</span>
+<span class="go">...</span>
+<span class="go">INFO: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1</span>
+<span class="go">SUCCESS: Command rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1</span>
 </pre></div>
 </div>
 <p>Export all backup in other directory:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb <span class="nb">export</span> --catalog /mnt/backup/ --all --destination /mnt/backup/export --verbose
-INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
-INFO: Build a rsync <span class="nb">command</span>
-Start <span class="nb">export</span> host1
-...
-INFO: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
-SUCCESS: Command rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb <span class="nb">export</span> --catalog /mnt/backup/ --all --destination /mnt/backup/export --verbose
+<span class="go">INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0</span>
+<span class="go">INFO: Build a rsync command</span>
+<span class="go">Start export host1</span>
+<span class="go">...</span>
+<span class="go">INFO: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1</span>
+<span class="go">SUCCESS: Command rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1</span>
 </pre></div>
 </div>
 <p>Export a backup with exclude pdf files:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arthur@heartofgold$ bb <span class="nb">export</span> --catalog /mnt/backup/ --backup-id f0f700e8-0435-11e9-9e78-005056a664e0 --destination /backup/export --verbose --exclude *.pdf
-INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
-INFO: Build a rsync <span class="nb">command</span>
-Start <span class="nb">export</span> host1
-...
-INFO: rsync command: rsync -ah --no-links -vP --exclude<span class="o">=</span>*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
-SUCCESS: Command rsync -ah --no-links -vP --exclude<span class="o">=</span>*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb <span class="nb">export</span> --catalog /mnt/backup/ --backup-id f0f700e8-0435-11e9-9e78-005056a664e0 --destination /backup/export --verbose --exclude *.pdf
+<span class="go">INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0</span>
+<span class="go">INFO: Build a rsync command</span>
+<span class="go">Start export host1</span>
+<span class="go">...</span>
+<span class="go">INFO: rsync command: rsync -ah --no-links -vP --exclude=*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1</span>
+<span class="go">SUCCESS: Command rsync -ah --no-links -vP --exclude=*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1</span>
 </pre></div>
 </div>
 </div>

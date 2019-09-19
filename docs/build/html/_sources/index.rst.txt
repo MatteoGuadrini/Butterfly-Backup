@@ -41,7 +41,7 @@ Installation
 
 Install Butterfly Backup is very simple; run this:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
    arthur@heartofgold$ cd Butterfly-Backup
@@ -63,7 +63,7 @@ the server pushes files into the client.
 
 Backups are organized according to precise cataloguing; this is an example:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ tree destination/of/backup
    .
@@ -198,7 +198,7 @@ Two macro-options are available:
 
 At this point, we create the configuration:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb config --new
    WARNING: Private key ~/.ssh/id_rsa exists
@@ -206,7 +206,7 @@ At this point, we create the configuration:
 
 In this case, the RSA key already exists. Now try delete and create a new keys:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb config --remove
    Are you sure to remove existing rsa keys? To continue [Y/N]? y
@@ -295,7 +295,7 @@ Verify if port 22 is in LISTEN
 
 If you want to initialize or reset the catalog file, run this:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb config --init /mnt/backup -v
 
@@ -449,7 +449,7 @@ and put them in the cataloging structure indicated above.
 
 This is a few examples:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb backup --computer host1 --destination /mnt/backup --data User Config --type MacOS
    # host1 SSH-2.0-OpenSSH_7.5
@@ -461,14 +461,14 @@ This is a few examples:
 
    Without specifying the "mode" flag, Butterfly Backup by default selects *Incremental* mode
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb backup --computer host1 --destination /mnt/backup --mode Full --data User Config --type MacOS --user root
    "root@host1's password:"
    Start backup on host1
    SUCCESS: Command rsync -ah --no-links root@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_30
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb backup --computer host1 --destination /mnt/backup --data User Config --type MacOS --verbose --log
    INFO: Build a rsync command
@@ -502,7 +502,7 @@ Bulk backup follows the same logic and the same options as a single backup, but 
 
 This is a few examples:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS
    # host1 SSH-2.0-OpenSSH_7.5
@@ -521,7 +521,7 @@ This example, is the same as the previous one, with the only difference being th
 This means that maximum two backup jobs will run at the same time. When a first process ends, another one is started.
 
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel 2 --log
    # host1 SSH-2.0-OpenSSH_7.5
@@ -533,7 +533,7 @@ This means that maximum two backup jobs will run at the same time. When a first 
 
 This is the same example but specifying a retention at 3 (days). This means that in doing so we want to keep only 3 days backups.
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel 2 --retention 3 --log --verbose
    INFO: Build a rsync command
@@ -560,7 +560,7 @@ This is the same example but specifying a retention at 3 (days). This means that
 
 Here we find the same example above but specifying a retention at 2 (days) and 5 backup copies. This means that at least 5 backup copies will be kept, even if they are older than two days.
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel 2 --retention 3 5 --log --verbose
    INFO: Build a rsync command
@@ -637,7 +637,7 @@ To query this catalog, the list command exists.
 
 First, let's query the catalog:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb list --catalog /mnt/backup
 
@@ -657,7 +657,7 @@ First, let's query the catalog:
 
 Press ``q`` for exit. Then we select a backup-id:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb list --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0
    Backup id: dd6de2f2-9a1e-11e8-82b0-005056a664e0
@@ -675,14 +675,14 @@ Press ``q`` for exit. Then we select a backup-id:
 
 If you want to export the catalog list instead, include the log flag:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb list --catalog /mnt/backup --log
    arthur@heartofgold$ cat /mnt/backup/backup.list
 
 Instead if you want to see the details of your backup, add details flag:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb list --catalog /mnt/backup --detail dd6de2f2-9a1e-11e8-82b0-005056a664e0
 
@@ -762,7 +762,7 @@ This is a few examples:
 
 This command perform a restore on the same machine of the backup:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host1 --log
    Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
@@ -776,7 +776,7 @@ This command perform a restore on the same machine of the backup:
 
 Now, select the last available backup on catalog; run this:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb restore --catalog /mnt/backup --last --computer host1 --log
    Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
@@ -786,7 +786,7 @@ Now, select the last available backup on catalog; run this:
 
 This example, is the same as the previous one, but restore to other machine and other operating system:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host2 --type Unix --log --verbose
    INFO: Build a rsync command
@@ -843,7 +843,7 @@ Archive operations are used to store backups by saving disk space. Backups older
 
 Archive old backup of 3 days:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb archive --catalog /mnt/backup/ --days 3 --destination /mnt/archive/ --verbose --log
    INFO: Check archive this backup f65e5afe-9734-11e8-b0bb-005056a664e0. Folder /mnt/backup/host2/2018_08_08__17_50
@@ -860,7 +860,7 @@ The other, however, is zipped and deleted.
 
 Lastly, let's look in the catalog and see that the backup was actually archived:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb list --catalog /mnt/backup/ -i 4f2b5f6e-9939-11e8-9ab6-005056a664e0
    Backup id: 4f2b5f6e-9939-11e8-9ab6-005056a664e0
@@ -941,7 +941,7 @@ The export function is used to copy a particular backup to another path.
 
 Export a backup in other directory:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb export --catalog /mnt/backup/ --backup-id f0f700e8-0435-11e9-9e78-005056a664e0 --destination /mnt/backup/export --verbose
    INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
@@ -953,7 +953,7 @@ Export a backup in other directory:
 
 Export all backup in other directory:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb export --catalog /mnt/backup/ --all --destination /mnt/backup/export --verbose
    INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
@@ -965,7 +965,7 @@ Export all backup in other directory:
 
 Export a backup with exclude pdf files:
 
-.. code-block:: bash
+.. code-block:: console
 
    arthur@heartofgold$ bb export --catalog /mnt/backup/ --backup-id f0f700e8-0435-11e9-9e78-005056a664e0 --destination /backup/export --verbose --exclude *.pdf
    INFO: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0

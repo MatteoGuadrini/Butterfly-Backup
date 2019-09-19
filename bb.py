@@ -939,7 +939,9 @@ def delete_host(catalog, host):
     :param catalog: catalog file
     :param host: hostname or ip address
     """
+    from shutil import rmtree
     config = read_catalog(catalog)
+    root = os.path.join(os.path.dirname(catalog), host)
     for cid in config.sections():
         if config.get(cid, "name") == host:
             if not os.path.exists(config[cid]['path']):
@@ -957,6 +959,7 @@ def delete_host(catalog, host):
                 elif cleanup == 1:
                     print(utility.PrintColor.RED + 'ERROR: Delete {0} failed.'.format(path) +
                           utility.PrintColor.END)
+    rmtree(root)
     # Write file
     with open(catalog, 'w') as configfile:
         config.write(configfile)
