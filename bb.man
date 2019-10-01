@@ -103,7 +103,8 @@ action:
 Init configuration:
     --new, -n               Generate new configuration
     --remove, -r            Remove exist configuration
-    --init INIT, -i INIT    Reset catalog file. Specify path of backup folder.
+    --init CATALOG, -i CATALOG
+                           Reset catalog file. Specify path of backup folder.
     --delete-host CATALOG HOST, -D CATALOG HOST
                            Delete all entry for a single HOST in catalog.
     --clean CATALOG, -c CATALOG

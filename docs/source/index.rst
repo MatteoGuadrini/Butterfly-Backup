@@ -94,7 +94,7 @@ This is how the operating system sees the backups on the file system:
 * **.catalog.cfg**: is the log that contains the catalog of all backups. The file is the reference of Butterfly Backup to perform future backups.
 
 .. important::
-   Be careful to not delete *.catalog.cfg* file.
+   Be careful to not delete *.catalog.cfg* file. If you want to initialize the backup catalog, just run this command: ``bb config --init /catalog/path``.
 
 Butterfly Backup has, in its core, six main operations:
 
@@ -157,7 +157,7 @@ Let's see how to go about looking at the help:
 
    arthur@heartofgold$ bb config --help
    usage: bb config [-h] [--verbose] [--log] [--dry-run]
-                    [--new | --remove | --init INIT | --delete-host CATALOG HOST | --clean CATALOG]
+                    [--new | --remove | --init CATALOG | --delete-host CATALOG HOST | --clean CATALOG]
                     [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
 
    optional arguments:
@@ -169,7 +169,8 @@ Let's see how to go about looking at the help:
    Init configuration:
      --new, -n             Generate new configuration
      --remove, -r          Remove exist configuration
-     --init INIT, -i INIT  Reset catalog file. Specify path of backup folder.
+     --init CATALOG, -i CATALOG
+                           Reset catalog file. Specify path of backup folder.
      --delete-host CATALOG HOST, -D CATALOG HOST
                            Delete all entry for a single HOST in catalog.
      --clean CATALOG, -c CATALOG

@@ -1034,7 +1034,7 @@ def parse_arguments():
     group_config_mutually.add_argument('--remove', '-r', help='Remove exist configuration', dest='remove_conf',
                                        action='store_true')
     group_config_mutually.add_argument('--init', '-i', help='Reset catalog file. Specify path of backup folder.',
-                                       dest='init', action='store')
+                                       dest='init', metavar='CATALOG', action='store')
     group_config_mutually.add_argument('--delete-host', '-D', help='Delete all entry for a single HOST in catalog.',
                                        nargs=2, dest='delete', metavar=('CATALOG', 'HOST'), action='store')
     group_config_mutually.add_argument('--clean', '-c', help='Cleans the catalog if it is corrupt, '

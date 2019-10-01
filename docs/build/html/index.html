@@ -239,7 +239,7 @@ the server pushes files into the client.</p>
 </ul>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p class="last">Be careful to not delete <em>.catalog.cfg</em> file.</p>
+<p class="last">Be careful to not delete <em>.catalog.cfg</em> file. If you want to initialize the backup catalog, just run this command: <code class="docutils literal notranslate"><span class="pre">bb</span> <span class="pre">config</span> <span class="pre">--init</span> <span class="pre">/catalog/path</span></code>.</p>
 </div>
 <p>Butterfly Backup has, in its core, six main operations:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb --help
@@ -309,7 +309,7 @@ If you don’t want to discuss the merits of exchange keys and start, then go ah
 Let’s see how to go about looking at the help:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb config --help
 <span class="go">usage: bb config [-h] [--verbose] [--log] [--dry-run]</span>
-<span class="go">                 [--new | --remove | --init INIT | --delete-host CATALOG HOST | --clean CATALOG]</span>
+<span class="go">                 [--new | --remove | --init CATALOG | --delete-host CATALOG HOST | --clean CATALOG]</span>
 <span class="go">                 [--deploy DEPLOY_HOST] [--user DEPLOY_USER]</span>
 
 <span class="go">optional arguments:</span>
@@ -321,7 +321,8 @@ Let’s see how to go about looking at the help:</p>
 <span class="go">Init configuration:</span>
 <span class="go">  --new, -n             Generate new configuration</span>
 <span class="go">  --remove, -r          Remove exist configuration</span>
-<span class="go">  --init INIT, -i INIT  Reset catalog file. Specify path of backup folder.</span>
+<span class="go">  --init CATALOG, -i CATALOG</span>
+<span class="go">                        Reset catalog file. Specify path of backup folder.</span>
 <span class="go">  --delete-host CATALOG HOST, -D CATALOG HOST</span>
 <span class="go">                        Delete all entry for a single HOST in catalog.</span>
 <span class="go">  --clean CATALOG, -c CATALOG</span>
@@ -707,7 +708,7 @@ and put them in the cataloging structure indicated above.</p>
 <p class="last">Without specifying the “mode” flag, Butterfly Backup by default selects <em>Incremental</em> mode</p>
 </div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$</span> bb backup --computer host1 --destination /mnt/backup --mode Full --data User Config --type MacOS --user root
-<span class="go">&quot;root@host1&#39;s password:&quot;</span>
+<span class="go">root@host1&#39;s password:</span>
 <span class="go">Start backup on host1</span>
 <span class="go">SUCCESS: Command rsync -ah --no-links root@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_30</span>
 </pre></div>
