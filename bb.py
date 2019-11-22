@@ -1198,6 +1198,8 @@ if __name__ == '__main__':
 
     # Check backup session
     if args.action == 'backup':
+        # Check custom ssh port
+        port = args.port if args.port else 22
         hostnames = []
         cmds = []
         logs = []
@@ -1218,7 +1220,7 @@ if __name__ == '__main__':
             print('For ' + utility.PrintColor.BOLD + 'backup' + utility.PrintColor.END + ' usage, "--help" or "-h"')
             exit(1)
         for hostname in hostnames:
-            if not utility.check_ssh(hostname):
+            if not utility.check_ssh(hostname, port):
                 print(utility.PrintColor.RED + 'ERROR: The port 22 on {0} is closed!'.format(hostname)
                       + utility.PrintColor.END)
                 continue
@@ -1290,6 +1292,8 @@ if __name__ == '__main__':
 
     # Check restore session
     if args.action == 'restore':
+        # Check custom ssh port
+        port = args.port if args.port else 22
         cmds = []
         logs = []
         rhost = ''
@@ -1339,7 +1343,7 @@ if __name__ == '__main__':
                       + utility.PrintColor.END)
                 exit(1)
         # Test connection
-        if not utility.check_ssh(rhost):
+        if not utility.check_ssh(rhost, port):
             print(utility.PrintColor.RED + 'ERROR: The port 22 on {0} is closed!'.format(rhost)
                   + utility.PrintColor.END)
             exit(1)

@@ -245,15 +245,16 @@ def check_tool(name):
     return which(name) is not None
 
 
-def check_ssh(ip):
+def check_ssh(ip, port=22):
     """
     Test ssh connection
     :param ip: ip address or hostname of machine
+    :param port: ssh port (default is 22)
     """
     import socket
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        s.connect((ip, 22))
+        s.connect((ip, port))
         s.shutdown(2)
         return True
     except socket.error:
