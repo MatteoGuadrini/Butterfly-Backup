@@ -3,6 +3,7 @@
 ![Greta oto](img/bb.png)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7fc47024f17f4dffa3be08a7a5ab31bd)](https://app.codacy.com/app/MatteoGuadrini/Butterfly-Backup?utm_source=github.com&utm_medium=referral&utm_content=MatteoGuadrini/Butterfly-Backup&utm_campaign=Badge_Grade_Dashboard)
+[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=svg)](https://circleci.com/gh/MatteoGuadrini/Butterfly-Backup)
 
 # Butterfly Backup: presentation
 **The plan is great when the backup plan is excellent!**
