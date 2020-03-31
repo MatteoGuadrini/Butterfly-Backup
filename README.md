@@ -3,7 +3,7 @@
 ![Greta oto](img/bb.png)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7fc47024f17f4dffa3be08a7a5ab31bd)](https://app.codacy.com/app/MatteoGuadrini/Butterfly-Backup?utm_source=github.com&utm_medium=referral&utm_content=MatteoGuadrini/Butterfly-Backup&utm_campaign=Badge_Grade_Dashboard)
-[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=svg)](https://circleci.com/gh/MatteoGuadrini/Butterfly-Backup)
+[![CircleCI](https://circleci.com/gh/MatteoGuadrini/Butterfly-Backup.svg?style=svg)](https://circleci.com/gh/MatteoGuadrini/Butterfly-Backup)
 
 # Butterfly Backup: presentation
 **The plan is great when the backup plan is excellent!**
@@ -22,7 +22,7 @@ With Butterfly Backup I can perform single or group backups (Full, Incremental, 
 Naturally through the synergy of rsync and OpenSSH technology and the power of Python..
 
 ## Which platforms support?
-Butterfly Backup run on Linux, BSD, MacOSX and Windows(with cygwin, see [config docs](https://Butterfly-Backup.readthedocs.io/en/latest/))
+Butterfly Backup can backup Linux, BSD, MacOSX and Windows(with cygwin, see [config docs](https://Butterfly-Backup.readthedocs.io/en/latest/))
 
 ## Real uses
 This list consists of only a few examples; applications can be endless:
@@ -54,7 +54,7 @@ This list consists of only a few examples; applications can be endless:
 **Transform rsync in a powerfully backup/restore/archive tool**
 
 ## Operation
-All operation of Butterfly Backup are _server to client_, agent-less.
+All operation of Butterfly Backup are _server to client_, agent-less. The server must be Unix machine with latest rsync installed.
 This means that all commands must be executed by the backup server. Of course, nothing prevents the backup server from being itself (localhost).
 
 To see all the operations and more examples, see the [docs](https://Butterfly-Backup.readthedocs.io/en/latest/).
