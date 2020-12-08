@@ -59,6 +59,14 @@ This means that all commands must be executed by the backup server. Of course, n
 
 To see all the operations and more examples, see the [docs](https://Butterfly-Backup.readthedocs.io/en/latest/).
 
+## Test
+If you want to try or test Butterfly Backup before installing it, run the test:
+```console
+git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
+cd Butterfly-Backup
+bash test_bb.py
+```
+
 ## Installation
 Install Butterfly Backup is very simple; run this:
 ```bash
