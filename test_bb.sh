@@ -43,14 +43,30 @@ else
 	exit 2
 fi
 
+echo "Test backup"
 python3 bb.py backup --computer localhost --destination $repo --custom-data $data --type $os --verbose --log
 
 # Test if backup was created
 backup=$repo/localhost
 if [ -d $backup ]; then
-	echo "Backup was created $backup\n"
+	echo "Backup was created $backup"
 else
-	echo "Backup failed\n"
+	echo "Backup failed"
+	exit 3
+fi
+
+# Test export
+echo "Test export"
+exp_data="/tmp/bb_exp"
+mkdir $exp_data
+
+python3 bb.py export --catalog $repo --all --destination $exp_data --verbose --log
+
+# Test if restore was performed
+if [ -f "$exp_data/.catalog.cfg" ]; then
+	echo "Export was performed"
+else
+	echo "Export failed"
 	exit 3
 fi
 
