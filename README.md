@@ -62,9 +62,19 @@ To see all the operations and more examples, see the [docs](https://Butterfly-Ba
 ## Test
 If you want to try or test Butterfly Backup before installing it, run the test:
 ```console
-git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
-cd Butterfly-Backup
-bash test_bb.py
+$ git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
+$ cd Butterfly-Backup
+$ bash test_bb.py
+...
+[92512a6e-506e-11eb-b747-2ba55b805ea5]
+type = Full
+path = /tmp/bb_repo/localhost/2021_01_06__23_28
+name = localhost
+os = Unix
+timestamp = 2021-01-06 23:28:59
+start = 2021-01-06 23:28:59
+end = 2021-01-06 23:29:04
+status = 0
 ```
 
 ## Installation
