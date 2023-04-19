@@ -5,7 +5,7 @@
 # created by: matteo.guadrini
 # bb.py -- Butterfly-Backup
 #
-#     Copyright (C) 2018 Matteo Guadrini <matteo.guadrini@hotmail.it>
+#     Copyright (C) 2023 Matteo Guadrini <matteo.guadrini@hotmail.it>
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -25,7 +25,8 @@ NAME
     Butterfly Backup - backup/restore/archive tool , agentless
 
 DESCRIPTION
-    Butterfly Backup is a simple command line wrapper of rsync for complex task, written in python
+    Butterfly Backup is a simple command line wrapper of rsync for complex task, 
+    written in python
 
 SYNOPSIS
     bb [ACTION] [OPTIONS]
@@ -48,7 +49,7 @@ OPTIONS
 
 EXAMPLES
     Show full help:
-        O_O>$ bb --help
+        $ bb --help
 """
 
 import argparse
@@ -159,9 +160,9 @@ def run_in_parallel(fn, commands, limit):
         jobs.append(proc)
         print('Start {0} {1}'.format(args.action, plog['hostname']))
         print_verbose(args.verbose, "rsync command: {0}".format(command))
-        utility.write_log(log_args['status'], plog['destination'], 'INFO', 'Start process {0} on {1}'.format(
-            args.action, plog['hostname']
-        ))
+        utility.write_log(log_args['status'], plog['destination'], 'INFO',
+                          'Start process {0} on {1}'
+                          .format(args.action, plog['hostname']))
         if args.action == 'backup':
             # Write catalog file
             write_catalog(catalog_path, plog['id'], 'start', utility.time_for_log())
@@ -173,29 +174,37 @@ def run_in_parallel(fn, commands, limit):
     # Check exit code of command
     for p, command, plog in zip(jobs, commands, logs):
         if p.get() != 0:
-            print(utility.PrintColor.RED + 'ERROR: Command {0} exit with code: {1}'.format(command, p.get()) +
+            print(utility.PrintColor.RED + 'ERROR: Command {0} exit with code: {1}'
+                  .format(command, p.get()) +
                   utility.PrintColor.END)
             utility.write_log(log_args['status'], plog['destination'], 'ERROR',
-                              'Finish process {0} on {1} with error:{2}'.format(args.action, plog['hostname'], p.get()))
+                              'Finish process {0} on {1} with error:{2}'
+                              .format(args.action, plog['hostname'], p.get()))
             if args.action == 'backup':
                 # Write catalog file
                 write_catalog(catalog_path, plog['id'], 'end', utility.time_for_log())
                 write_catalog(catalog_path, plog['id'], 'status', "{0}".format(p.get()))
                 if args.retention and args.skip_err:
                     # Retention policy
-                    retention_policy(plog['hostname'], catalog_path, plog['destination'])
+                    retention_policy(plog['hostname'],
+                                     catalog_path,
+                                     plog['destination'])
 
         else:
-            print(utility.PrintColor.GREEN + 'SUCCESS: Command {0}'.format(command) + utility.PrintColor.END)
+            print(utility.PrintColor.GREEN + 'SUCCESS: Command {0}'.format(command) +
+                  utility.PrintColor.END)
             utility.write_log(log_args['status'], plog['destination'], 'INFO',
-                              'Finish process {0} on {1}'.format(args.action, plog['hostname']))
+                              'Finish process {0} on {1}'
+                              .format(args.action, plog['hostname']))
             if args.action == 'backup':
                 # Write catalog file
                 write_catalog(catalog_path, plog['id'], 'end', utility.time_for_log())
                 write_catalog(catalog_path, plog['id'], 'status', "{0}".format(p.get()))
                 if args.retention:
                     # Retention policy
-                    retention_policy(plog['hostname'], catalog_path, plog['destination'])
+                    retention_policy(plog['hostname'],
+                                     catalog_path,
+                                     plog['destination'])
 
     # Safely terminate the pool
     pool.close()
@@ -210,11 +219,15 @@ def start_process(command):
     """
     fd = get_std_out()
     if fd == 'DEVNULL':
-        p = subprocess.call(command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        p = subprocess.call(command, shell=True,
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL)
     elif fd == 'STDOUT':
         p = subprocess.call(command, shell=True)
     else:
-        p = subprocess.call(command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        p = subprocess.call(command, shell=True,
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL)
     return p
 
 
@@ -357,13 +370,15 @@ def compose_command(flags, host):
         # Set dry-run mode
         if flags.dry_run:
             command.append('--dry-run')
-            utility.write_log(log_args['status'], log_args['destination'], 'INFO', 'dry-run mode activate')
+            utility.write_log(log_args['status'], log_args['destination'],
+                              'INFO', 'dry-run mode activate')
         # Set excludes
         if flags.exclude:
             for exclude in flags.exclude:
                 command.append('--exclude={0}'.format(exclude))
         if flags.log:
-            log_path = os.path.join(compose_destination(host, flags.destination), 'backup.log')
+            log_path = os.path.join(compose_destination(host, flags.destination),
+                                    'backup.log')
             command.append(
                 '--log-file={0}'.format(log_path)
             )
@@ -392,7 +407,8 @@ def compose_command(flags, host):
         # Set dry-run mode
         if flags.dry_run:
             command.append('--dry-run')
-            utility.write_log(log_args['status'], log_args['destination'], 'INFO', 'dry-run mode activate')
+            utility.write_log(log_args['status'], log_args['destination'],
+                              'INFO', 'dry-run mode activate')
         # Set excludes
         if flags.exclude:
             for exclude in flags.exclude:
@@ -445,7 +461,8 @@ def compose_command(flags, host):
         # Set dry-run mode
         if flags.dry_run:
             command.append('--dry-run')
-            utility.write_log(log_args['status'], log_args['destination'], 'INFO', 'dry-run mode activate')
+            utility.write_log(log_args['status'], log_args['destination'],
+                              'INFO', 'dry-run mode activate')
         if flags.log:
             log_path = os.path.join(flags.catalog, 'export.log')
             command.append(
@@ -490,10 +507,14 @@ def compose_source(action, os_name, sources):
         if custom:
             # This is custom data
             for custom_data in sources:
-                src_list.append(':{0}'.format("'" + custom_data.replace("'", "'\\''") + "'"))
+                src_list.append(':{0}'.format("'" +
+                                              custom_data.replace("'", "'\\''") +
+                                              "'"))
         utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                          'OS {0}; backup folder {1}'.format(os_name, ' '.join(src_list)))
-        print_verbose(args.verbose, 'Include this criteria: {0}'.format(' '.join(src_list)))
+                          'OS {0}; backup folder {1}'.format(os_name, ' '
+                                                             .join(src_list)))
+        print_verbose(args.verbose, 'Include this criteria: {0}'.format(' '
+                                                                        .join(src_list)))
         return src_list
 
 
@@ -516,7 +537,8 @@ def compose_restore_src_dst(backup_os, restore_os, restore_path):
                 return rsrc, rdst
         else:
             rsrc = restore_path
-            rdst = os.path.join(r_folders['System'], 'restore_{0}'.format(utility.time_for_folder()))
+            rdst = os.path.join(r_folders['System'], 'restore_{0}'
+                                .format(utility.time_for_folder()))
             if rsrc and rdst:
                 return rsrc, rdst
 
@@ -570,12 +592,14 @@ def get_last_full(catalog):
         for bid in config.sections():
             if config.get(bid, 'type') == 'Full' \
                     and config.get(bid, 'name') == hostname \
-                    and (not config.has_option(bid, 'cleaned') or not config.has_option(bid, 'archived')):
+                    and (not config.has_option(bid, 'cleaned')
+                         or not config.has_option(bid, 'archived')):
                 try:
                     dates.append(utility.string_to_time(config.get(bid, 'timestamp')))
                 except configparser.NoOptionError:
                     print(utility.PrintColor.RED +
-                          "ERROR: Corrupted catalog! No found timestamp in {0}".format(bid) + utility.PrintColor.END)
+                          "ERROR: Corrupted catalog! No found timestamp in {0}"
+                          .format(bid) + utility.PrintColor.END)
                     exit(2)
         if dates:
             last_full = utility.time_to_string(max(dates))
@@ -601,19 +625,23 @@ def get_last_backup(catalog):
     if config:
         for bid in config.sections():
             if config.get(bid, 'name') == hostname \
-                    and (not config.has_option(bid, 'cleaned') or not config.has_option(bid, 'archived')):
+                    and (not config.has_option(bid, 'cleaned')
+                         or not config.has_option(bid, 'archived')):
                 try:
                     dates.append(utility.string_to_time(config.get(bid, 'timestamp')))
                 except configparser.NoOptionError:
                     print(utility.PrintColor.RED +
-                          "ERROR: Corrupted catalog! No found timestamp in {0}".format(bid) + utility.PrintColor.END)
+                          "ERROR: Corrupted catalog! "
+                          "No found timestamp in {0}".format(bid) +
+                          utility.PrintColor.END)
                     exit(2)
         if dates:
             dates.sort()
             last = utility.time_to_string(dates[-1])
             if last:
                 for bid in config.sections():
-                    if config.get(bid, 'name') == hostname and config.get(bid, 'timestamp') == last:
+                    if (config.get(bid, 'name') == hostname
+                            and config.get(bid, 'timestamp') == last):
                         return config.get(bid, 'path'), config.get(bid, 'os')
     else:
         return False
@@ -669,7 +697,8 @@ def read_catalog(catalog):
             return config
         else:
             print(utility.PrintColor.RED +
-                  'ERROR: Folder {0} not exist!'.format(os.path.dirname(catalog)) + utility.PrintColor.END)
+                  'ERROR: Folder {0} not exist!'.format(os.path.dirname(catalog)) +
+                  utility.PrintColor.END)
             exit(1)
 
 
@@ -705,8 +734,9 @@ def retention_policy(host, catalog, logpath):
     config = read_catalog(catalog)
     full_count = count_full(config, host)
     if len(args.retention) >= 3:
-        print(utility.PrintColor.RED + 'ERROR: The "--retention or -r" parameter must have two integers. '
-                                       'Three or more arguments specified: {}'.format(args.retention) +
+        print(utility.PrintColor.RED +
+              'ERROR: The "--retention or -r" parameter must have two integers. '
+              'Three or more arguments specified: {}'.format(args.retention) +
               utility.PrintColor.END)
         return
     if args.retention[1]:
@@ -716,32 +746,42 @@ def retention_policy(host, catalog, logpath):
     cleanup = -1
     for bid in config.sections():
         if bid not in backup_list:
-            if (config.get(bid, 'cleaned', fallback='unset') == 'unset') and (config.get(bid, 'name') == host):
+            if ((config.get(bid, 'cleaned', fallback='unset') == 'unset')
+                    and (config.get(bid, 'name') == host)):
                 type_backup = config.get(bid, 'type')
                 path = config.get(bid, 'path')
                 date = config.get(bid, 'timestamp')
-                if (type_backup == 'Full' or type_backup == 'Incremental') and (full_count <= 1):
+                if ((type_backup == 'Full' or type_backup == 'Incremental')
+                        and (full_count <= 1)):
                     continue
-                utility.print_verbose(args.verbose, "Check cleanup this backup {0}. Folder {1}".format(bid, path))
+                utility.print_verbose(args.verbose,
+                                      "Check cleanup this backup {0}. "
+                                      "Folder {1}".format(bid, path))
                 if not dry_run("Cleanup {0} backup folder".format(path)):
                     cleanup = utility.cleanup(path, date, args.retention[0])
                 if not os.path.exists(path):
-                    utility.print_verbose(args.verbose, "This folder {0} does not exist. "
-                                                        "The backup has already been cleaned.".format(path))
+                    utility.print_verbose(args.verbose,
+                                          "This folder {0} does not exist. "
+                                          "The backup has already been cleaned."
+                                          .format(path))
                     cleanup = 0
                 if cleanup == 0:
                     write_catalog(catalog, bid, 'cleaned', 'True')
-                    print(utility.PrintColor.GREEN + 'SUCCESS: Cleanup {0} successfully.'.format(path) +
+                    print(utility.PrintColor.GREEN +
+                          'SUCCESS: Cleanup {0} successfully.'.format(path) +
                           utility.PrintColor.END)
                     utility.write_log(log_args['status'], logpath, 'INFO',
                                       'Cleanup {0} successfully.'.format(path))
                 elif cleanup == 1:
-                    print(utility.PrintColor.RED + 'ERROR: Cleanup {0} failed.'.format(path) +
+                    print(utility.PrintColor.RED +
+                          'ERROR: Cleanup {0} failed.'.format(path) +
                           utility.PrintColor.END)
                     utility.write_log(log_args['status'], logpath, 'ERROR',
                                       'Cleanup {0} failed.'.format(path))
                 else:
-                    utility.print_verbose(args.verbose, "No cleanup backup {0}. Folder {1}".format(bid, path))
+                    utility.print_verbose(args.verbose,
+                                          "No cleanup backup {0}. Folder {1}"
+                                          .format(bid, path))
 
 
 def archive_policy(catalog, destination):
@@ -760,29 +800,36 @@ def archive_policy(catalog, destination):
             path = config.get(bid, 'path')
             date = config.get(bid, 'timestamp')
             logpath = os.path.join(os.path.dirname(path), 'general.log')
-            utility.print_verbose(args.verbose, "Check archive this backup {0}. Folder {1}".format(bid, path))
+            utility.print_verbose(args.verbose,
+                                  "Check archive this backup {0}. Folder {1}"
+                                  .format(bid, path))
             if (type_backup == 'Full') and (full_count <= 1):
                 continue
             if not dry_run("Archive {0} backup folder".format(path)):
                 archive = utility.archive(path, date, args.days, destination)
             if archive == 0:
                 write_catalog(catalog, bid, 'archived', 'True')
-                print(utility.PrintColor.GREEN + 'SUCCESS: Archive {0} successfully.'.format(path) +
+                print(utility.PrintColor.GREEN +
+                      'SUCCESS: Archive {0} successfully.'.format(path) +
                       utility.PrintColor.END)
                 utility.write_log(log_args['status'], logpath, 'INFO',
                                   'Archive {0} successfully.'.format(path))
             elif archive == 1:
-                print(utility.PrintColor.RED + 'ERROR: Archive {0} failed.'.format(path) +
+                print(utility.PrintColor.RED +
+                      'ERROR: Archive {0} failed.'.format(path) +
                       utility.PrintColor.END)
                 utility.write_log(log_args['status'], logpath, 'ERROR',
                                   'Archive {0} failed.'.format(path))
             else:
-                utility.print_verbose(args.verbose, "No archive backup {0}. Folder {1}".format(bid, path))
+                utility.print_verbose(args.verbose,
+                                      "No archive backup {0}. Folder {1}"
+                                      .format(bid, path))
 
 
 def deploy_configuration(computer, user):
     """
-    Deploy configuration on remote machine (run "ssh-copy-id -i pub_file -f <user>@<computer>")
+    Deploy configuration on remote machine 
+    (run "ssh-copy-id -i pub_file -f <user>@<computer>")
     :param computer: remote computer than deploy RSA key
     :param user: remote user on computer
     """
@@ -794,20 +841,27 @@ def deploy_configuration(computer, user):
     print_verbose(args.verbose, 'Public id_rsa is {0}'.format(id_rsa_pub_file))
     if not dry_run('Copying configuration to {0}'.format(computer)):
         if os.path.exists(id_rsa_pub_file):
-            print('Copying configuration to' + utility.PrintColor.BOLD + ' {0}'.format(computer) +
+            print('Copying configuration to' +
+                  utility.PrintColor.BOLD + ' {0}'.format(computer) +
                   utility.PrintColor.END + '; write the password:')
-            return_code = subprocess.call('ssh-copy-id -i {0} {1}@{2}'.format(id_rsa_pub_file, user, computer),
+            return_code = subprocess.call('ssh-copy-id -i {0} {1}@{2}'
+                                          .format(id_rsa_pub_file, user, computer),
                                           shell=True)
-            print_verbose(args.verbose, 'Return code of ssh-copy-id: {0}'.format(return_code))
+            print_verbose(args.verbose,
+                          'Return code of ssh-copy-id: {0}'.format(return_code))
             if return_code == 0:
-                print(utility.PrintColor.GREEN + "SUCCESS: Configuration copied successfully on {0}!".format(computer) +
+                print(utility.PrintColor.GREEN +
+                      "SUCCESS: Configuration copied successfully on {0}!"
+                      .format(computer) +
                       utility.PrintColor.END)
             else:
-                print(utility.PrintColor.RED + "ERROR: Configuration has not been copied successfully on {0}!".format(
-                    computer) +
+                print(utility.PrintColor.RED +
+                      "ERROR: Configuration has not been copied successfully on {0}!"
+                      .format(computer) +
                       utility.PrintColor.END)
         else:
-            print(utility.PrintColor.YELLOW + "WARNING: Public key ~/.ssh/id_rsa.pub is not exist" +
+            print(utility.PrintColor.YELLOW +
+                  "WARNING: Public key ~/.ssh/id_rsa.pub is not exist" +
                   utility.PrintColor.END)
             exit(2)
 
@@ -828,20 +882,25 @@ def remove_configuration():
                 os.remove(id_rsa_file)
             else:
                 print(
-                    utility.PrintColor.YELLOW + "WARNING: Private key ~/.ssh/id_rsa is not exist" +
+                    utility.PrintColor.YELLOW +
+                    "WARNING: Private key ~/.ssh/id_rsa is not exist" +
                     utility.PrintColor.END)
                 exit(2)
             # Remove public key file
             id_rsa_pub_file = os.path.join(ssh_folder, 'id_rsa.pub')
-            print_verbose(args.verbose, 'Remove public id_rsa {0}'.format(id_rsa_pub_file))
+            print_verbose(args.verbose,
+                          'Remove public id_rsa {0}'.format(id_rsa_pub_file))
             if os.path.exists(id_rsa_pub_file):
                 os.remove(id_rsa_pub_file)
             else:
                 print(
-                    utility.PrintColor.YELLOW + "WARNING: Public key ~/.ssh/id_rsa.pub is not exist" +
+                    utility.PrintColor.YELLOW +
+                    "WARNING: Public key ~/.ssh/id_rsa.pub is not exist" +
                     utility.PrintColor.END)
                 exit(2)
-            print(utility.PrintColor.GREEN + "SUCCESS: Removed configuration successfully!" + utility.PrintColor.END)
+            print(utility.PrintColor.GREEN +
+                  "SUCCESS: Removed configuration successfully!" +
+                  utility.PrintColor.END)
 
 
 def new_configuration():
@@ -855,12 +914,15 @@ def new_configuration():
     if not dry_run('Generate private/public key pair'):
         # Generate private/public key pair
         print_verbose(args.verbose, 'Generate private/public key pair')
-        private_key = rsa.generate_private_key(backend=default_backend(), public_exponent=65537,
+        private_key = rsa.generate_private_key(backend=default_backend(),
+                                               public_exponent=65537,
                                                key_size=2048)
         # Get public key in OpenSSH format
         print_verbose(args.verbose, 'Get public key in OpenSSH format')
-        public_key = private_key.public_key().public_bytes(serialization.Encoding.OpenSSH,
-                                                           serialization.PublicFormat.OpenSSH)
+        public_key = private_key.public_key().public_bytes(
+            serialization.Encoding.OpenSSH,
+            serialization.PublicFormat.OpenSSH
+        )
         # Get private key in PEM container format
         print_verbose(args.verbose, 'Get private key in PEM container format')
         pem = private_key.private_bytes(encoding=serialization.Encoding.PEM,
@@ -884,25 +946,34 @@ def new_configuration():
                 os.chmod(id_rsa_file, mode=0o600)
                 id_rsa.write(private_key_str)
         else:
-            print(utility.PrintColor.YELLOW + "WARNING: Private key ~/.ssh/id_rsa exists" + utility.PrintColor.END)
-            print('If you want to use the existing key, run "bb config --deploy name_of_machine", '
+            print(utility.PrintColor.YELLOW +
+                  "WARNING: Private key ~/.ssh/id_rsa exists" +
+                  utility.PrintColor.END)
+            print('If you want to use the existing key, '
+                  'run "bb config --deploy name_of_machine", '
                   'otherwise to remove it, '
                   'run "bb config --remove"')
             exit(2)
         # Create private key file
         id_rsa_pub_file = os.path.join(ssh_folder, 'id_rsa.pub')
-        print_verbose(args.verbose, 'Create public key file {0}'.format(id_rsa_pub_file))
+        print_verbose(args.verbose,
+                      'Create public key file {0}'.format(id_rsa_pub_file))
         if not os.path.exists(id_rsa_pub_file):
             with open(id_rsa_pub_file, 'w') as id_rsa_pub:
                 os.chmod(id_rsa_pub_file, mode=0o644)
                 id_rsa_pub.write(public_key_str)
         else:
-            print(utility.PrintColor.YELLOW + "WARNING: Public key ~/.ssh/id_rsa.pub exists" + utility.PrintColor.END)
-            print('If you want to use the existing key, run "bb config --deploy name_of_machine", '
+            print(utility.PrintColor.YELLOW +
+                  "WARNING: Public key ~/.ssh/id_rsa.pub exists" +
+                  utility.PrintColor.END)
+            print('If you want to use the existing key, '
+                  'run "bb config --deploy name_of_machine", '
                   'otherwise to remove it, '
                   'run "bb config --remove"')
             exit(2)
-        print(utility.PrintColor.GREEN + "SUCCESS: New configuration successfully created!" + utility.PrintColor.END)
+        print(utility.PrintColor.GREEN +
+              "SUCCESS: New configuration successfully created!" +
+              utility.PrintColor.END)
 
 
 def check_configuration(ip):
@@ -927,7 +998,8 @@ def init_catalog(catalog):
     config = read_catalog(catalog)
     for cid in config.sections():
         if not os.path.exists(config[cid]['path']):
-            print_verbose(args.verbose, "Backup-id {0} has been removed to catalog!".format(cid))
+            print_verbose(args.verbose,
+                          "Backup-id {0} has been removed to catalog!".format(cid))
             config.remove_section(cid)
     # Write file
     with open(catalog, 'w') as configfile:
@@ -945,19 +1017,24 @@ def delete_host(catalog, host):
     for cid in config.sections():
         if config.get(cid, "name") == host:
             if not os.path.exists(config[cid]['path']):
-                print_verbose(args.verbose, "Backup-id {0} has been removed to catalog!".format(cid))
+                print_verbose(args.verbose,
+                              "Backup-id {0} has been removed to catalog!".format(cid))
                 config.remove_section(cid)
             else:
                 path = config.get(cid, 'path')
                 date = config.get(cid, 'timestamp')
                 cleanup = utility.cleanup(path, date, 0)
                 if cleanup == 0:
-                    print(utility.PrintColor.GREEN + 'SUCCESS: Delete {0} successfully.'.format(path) +
+                    print(utility.PrintColor.GREEN +
+                          'SUCCESS: Delete {0} successfully.'.format(path) +
                           utility.PrintColor.END)
-                    print_verbose(args.verbose, "Backup-id {0} has been removed to catalog!".format(cid))
+                    print_verbose(args.verbose,
+                                  "Backup-id {0} has been removed to catalog!"
+                                  .format(cid))
                     config.remove_section(cid)
                 elif cleanup == 1:
-                    print(utility.PrintColor.RED + 'ERROR: Delete {0} failed.'.format(path) +
+                    print(utility.PrintColor.RED +
+                          'ERROR: Delete {0} failed.'.format(path) +
                           utility.PrintColor.END)
     rmtree(root)
     # Write file
@@ -1000,7 +1077,8 @@ def clean_catalog(catalog):
             mod = True
         if mod:
             print(utility.PrintColor.YELLOW +
-                  'WARNING: The backup-id {0} has been set to default value, because he was corrupt. '
+                  'WARNING: The backup-id {0} has been set to default value, '
+                  'because he was corrupt. '
                   'Check it!'.format(cid) + utility.PrintColor.END)
     # Write file
     with open(catalog, 'w') as configfile:
@@ -1014,35 +1092,54 @@ def parse_arguments():
     """
     # Create a common parser
     parent_parser = argparse.ArgumentParser(add_help=False)
-    parent_parser.add_argument('--verbose', '-v', help='Enable verbosity', dest='verbose', action='store_true')
-    parent_parser.add_argument('--log', '-l', help='Create a log', dest='log', action='store_true')
-    parent_parser.add_argument('--dry-run', '-N', help='Dry run mode', dest='dry_run', action='store_true')
+    parent_parser.add_argument('--verbose', '-v', help='Enable verbosity',
+                               dest='verbose', action='store_true')
+    parent_parser.add_argument('--log', '-l', help='Create a log',
+                               dest='log', action='store_true')
+    parent_parser.add_argument('--dry-run', '-N', help='Dry run mode',
+                               dest='dry_run', action='store_true')
 
     # Create principal parser
-    parser_object = argparse.ArgumentParser(prog='bb', description=utility.PrintColor.BOLD + 'Butterfly Backup'
-                                            + utility.PrintColor.END, epilog=check_rsync(),
+    description = utility.PrintColor.BOLD + 'Butterfly Backup' + utility.PrintColor.END
+    parser_object = argparse.ArgumentParser(prog='bb',
+                                            description=description,
+                                            epilog=check_rsync(),
                                             parents=[parent_parser])
     # Create sub_parser "action"
-    action = parser_object.add_subparsers(title='action', description='Valid action', help='Available actions',
+    action = parser_object.add_subparsers(title='action', description='Valid action',
+                                          help='Available actions',
                                           dest='action')
     # config session
-    config = action.add_parser('config', help='Configuration options', parents=[parent_parser])
+    config = action.add_parser('config', help='Configuration options',
+                               parents=[parent_parser])
     group_config = config.add_argument_group(title='Init configuration')
     group_config_mutually = group_config.add_mutually_exclusive_group()
-    group_config_mutually.add_argument('--new', '-n', help='Generate new configuration', dest='new_conf',
+    group_config_mutually.add_argument('--new', '-n',
+                                       help='Generate new configuration',
+                                       dest='new_conf',
                                        action='store_true')
-    group_config_mutually.add_argument('--remove', '-r', help='Remove exist configuration', dest='remove_conf',
+    group_config_mutually.add_argument('--remove', '-r',
+                                       help='Remove exist configuration',
+                                       dest='remove_conf',
                                        action='store_true')
-    group_config_mutually.add_argument('--init', '-i', help='Reset catalog file. Specify path of backup folder.',
+    group_config_mutually.add_argument('--init', '-i',
+                                       help='Reset catalog file. '
+                                            'Specify path of backup folder.',
                                        dest='init', metavar='CATALOG', action='store')
-    group_config_mutually.add_argument('--delete-host', '-D', help='Delete all entry for a single HOST in catalog.',
-                                       nargs=2, dest='delete', metavar=('CATALOG', 'HOST'), action='store')
-    group_config_mutually.add_argument('--clean', '-c', help='Cleans the catalog if it is corrupt, '
-                                                             'setting default values.',
+    group_config_mutually.add_argument('--delete-host', '-D',
+                                       help='Delete all entry for a single '
+                                            'HOST in catalog.',
+                                       nargs=2, dest='delete',
+                                       metavar=('CATALOG', 'HOST'), action='store')
+    group_config_mutually.add_argument('--clean', '-c',
+                                       help='Cleans the catalog if it is corrupt, '
+                                            'setting default values.',
                                        dest='clean', metavar='CATALOG', action='store')
     group_deploy = config.add_argument_group(title='Deploy configuration')
     group_deploy_mutually = group_deploy.add_mutually_exclusive_group()
-    group_deploy_mutually.add_argument('--deploy', '-d', help='Deploy configuration to client: hostname or ip address',
+    group_deploy_mutually.add_argument('--deploy', '-d',
+                                       help='Deploy configuration to client: '
+                                            'hostname or ip address',
                                        dest='deploy_host', action='store')
     group_deploy.add_argument('--user', '-u', help='User of the remote machine',
                               dest='deploy_user', action='store', default=os.getlogin())
@@ -1050,115 +1147,195 @@ def parse_arguments():
     backup = action.add_parser('backup', help='Backup options', parents=[parent_parser])
     group_backup = backup.add_argument_group(title='Backup options')
     single_or_list_group = group_backup.add_mutually_exclusive_group(required=True)
-    single_or_list_group.add_argument('--computer', '-c', help='Hostname or ip address to backup', dest='hostname',
+    single_or_list_group.add_argument('--computer', '-c',
+                                      help='Hostname or ip address to backup',
+                                      dest='hostname',
                                       action='store')
-    single_or_list_group.add_argument('--list', '-L', help='File list of computers or ip addresses to backup',
+    single_or_list_group.add_argument('--list', '-L',
+                                      help='File list of computers or '
+                                           'ip addresses to backup',
                                       dest='list', action='store')
-    group_backup.add_argument('--destination', '-d', help='Destination path', dest='destination', action='store',
+    group_backup.add_argument('--destination', '-d',
+                              help='Destination path',
+                              dest='destination',
+                              action='store',
                               required=True)
-    group_backup.add_argument('--mode', '-m', help='Backup mode', dest='mode', action='store',
-                              choices=['Full', 'Incremental', 'Differential', 'Mirror'], default='Incremental')
+    group_backup.add_argument('--mode', '-m', help='Backup mode',
+                              dest='mode', action='store',
+                              choices=['Full', 'Incremental',
+                                       'Differential', 'Mirror'],
+                              default='Incremental')
     data_or_custom = group_backup.add_mutually_exclusive_group(required=True)
-    data_or_custom.add_argument('--data', '-D', help='Data of which you want to backup', dest='data', action='store',
-                                choices=['User', 'Config', 'Application', 'System', 'Log'], nargs='+')
-    data_or_custom.add_argument('--custom-data', '-C', help='Custom path of which you want to backup',
+    data_or_custom.add_argument('--data', '-D',
+                                help='Data of which you want to backup',
+                                dest='data', action='store',
+                                choices=['User', 'Config',
+                                         'Application', 'System', 'Log'],
+                                nargs='+')
+    data_or_custom.add_argument('--custom-data', '-C',
+                                help='Custom path of which you want to backup',
                                 dest='customdata', action='store', nargs='+')
-    group_backup.add_argument('--user', '-u', help='Login name used to log into the remote host (being backed up)',
+    group_backup.add_argument('--user', '-u',
+                              help='Login name used to log into the remote host '
+                                   '(being backed up)',
                               dest='user', action='store', default=os.getlogin())
-    group_backup.add_argument('--type', '-t', help='Type of operating system to backup', dest='type', action='store',
+    group_backup.add_argument('--type', '-t',
+                              help='Type of operating system to backup',
+                              dest='type', action='store',
                               choices=['Unix', 'Windows', 'MacOS'], required=True)
     group_backup.add_argument('--compress', '-z', help='Compress data', dest='compress',
                               action='store_true')
-    group_backup.add_argument('--retention', '-r', help='First argument are days of backup retention. '
-                                                        'Second argument is minimum number of backup retention',
-                              dest='retention', action='store', nargs='*', metavar=('DAYS', 'NUMBER'), type=int)
-    group_backup.add_argument('--parallel', '-p', help='Number of parallel jobs', dest='parallel', action='store',
+    group_backup.add_argument('--retention', '-r',
+                              help='First argument are days of backup retention. '
+                                   'Second argument is minimum number '
+                                   'of backup retention',
+                              dest='retention', action='store', nargs='*',
+                              metavar=('DAYS', 'NUMBER'), type=int)
+    group_backup.add_argument('--parallel', '-p', help='Number of parallel jobs',
+                              dest='parallel', action='store',
                               type=int, default=5)
-    group_backup.add_argument('--timeout', '-T', help='I/O timeout in seconds', dest='timeout', action='store',
+    group_backup.add_argument('--timeout', '-T', help='I/O timeout in seconds',
+                              dest='timeout', action='store',
                               type=int)
-    group_backup.add_argument('--skip-error', '-e', help='Skip error', dest='skip_err', action='store_true')
-    group_backup.add_argument('--rsync-path', '-R', help='Custom rsync path', dest='rsync', action='store')
-    group_backup.add_argument('--bwlimit', '-b', help='Bandwidth limit in KBPS.', dest='bwlimit', action='store',
+    group_backup.add_argument('--skip-error', '-e', help='Skip error',
+                              dest='skip_err', action='store_true')
+    group_backup.add_argument('--rsync-path', '-R', help='Custom rsync path',
+                              dest='rsync', action='store')
+    group_backup.add_argument('--bwlimit', '-b', help='Bandwidth limit in KBPS.',
+                              dest='bwlimit', action='store',
                               type=int)
-    group_backup.add_argument('--ssh-port', '-P', help='Custom ssh port.', dest='port', action='store', type=int)
-    group_backup.add_argument('--exclude', '-E', help='Exclude pattern', dest='exclude', action='store', nargs='+')
-    group_backup.add_argument('--start-from', '-s', help='Backup id where start a new backup', dest='sfrom',
+    group_backup.add_argument('--ssh-port', '-P', help='Custom ssh port.', dest='port',
+                              action='store', type=int)
+    group_backup.add_argument('--exclude', '-E',
+                              help='Exclude pattern', dest='exclude',
+                              action='store', nargs='+')
+    group_backup.add_argument('--start-from', '-s',
+                              help='Backup id where start a new backup',
+                              dest='sfrom',
                               action='store', metavar='ID')
     # restore session
-    restore = action.add_parser('restore', help='Restore options', parents=[parent_parser])
+    restore = action.add_parser('restore', help='Restore options',
+                                parents=[parent_parser])
     group_restore = restore.add_argument_group(title='Restore options')
-    group_restore.add_argument('--catalog', '-C', help='Folder where is catalog file', dest='catalog', action='store',
+    group_restore.add_argument('--catalog', '-C', help='Folder where is catalog file',
+                               dest='catalog', action='store',
                                required=True)
     restore_id_or_last = group_restore.add_mutually_exclusive_group(required=True)
-    restore_id_or_last.add_argument('--backup-id', '-i', help='Backup-id of backup', dest='id', action='store')
-    restore_id_or_last.add_argument('--last', '-L', help='Last available backup', dest='last', action='store_true')
-    group_restore.add_argument('--user', '-u', help="Login name used to log into the remote host "
-                                                    "(where you're restoring)", dest='user',
+    restore_id_or_last.add_argument('--backup-id', '-i', help='Backup-id of backup',
+                                    dest='id', action='store')
+    restore_id_or_last.add_argument('--last', '-L', help='Last available backup',
+                                    dest='last', action='store_true')
+    group_restore.add_argument('--user', '-u',
+                               help="Login name used to log into the remote host "
+                                    "(where you're restoring)", dest='user',
                                action='store', default=os.getlogin())
-    group_restore.add_argument('--computer', '-c', help='Hostname or ip address to perform restore', dest='hostname',
+    group_restore.add_argument('--computer', '-c',
+                               help='Hostname or ip address to perform restore',
+                               dest='hostname',
                                action='store', required=True)
-    group_restore.add_argument('--type', '-t', help='Type of operating system to perform restore', dest='type',
+    group_restore.add_argument('--type', '-t',
+                               help='Type of operating system to perform restore',
+                               dest='type',
                                action='store', choices=['Unix', 'Windows', 'MacOS'])
-    group_restore.add_argument('--timeout', '-T', help='I/O timeout in seconds', dest='timeout', action='store',
+    group_restore.add_argument('--timeout', '-T', help='I/O timeout in seconds',
+                               dest='timeout', action='store',
                                type=int)
-    group_restore.add_argument('--mirror', '-m', help='Mirror mode', dest='mirror', action='store_true')
-    group_restore.add_argument('--skip-error', '-e', help='Skip error', dest='skip_err', action='store_true')
-    group_restore.add_argument('--rsync-path', '-R', help='Custom rsync path', dest='rsync', action='store')
-    group_restore.add_argument('--bwlimit', '-b', help='Bandwidth limit in KBPS.', dest='bwlimit', action='store',
+    group_restore.add_argument('--mirror', '-m', help='Mirror mode',
+                               dest='mirror', action='store_true')
+    group_restore.add_argument('--skip-error', '-e', help='Skip error',
+                               dest='skip_err', action='store_true')
+    group_restore.add_argument('--rsync-path', '-R', help='Custom rsync path',
+                               dest='rsync', action='store')
+    group_restore.add_argument('--bwlimit', '-b', help='Bandwidth limit in KBPS.',
+                               dest='bwlimit', action='store',
                                type=int)
-    group_restore.add_argument('--ssh-port', '-P', help='Custom ssh port.', dest='port', action='store', type=int)
-    group_restore.add_argument('--exclude', '-E', help='Exclude pattern', dest='exclude', action='store', nargs='+')
+    group_restore.add_argument('--ssh-port', '-P', help='Custom ssh port.',
+                               dest='port',
+                               action='store', type=int)
+    group_restore.add_argument('--exclude', '-E', help='Exclude pattern',
+                               dest='exclude',
+                               action='store', nargs='+')
     # archive session
-    archive = action.add_parser('archive', help='Archive options', parents=[parent_parser])
+    archive = action.add_parser('archive', help='Archive options',
+                                parents=[parent_parser])
     group_archive = archive.add_argument_group(title='Archive options')
-    group_archive.add_argument('--catalog', '-C', help='Folder where is catalog file', dest='catalog', action='store',
+    group_archive.add_argument('--catalog', '-C', help='Folder where is catalog file',
+                               dest='catalog', action='store',
                                required=True)
-    group_archive.add_argument('--days', '-D', help='Number of days of archive retention', dest='days',
+    group_archive.add_argument('--days', '-D',
+                               help='Number of days of archive retention', dest='days',
                                action='store', type=int, default=30)
-    group_archive.add_argument('--destination', '-d', help='Archive destination path', dest='destination',
+    group_archive.add_argument('--destination', '-d', help='Archive destination path',
+                               dest='destination',
                                action='store', required=True)
     # list session
-    list_action = action.add_parser('list', help='List options', parents=[parent_parser])
+    list_action = action.add_parser('list', help='List options',
+                                    parents=[parent_parser])
     group_list = list_action.add_argument_group(title='List options')
-    group_list.add_argument('--catalog', '-C', help='Folder where is catalog file', dest='catalog', action='store',
+    group_list.add_argument('--catalog', '-C', help='Folder where is catalog file',
+                            dest='catalog', action='store',
                             required=True)
     group_list_mutually = group_list.add_mutually_exclusive_group()
-    group_list_mutually.add_argument('--backup-id', '-i', help='Backup-id of backup', dest='id', action='store')
-    group_list_mutually.add_argument('--archived', '-a', help='List only archived backup', dest='archived',
+    group_list_mutually.add_argument('--backup-id', '-i', help='Backup-id of backup',
+                                     dest='id', action='store')
+    group_list_mutually.add_argument('--archived', '-a',
+                                     help='List only archived backup', dest='archived',
                                      action='store_true')
-    group_list_mutually.add_argument('--cleaned', '-c', help='List only cleaned backup', dest='cleaned',
+    group_list_mutually.add_argument('--cleaned', '-c',
+                                     help='List only cleaned backup', dest='cleaned',
                                      action='store_true')
-    group_list_mutually.add_argument('--computer', '-H', help='List only match hostname or ip', dest='hostname',
+    group_list_mutually.add_argument('--computer', '-H',
+                                     help='List only match hostname or ip',
+                                     dest='hostname',
                                      action='store')
-    group_list_mutually.add_argument('--detail', '-d', help='List detail of file and folder of specific backup-id',
+    group_list_mutually.add_argument('--detail', '-d',
+                                     help='List detail of file and folder of '
+                                          'specific backup-id',
                                      dest='detail', action='store', metavar='ID')
-    group_list.add_argument('--oneline', '-o', help='One line output', dest='oneline', action='store_true')
+    group_list.add_argument('--oneline', '-o', help='One line output', dest='oneline',
+                            action='store_true')
     # export session
-    export_action = action.add_parser('export', help='Export options', parents=[parent_parser])
+    export_action = action.add_parser('export', help='Export options',
+                                      parents=[parent_parser])
     group_export = export_action.add_argument_group(title='Export options')
-    group_export.add_argument('--catalog', '-C', help='Folder where is catalog file', dest='catalog', action='store',
+    group_export.add_argument('--catalog', '-C', help='Folder where is catalog file',
+                              dest='catalog', action='store',
                               required=True)
     group_export_id_or_all = group_export.add_mutually_exclusive_group()
-    group_export_id_or_all.add_argument('--backup-id', '-i', help='Backup-id of backup', dest='id', action='store')
-    group_export_id_or_all.add_argument('--all', '-A', help='All backup', dest='all', action='store_true')
-    group_export.add_argument('--destination', '-d', help='Destination path', dest='destination', action='store',
+    group_export_id_or_all.add_argument('--backup-id', '-i',
+                                        help='Backup-id of backup',
+                                        dest='id', action='store')
+    group_export_id_or_all.add_argument('--all', '-A', help='All backup', dest='all',
+                                        action='store_true')
+    group_export.add_argument('--destination', '-d', help='Destination path',
+                              dest='destination', action='store',
                               required=True)
-    group_export.add_argument('--mirror', '-m', help='Mirror mode', dest='mirror', action='store_true')
-    group_export.add_argument('--cut', '-c', help='Cut mode. Delete source', dest='cut', action='store_true')
+    group_export.add_argument('--mirror', '-m', help='Mirror mode', dest='mirror',
+                              action='store_true')
+    group_export.add_argument('--cut', '-c', help='Cut mode. Delete source',
+                              dest='cut', action='store_true')
     group_export_mutually = group_export.add_mutually_exclusive_group()
-    group_export_mutually.add_argument('--include', '-I', help='Include pattern', dest='include', action='store',
+    group_export_mutually.add_argument('--include', '-I', help='Include pattern',
+                                       dest='include', action='store',
                                        nargs='+')
-    group_export_mutually.add_argument('--exclude', '-E', help='Exclude pattern', dest='exclude', action='store',
+    group_export_mutually.add_argument('--exclude', '-E', help='Exclude pattern',
+                                       dest='exclude', action='store',
                                        nargs='+')
-    group_export.add_argument('--timeout', '-T', help='I/O timeout in seconds', dest='timeout', action='store',
+    group_export.add_argument('--timeout', '-T', help='I/O timeout in seconds',
+                              dest='timeout', action='store',
                               type=int)
-    group_export.add_argument('--skip-error', '-e', help='Skip error', dest='skip_err', action='store_true')
-    group_export.add_argument('--rsync-path', '-R', help='Custom rsync path', dest='rsync', action='store')
-    group_export.add_argument('--bwlimit', '-b', help='Bandwidth limit in KBPS.', dest='bwlimit', action='store',
+    group_export.add_argument('--skip-error', '-e', help='Skip error',
+                              dest='skip_err', action='store_true')
+    group_export.add_argument('--rsync-path', '-R', help='Custom rsync path',
+                              dest='rsync', action='store')
+    group_export.add_argument('--bwlimit', '-b', help='Bandwidth limit in KBPS.',
+                              dest='bwlimit', action='store',
                               type=int)
-    group_export.add_argument('--ssh-port', '-P', help='Custom ssh port.', dest='port', action='store', type=int)
+    group_export.add_argument('--ssh-port', '-P', help='Custom ssh port.',
+                              dest='port', action='store', type=int)
     # Return all args
-    parser_object.add_argument('--version', '-V', help='Print version', dest='version', action='store_true')
+    parser_object.add_argument('--version', '-V', help='Print version',
+                               dest='version', action='store_true')
     return parser_object
 
 
@@ -1193,7 +1370,9 @@ if __name__ == '__main__':
             clean_catalog(catalog_path)
         else:
             parser.print_usage()
-            print('For ' + utility.PrintColor.BOLD + 'config' + utility.PrintColor.END + ' usage, "--help" or "-h"')
+            print('For ' + utility.PrintColor.BOLD +
+                  'config' + utility.PrintColor.END +
+                  ' usage, "--help" or "-h"')
             exit(1)
 
     # Check backup session
@@ -1213,21 +1392,26 @@ if __name__ == '__main__':
                     # Computer list
                     hostnames.append(line)
             else:
-                print(utility.PrintColor.RED + 'ERROR: The file {0} not exist!'.format(args.list)
+                print(utility.PrintColor.RED + 'ERROR: The file {0} not exist!'
+                      .format(args.list)
                       + utility.PrintColor.END)
         else:
             parser.print_usage()
-            print('For ' + utility.PrintColor.BOLD + 'backup' + utility.PrintColor.END + ' usage, "--help" or "-h"')
+            print('For ' + utility.PrintColor.BOLD + 'backup' +
+                  utility.PrintColor.END + ' usage, "--help" or "-h"')
             exit(1)
         for hostname in hostnames:
             if not utility.check_ssh(hostname, port):
-                print(utility.PrintColor.RED + 'ERROR: The port 22 on {0} is closed!'.format(hostname)
+                print(utility.PrintColor.RED + 'ERROR: The port 22 on {0} is closed!'
+                      .format(hostname)
                       + utility.PrintColor.END)
                 continue
             if not args.verbose:
                 if check_configuration(hostname):
-                    print(utility.PrintColor.RED + '''ERROR: For bulk or silently backup, deploy configuration!
-                            See bb deploy --help or specify --verbose''' + utility.PrintColor.END)
+                    print(utility.PrintColor.RED +
+                          '''ERROR: For bulk or silently backup, deploy configuration!
+                            See bb deploy --help or specify --verbose''' +
+                          utility.PrintColor.END)
                     continue
             # Log information's
             backup_id = '{}'.format(utility.new_id())
@@ -1250,14 +1434,18 @@ if __name__ == '__main__':
                         cmd.append('--copy-dest={0}'.format(backup_catalog[args.sfrom]['path']))
                     else:
                         print(utility.PrintColor.YELLOW +
-                              'WARNING: Backup folder {0} not exist!'.format(backup_catalog[args.sfrom]['path'])
+                              'WARNING: Backup folder {0} not exist!'.format(
+                                  backup_catalog[args.sfrom]['path'])
                               + utility.PrintColor.END)
                 else:
                     print(utility.PrintColor.RED +
-                          'ERROR: Backup id {0} not exist in catalog {1}!'.format(args.sfrom, args.destination)
+                          'ERROR: Backup id {0} not exist in catalog {1}!'.format(
+                              args.sfrom, args.destination)
                           + utility.PrintColor.END)
                     exit(1)
-            print_verbose(args.verbose, 'Create a folder structure for {0} os'.format(args.type))
+            print_verbose(args.verbose, 'Create a folder structure for {0} os'.format(
+                args.type)
+                          )
             # Write catalog file
             write_catalog(catalog_path, backup_id, 'name', hostname)
             # Compose source
@@ -1270,12 +1458,15 @@ if __name__ == '__main__':
             else:
                 source_list = []
             # Check if hostname is localhost or 127.0.0.1
-            if (hostname == "localhost") or (hostname == "LOCALHOST") or (hostname == "127.0.0.1"):
+            if ((hostname.lower() == "localhost") or
+                    (hostname == "127.0.0.1")):
                 # Compose source with only path of folder list
                 cmd.append(" ".join(source_list)[1:])
             else:
                 # Compose source <user>@<hostname> format
-                cmd.append('{0}@{1}'.format(args.user, hostname).__add__(" ".join(source_list)))
+                cmd.append('{0}@{1}'.format(args.user, hostname) +
+                           (" ".join(source_list))
+                           )
             # Compose destination
             bck_dst = compose_destination(hostname, args.destination)
             utility.write_log(log_args['status'], log_args['destination'], 'INFO',
@@ -1286,7 +1477,9 @@ if __name__ == '__main__':
             # Write catalog file
             write_catalog(catalog_path, backup_id, 'timestamp', utility.time_for_log())
             # Create a symlink for last backup
-            utility.make_symlink(bck_dst, os.path.join(args.destination, hostname, 'last_backup'))
+            utility.make_symlink(bck_dst, os.path.join(args.destination, 
+                                                       hostname, 
+                                                       'last_backup'))
         # Start backup
         run_in_parallel(start_process, cmds, args.parallel)
 
@@ -1319,7 +1512,8 @@ if __name__ == '__main__':
                 ros = args.type
                 rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
             else:
-                print(utility.PrintColor.RED + 'ERROR: Backup folder {0} not exist!'.format(rpath) +
+                print(utility.PrintColor.RED +
+                      'ERROR: Backup folder {0} not exist!'.format(rpath) +
                       utility.PrintColor.END)
                 exit(1)
         elif args.id:
@@ -1334,23 +1528,28 @@ if __name__ == '__main__':
                     rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
                 else:
                     print(utility.PrintColor.RED +
-                          'ERROR: Backup folder {0} not exist!'.format(restore_catalog[args.id]['path'])
+                          'ERROR: Backup folder {0} not exist!'
+                          .format(restore_catalog[args.id]['path'])
                           + utility.PrintColor.END)
                     exit(1)
             else:
                 print(utility.PrintColor.RED +
-                      'ERROR: Backup id {0} not exist in catalog {1}!'.format(args.id, args.catalog)
+                      'ERROR: Backup id {0} not exist in catalog {1}!'
+                      .format(args.id, args.catalog)
                       + utility.PrintColor.END)
                 exit(1)
         # Test connection
         if not utility.check_ssh(rhost, port):
-            print(utility.PrintColor.RED + 'ERROR: The port 22 on {0} is closed!'.format(rhost)
+            print(utility.PrintColor.RED +
+                  'ERROR: The port 22 on {0} is closed!'.format(rhost)
                   + utility.PrintColor.END)
             exit(1)
         if not args.verbose:
             if not check_configuration(rhost):
-                print(utility.PrintColor.RED + '''ERROR: For bulk or silently backup to deploy configuration!
-                                            See bb deploy --help or specify --verbose''' + utility.PrintColor.END)
+                print(utility.PrintColor.RED +
+                      '''ERROR: For bulk or silently backup to deploy configuration!
+                      See bb deploy --help or specify --verbose''' +
+                      utility.PrintColor.END)
                 exit(1)
         log_args = {
             'hostname': rhost,
@@ -1374,14 +1573,16 @@ if __name__ == '__main__':
                 # Compose source
                 cmd.append(os.path.join(rpath, src))
                 dst = src_dst[1]
-                if (hostname == "localhost") or (hostname == "LOCALHOST") or (hostname == "127.0.0.1"):
+                if ((hostname.lower() == "localhost") or
+                        (hostname == "127.0.0.1")):
                     # Compose destination only with path of folder
                     cmd.append('{}'.format(dst))
                 else:
                     # Compose destination <user>@<hostname> format
                     cmd.append('{0}@{1}:'.format(args.user, rhost).__add__(dst))
                 # Add command
-                if utility.confirm("Want to do restore path {0}?".format(os.path.join(rpath, src))):
+                if utility.confirm("Want to do restore path {0}?"
+                                   .format(os.path.join(rpath, src))):
                     cmds.append(' '.join(cmd))
         # Start restore
         run_in_parallel(start_process, cmds, 1)
@@ -1410,7 +1611,8 @@ if __name__ == '__main__':
         # Check specified argument backup-id
         if args.id:
             if not args.oneline:
-                utility.print_verbose(args.verbose, "Select backup-id: {0}".format(args.id))
+                utility.print_verbose(args.verbose, 
+                                      "Select backup-id: {0}".format(args.id))
                 if not list_catalog.has_section(args.id):
                     print(utility.PrintColor.RED +
                           'ERROR: Backup-id {0} not exist!'.format(args.id)
@@ -1418,30 +1620,41 @@ if __name__ == '__main__':
                     exit(1)
                 print('Backup id: ' + utility.PrintColor.BOLD + args.id +
                       utility.PrintColor.END)
-                print('Hostname or ip: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['name'] +
+                print('Hostname or ip: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['name'] +
                       utility.PrintColor.END)
-                print('Type: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['type'] +
+                print('Type: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['type'] +
                       utility.PrintColor.END)
-                print('Timestamp: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['timestamp'] +
+                print('Timestamp: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['timestamp'] +
                       utility.PrintColor.END)
-                print('Start: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['start'] +
+                print('Start: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['start'] +
                       utility.PrintColor.END)
-                print('Finish: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['end'] +
+                print('Finish: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['end'] +
                       utility.PrintColor.END)
-                print('OS: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['os'] +
+                print('OS: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['os'] +
                       utility.PrintColor.END)
-                print('ExitCode: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['status'] +
+                print('ExitCode: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['status'] +
                       utility.PrintColor.END)
-                print('Path: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['path'] +
+                print('Path: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['path'] +
                       utility.PrintColor.END)
                 if list_catalog.get(args.id, 'cleaned', fallback=False):
-                    print('Cleaned: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['cleaned'] +
+                    print('Cleaned: ' + utility.PrintColor.DARKCYAN + 
+                          list_catalog[args.id]['cleaned'] +
                           utility.PrintColor.END)
                 elif list_catalog.get(args.id, 'archived', fallback=False):
-                    print('Archived: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['archived'] +
+                    print('Archived: ' + utility.PrintColor.DARKCYAN + 
+                          list_catalog[args.id]['archived'] +
                           utility.PrintColor.END)
                 else:
-                    print('List: ' + utility.PrintColor.DARKCYAN + '\n'.join(os.listdir(list_catalog[args.id]['path']))
+                    print('List: ' + utility.PrintColor.DARKCYAN + 
+                          '\n'.join(os.listdir(list_catalog[args.id]['path']))
                           + utility.PrintColor.END)
             else:
                 if not list_catalog.has_section(args.id):
@@ -1451,48 +1664,67 @@ if __name__ == '__main__':
                     exit(1)
                 print('Id: ' + utility.PrintColor.BOLD + args.id +
                       utility.PrintColor.END, end=' - ')
-                print('Name: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['name'] +
+                print('Name: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['name'] +
                       utility.PrintColor.END, end=' - ')
-                print('Type: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['type'] +
+                print('Type: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['type'] +
                       utility.PrintColor.END, end=' - ')
-                print('Timestamp: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['timestamp'] +
+                print('Timestamp: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['timestamp'] +
                       utility.PrintColor.END, end=' - ')
-                print('Start: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['start'] +
+                print('Start: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['start'] +
                       utility.PrintColor.END, end=' - ')
-                print('Finish: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['end'] +
+                print('Finish: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['end'] +
                       utility.PrintColor.END, end=' - ')
-                print('OS: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['os'] +
+                print('OS: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['os'] +
                       utility.PrintColor.END, end=' - ')
-                print('ExitCode: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['status'] +
+                print('ExitCode: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['status'] +
                       utility.PrintColor.END, end=' - ')
-                print('Path: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['path'] +
+                print('Path: ' + utility.PrintColor.DARKCYAN + 
+                      list_catalog[args.id]['path'] +
                       utility.PrintColor.END, end=' - ')
                 if list_catalog.get(args.id, 'cleaned', fallback=False):
-                    print('Cleaned: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['cleaned'] +
+                    print('Cleaned: ' + utility.PrintColor.DARKCYAN + 
+                          list_catalog[args.id]['cleaned'] +
                           utility.PrintColor.END, end=' - ')
                 elif list_catalog.get(args.id, 'archived', fallback=False):
-                    print('Archived: ' + utility.PrintColor.DARKCYAN + list_catalog[args.id]['archived'] +
+                    print('Archived: ' + utility.PrintColor.DARKCYAN + 
+                          list_catalog[args.id]['archived'] +
                           utility.PrintColor.END, end=' - ')
                 else:
-                    print('List: ' + utility.PrintColor.DARKCYAN + ' '.join(os.listdir(list_catalog[args.id]['path'])) +
+                    print('List: ' + utility.PrintColor.DARKCYAN + ' '.join(
+                          os.listdir(list_catalog[args.id]['path'])) +
                           utility.PrintColor.END)
         elif args.detail:
             log_args['hostname'] = list_catalog[args.detail]['name']
             logs = [log_args]
-            utility.print_verbose(args.verbose, "List detail of backup-id: {0}".format(args.detail))
+            utility.print_verbose(args.verbose, 
+                                  "List detail of backup-id: {0}".format(args.detail))
             print('Detail of backup folder: ' + utility.PrintColor.DARKCYAN
                   + list_catalog[args.detail]['path'] + utility.PrintColor.END)
-            print('List: ' + utility.PrintColor.DARKCYAN + '\n'.join(os.listdir(list_catalog[args.detail]['path']))
+            print('List: ' + utility.PrintColor.DARKCYAN + '\n'.join(
+                  os.listdir(list_catalog[args.detail]['path']))
                   + utility.PrintColor.END)
             if log_args['status']:
                 utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                                  'BUTTERFLY BACKUP DETAIL (BACKUP-ID: {0} PATH: {1})'.format(
-                                      args.detail, list_catalog[args.detail]['path'])
+                                  'BUTTERFLY BACKUP DETAIL (BACKUP-ID: {0} PATH: {1})'
+                                  .format(args.detail, 
+                                          list_catalog[args.detail]['path']
+                                          )
                                   )
-                cmd = 'rsync --list-only -r --log-file={0} {1}'.format(log_args['destination'],
-                                                                       list_catalog[args.detail]['path'])
+                cmd = 'rsync --list-only -r --log-file={0} {1}'.format(
+                        log_args['destination'],
+                        list_catalog[args.detail]['path']
+                    )
             else:
-                cmd = 'rsync --list-only -r {0}'.format(list_catalog[args.detail]['path'])
+                cmd = 'rsync --list-only -r {0}'.format(
+                    list_catalog[args.detail]['path']
+                )
             start_process(cmd)
         elif args.archived:
             utility.print_verbose(args.verbose, "List all archived backup in catalog")
@@ -1501,12 +1733,17 @@ if __name__ == '__main__':
                               'BUTTERFLY BACKUP CATALOG (ARCHIVED)')
             for lid in list_catalog.sections():
                 if 'archived' in list_catalog[lid]:
-                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                    utility.write_log(log_args['status'], 
+                                      log_args['destination'], 'INFO',
                                       'Backup id: {0}'.format(lid))
-                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                                      'Hostname or ip: {0}'.format(list_catalog[lid]['name']))
-                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                                      'Timestamp: {0}'.format(list_catalog[lid]['timestamp']))
+                    utility.write_log(log_args['status'], 
+                                      log_args['destination'], 'INFO',
+                                      'Hostname or ip: {0}'
+                                      .format(list_catalog[lid]['name']))
+                    utility.write_log(log_args['status'], log_args['destination'], 
+                                      'INFO',
+                                      'Timestamp: {0}'
+                                      .format(list_catalog[lid]['timestamp']))
                     text += 'Backup id: {0}'.format(lid)
                     text += '\n'
                     text += 'Hostname or ip: {0}'.format(list_catalog[lid]['name'])
@@ -1521,12 +1758,17 @@ if __name__ == '__main__':
                               'BUTTERFLY BACKUP CATALOG (CLEANED)')
             for lid in list_catalog.sections():
                 if 'cleaned' in list_catalog[lid]:
-                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                    utility.write_log(log_args['status'], log_args['destination'], 
+                                      'INFO',
                                       'Backup id: {0}'.format(lid))
-                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                                      'Hostname or ip: {0}'.format(list_catalog[lid]['name']))
-                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                                      'Timestamp: {0}'.format(list_catalog[lid]['timestamp']))
+                    utility.write_log(log_args['status'], log_args['destination'], 
+                                      'INFO',
+                                      'Hostname or ip: {0}'
+                                      .format(list_catalog[lid]['name']))
+                    utility.write_log(log_args['status'], log_args['destination'], 
+                                      'INFO',
+                                      'Timestamp: {0}'
+                                      .format(list_catalog[lid]['timestamp']))
                     text += 'Backup id: {0}'.format(lid)
                     text += '\n'
                     text += 'Hostname or ip: {0}'.format(list_catalog[lid]['name'])
@@ -1542,12 +1784,18 @@ if __name__ == '__main__':
             if args.hostname:
                 for lid in list_catalog.sections():
                     if list_catalog[lid]['name'] == args.hostname:
-                        utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                        utility.write_log(log_args['status'], 
+                                          log_args['destination'], 'INFO',
                                           'Backup id: {0}'.format(lid))
-                        utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                                          'Hostname or ip: {0}'.format(list_catalog[lid]['name']))
-                        utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                                          'Timestamp: {0}'.format(list_catalog[lid]['timestamp']))
+                        utility.write_log(log_args['status'], 
+                                          log_args['destination'], 'INFO',
+                                          'Hostname or ip: {0}'.format(
+                                              list_catalog[lid]['name'])
+                                          )
+                        utility.write_log(log_args['status'], log_args['destination'], 
+                                          'INFO',
+                                          'Timestamp: {0}'
+                                          .format(list_catalog[lid]['timestamp']))
                         text += 'Backup id: {0}'.format(lid)
                         text += '\n'
                         text += 'Hostname or ip: {0}'.format(list_catalog[lid]['name'])
@@ -1556,12 +1804,18 @@ if __name__ == '__main__':
                         text += '\n\n'
             else:
                 for lid in list_catalog.sections():
-                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                                      'Backup id: {0}'.format(lid))
-                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                                      'Hostname or ip: {0}'.format(list_catalog[lid]['name']))
-                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                                      'Timestamp: {0}'.format(list_catalog[lid]['timestamp']))
+                    utility.write_log(log_args['status'], log_args['destination'], 
+                                      'INFO',
+                                      'Backup id: {0}'
+                                      .format(lid))
+                    utility.write_log(log_args['status'], log_args['destination'], 
+                                      'INFO',
+                                      'Hostname or ip: {0}'
+                                      .format(list_catalog[lid]['name']))
+                    utility.write_log(log_args['status'], log_args['destination'], 
+                                      'INFO',
+                                      'Timestamp: {0}'
+                                      .format(list_catalog[lid]['timestamp']))
                     text += 'Backup id: {0}'.format(lid)
                     text += '\n'
                     text += 'Hostname or ip: {0}'.format(list_catalog[lid]['name'])
@@ -1614,27 +1868,34 @@ if __name__ == '__main__':
                 cmd = compose_command(args, None)
                 # Export
                 utility.write_log(log_args['status'], log_args['destination'], 'INFO',
-                                  'Export {0}. Folder {1} to {2}'.format(args.id, export_catalog[args.id]['Path'],
+                                  'Export {0}. Folder {1} to {2}'.format(args.id, 
+                                                                         export_catalog[args.id]['Path'],
                                                                          args.destination))
                 print_verbose(args.verbose, 'Export backup with id {0}'.format(args.id))
                 if os.path.exists(export_catalog[args.id]['Path']):
                     # Add source
                     cmd.append('{}'.format(export_catalog[args.id]['Path']))
                     # Add destination
-                    cmd.append('{}'.format(os.path.join(args.destination, export_catalog[args.id]['Name'])))
-                    utility.write_log(log_args['status'], log_args['destination'], 'INFO',
+                    cmd.append('{}'.format(os.path.join(args.destination, 
+                                                        export_catalog[args.id]['Name']))
+                               )
+                    utility.write_log(log_args['status'], log_args['destination'], 
+                                      'INFO',
                                       'Export command {0}.'.format(" ".join(cmd)))
                     # Check cut option
                     if args.cut:
-                        write_catalog(os.path.join(args.catalog, '.catalog.cfg'), args.id, 'cleaned', 'True')
+                        write_catalog(os.path.join(args.catalog, '.catalog.cfg'), 
+                                      args.id, 'cleaned', 'True')
             # Start export
             cmds.append(' '.join(cmd))
             run_in_parallel(start_process, cmds, 1)
             if os.path.exists(os.path.join(args.destination, '.catalog.cfg')):
                 # Migrate catalog to new file system
-                utility.find_replace(os.path.join(args.destination, '.catalog.cfg'), args.catalog.rstrip('/'),
+                utility.find_replace(os.path.join(args.destination, '.catalog.cfg'), 
+                                     args.catalog.rstrip('/'),
                                      args.destination.rstrip('/'))
         else:
             print(utility.PrintColor.RED +
-                  "ERROR: Source or destination path doesn't exist!" + utility.PrintColor.END)
+                  "ERROR: Source or destination path doesn't exist!" + 
+                  utility.PrintColor.END)
             exit(1)

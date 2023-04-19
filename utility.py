@@ -83,7 +83,9 @@ def write_log(status, log, level, message):
         import getpass
 
         # Create logging object
-        f_o_r_m_a_t = logging.Formatter('%(asctime)s %(name)-4s %(levelname)-4s %(message)s')
+        f_o_r_m_a_t = logging.Formatter(
+            '%(asctime)s %(name)-4s %(levelname)-4s %(message)s'
+            )
         handler = logging.FileHandler(log)
         handler.setFormatter(f_o_r_m_a_t)
         logger = logging.getLogger(getpass.getuser())
@@ -199,7 +201,9 @@ def make_symlink(source, destination):
             os.unlink(destination)
         os.symlink(source, destination)
     except OSError:
-        print(PrintColor.YELLOW + "WARNING: MS-DOS file system doesn't support symlink file." + PrintColor.END)
+        print(PrintColor.YELLOW + 
+              "WARNING: MS-DOS file system doesn't support symlink file." + 
+              PrintColor.END)
 
 
 def list_from_string(string):
@@ -284,7 +288,9 @@ def archive(path, date, days, destination):
                 try:
                     archive_from = os.path.dirname(path)
                     archive_to = os.path.basename(path.strip(os.sep))
-                    final_dest = os.path.join(destination, os.path.basename(os.path.dirname(path)))
+                    final_dest = os.path.join(destination, os.path.basename(
+                        os.path.dirname(path))
+                        )
                     if not os.path.exists(final_dest):
                         os.mkdir(final_dest)
                     os.chdir(final_dest)
@@ -293,20 +299,26 @@ def archive(path, date, days, destination):
                     exitcode = 0
                     clean = cleanup(path, date, days)
                     if clean == 0:
-                        print(PrintColor.GREEN + 'SUCCESS: Delete {0} successfully.'.format(path) +
+                        print(PrintColor.GREEN + 
+                              'SUCCESS: Delete {0} successfully.'.format(path) +
                               PrintColor.END)
                     elif clean != 0:
-                        print(PrintColor.RED + 'ERROR: Delete {0} failed.'.format(path) +
+                        print(PrintColor.RED + 
+                              'ERROR: Delete {0} failed.'.format(path) +
                               PrintColor.END)
                     return exitcode
                 except OSError:
                     exitcode = 1
                     return exitcode
             else:
-                print(PrintColor.RED + "ERROR: The destination path {0} is not exist.".format(destination) +
+                print(PrintColor.RED + 
+                      "ERROR: The destination path {0} is not exist."
+                      .format(destination) +
                       PrintColor.END)
         else:
-            print(PrintColor.RED + "ERROR: The path {0} is not exist.".format(path) + PrintColor.END)
+            print(PrintColor.RED + 
+                  "ERROR: The path {0} is not exist.".format(path) + 
+                  PrintColor.END)
 
 
 def pager(text):
