@@ -352,6 +352,7 @@ def compose_command(flags, host):
         # Set verbosity
         if flags.verbose:
             command.append('-vP')
+            command.append('--stats')
         # Set quite mode
         if flags.skip_err:
             command.append('--quiet')
