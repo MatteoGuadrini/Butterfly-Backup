@@ -1611,120 +1611,96 @@ if __name__ == '__main__':
         list_catalog = read_catalog(os.path.join(args.catalog, '.catalog.cfg'))
         # Check specified argument backup-id
         if args.id:
-            if not args.oneline:
-                utility.print_verbose(args.verbose, 
-                                      "Select backup-id: {0}".format(args.id))
-                if not list_catalog.has_section(args.id):
-                    print(utility.PrintColor.RED +
-                          'ERROR: Backup-id {0} not exist!'.format(args.id)
-                          + utility.PrintColor.END)
-                    exit(1)
-                print('Backup id: ' + utility.PrintColor.BOLD + args.id +
-                      utility.PrintColor.END)
-                print('Hostname or ip: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['name'] +
-                      utility.PrintColor.END)
-                print('Type: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['type'] +
-                      utility.PrintColor.END)
-                print('Timestamp: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['timestamp'] +
-                      utility.PrintColor.END)
-                print('Start: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['start'] +
-                      utility.PrintColor.END)
-                print('Finish: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['end'] +
-                      utility.PrintColor.END)
-                print('OS: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['os'] +
-                      utility.PrintColor.END)
-                print('ExitCode: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['status'] +
-                      utility.PrintColor.END)
-                print('Path: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['path'] +
-                      utility.PrintColor.END)
-                if list_catalog.get(args.id, 'cleaned', fallback=False):
-                    print('Cleaned: ' + utility.PrintColor.DARKCYAN + 
-                          list_catalog[args.id]['cleaned'] +
-                          utility.PrintColor.END)
-                elif list_catalog.get(args.id, 'archived', fallback=False):
-                    print('Archived: ' + utility.PrintColor.DARKCYAN + 
-                          list_catalog[args.id]['archived'] +
-                          utility.PrintColor.END)
-                else:
-                    print('List: ' + utility.PrintColor.DARKCYAN + 
-                          '\n'.join(os.listdir(list_catalog[args.id]['path']))
-                          + utility.PrintColor.END)
+            # Get session backup id
+            bck_id = list_catalog[args.id]
+            endline = ' - ' if args.oneline else '\n'
+            utility.print_verbose(args.verbose, 
+                                  "Select backup-id: {0}".format(args.id))
+            if not list_catalog.has_section(args.id):
+                print(utility.PrintColor.RED +
+                      'ERROR: Backup-id {0} not exist!'.format(args.id)
+                      + utility.PrintColor.END,
+                      end=endline)
+                exit(1)
+            print('Backup id: ' + utility.PrintColor.BOLD + args.id +
+                  utility.PrintColor.END,
+                  end=endline)
+            print('Hostname or ip: ' + utility.PrintColor.DARKCYAN + 
+                  bck_id.get('name', '') +
+                  utility.PrintColor.END,
+                  end=endline)
+            print('Type: ' + utility.PrintColor.DARKCYAN + 
+                  bck_id.get('type', '') +
+                  utility.PrintColor.END,
+                  end=endline)
+            print('Timestamp: ' + utility.PrintColor.DARKCYAN + 
+                  bck_id.get('timestamp', '') +
+                  utility.PrintColor.END,
+                  end=endline)
+            print('Start: ' + utility.PrintColor.DARKCYAN + 
+                  bck_id.get('start', '') +
+                  utility.PrintColor.END,
+                  end=endline)
+            print('Finish: ' + utility.PrintColor.DARKCYAN + 
+                  bck_id.get('end', '') +
+                  utility.PrintColor.END,
+                  end=endline)
+            print('OS: ' + utility.PrintColor.DARKCYAN + 
+                  bck_id.get('os', '') +
+                  utility.PrintColor.END,
+                  end=endline)
+            print('ExitCode: ' + utility.PrintColor.DARKCYAN + 
+                  bck_id.get('status', '') +
+                  utility.PrintColor.END,
+                  end=endline)
+            print('Path: ' + utility.PrintColor.DARKCYAN + 
+                  bck_id.get('path', '') +
+                  utility.PrintColor.END,
+                  end=endline)
+            if list_catalog.get(args.id, 'cleaned', fallback=False):
+                print('Cleaned: ' + utility.PrintColor.DARKCYAN + 
+                      bck_id.get('cleaned', '') +
+                      utility.PrintColor.END,
+                      end=endline)
+            elif list_catalog.get(args.id, 'archived', fallback=False):
+                print('Archived: ' + utility.PrintColor.DARKCYAN + 
+                      bck_id.get('archived', '') +
+                      utility.PrintColor.END,
+                      end=endline)
             else:
-                if not list_catalog.has_section(args.id):
-                    print(utility.PrintColor.RED +
-                          'ERROR: Backup-id {0} not exist!'.format(args.id)
-                          + utility.PrintColor.END)
-                    exit(1)
-                print('Id: ' + utility.PrintColor.BOLD + args.id +
-                      utility.PrintColor.END, end=' - ')
-                print('Name: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['name'] +
-                      utility.PrintColor.END, end=' - ')
-                print('Type: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['type'] +
-                      utility.PrintColor.END, end=' - ')
-                print('Timestamp: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['timestamp'] +
-                      utility.PrintColor.END, end=' - ')
-                print('Start: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['start'] +
-                      utility.PrintColor.END, end=' - ')
-                print('Finish: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['end'] +
-                      utility.PrintColor.END, end=' - ')
-                print('OS: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['os'] +
-                      utility.PrintColor.END, end=' - ')
-                print('ExitCode: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['status'] +
-                      utility.PrintColor.END, end=' - ')
-                print('Path: ' + utility.PrintColor.DARKCYAN + 
-                      list_catalog[args.id]['path'] +
-                      utility.PrintColor.END, end=' - ')
-                if list_catalog.get(args.id, 'cleaned', fallback=False):
-                    print('Cleaned: ' + utility.PrintColor.DARKCYAN + 
-                          list_catalog[args.id]['cleaned'] +
-                          utility.PrintColor.END, end=' - ')
-                elif list_catalog.get(args.id, 'archived', fallback=False):
-                    print('Archived: ' + utility.PrintColor.DARKCYAN + 
-                          list_catalog[args.id]['archived'] +
-                          utility.PrintColor.END, end=' - ')
-                else:
-                    print('List: ' + utility.PrintColor.DARKCYAN + ' '.join(
-                          os.listdir(list_catalog[args.id]['path'])) +
-                          utility.PrintColor.END)
+                print('List: ' + utility.PrintColor.DARKCYAN + 
+                      '\n'.join(os.listdir(bck_id.get('path', '')))
+                      + utility.PrintColor.END,
+                      end=endline)
+            # Print a newline char if uses oneline option
+            if args.oneline:
+                print()
         elif args.detail:
-            log_args['hostname'] = list_catalog[args.detail]['name']
+            # Get session backup id
+            bck_id = list_catalog[args.detail]
+            log_args['hostname'] = bck_id.get('name')
             logs = [log_args]
             utility.print_verbose(args.verbose, 
                                   "List detail of backup-id: {0}".format(args.detail))
             print('Detail of backup folder: ' + utility.PrintColor.DARKCYAN
-                  + list_catalog[args.detail]['path'] + utility.PrintColor.END)
+                  + bck_id.get('path', '') + utility.PrintColor.END)
             print('List: ' + utility.PrintColor.DARKCYAN + '\n'.join(
-                  os.listdir(list_catalog[args.detail]['path']))
+                  os.listdir(bck_id.get('path', '')) if bck_id.get('path') else '-')
                   + utility.PrintColor.END)
             if log_args['status']:
                 utility.write_log(log_args['status'], log_args['destination'], 'INFO',
                                   'BUTTERFLY BACKUP DETAIL (BACKUP-ID: {0} PATH: {1})'
                                   .format(args.detail, 
-                                          list_catalog[args.detail]['path']
+                                          bck_id.get('path', '')
                                           )
                                   )
                 cmd = 'rsync --list-only -r --log-file={0} {1}'.format(
                         log_args['destination'],
-                        list_catalog[args.detail]['path']
+                        bck_id.get('path')
                     )
             else:
                 cmd = 'rsync --list-only -r {0}'.format(
-                    list_catalog[args.detail]['path']
+                    bck_id.get('path')
                 )
             start_process(cmd)
         elif args.archived:
@@ -1733,23 +1709,25 @@ if __name__ == '__main__':
             utility.write_log(log_args['status'], log_args['destination'], 'INFO',
                               'BUTTERFLY BACKUP CATALOG (ARCHIVED)')
             for lid in list_catalog.sections():
-                if 'archived' in list_catalog[lid]:
+                # Get session backup id
+                bck_id = list_catalog[lid]
+                if 'archived' in bck_id:
                     utility.write_log(log_args['status'], 
                                       log_args['destination'], 'INFO',
                                       'Backup id: {0}'.format(lid))
                     utility.write_log(log_args['status'], 
                                       log_args['destination'], 'INFO',
                                       'Hostname or ip: {0}'
-                                      .format(list_catalog[lid]['name']))
+                                      .format(bck_id.get('name', '')))
                     utility.write_log(log_args['status'], log_args['destination'], 
                                       'INFO',
                                       'Timestamp: {0}'
-                                      .format(list_catalog[lid]['timestamp']))
+                                      .format(bck_id.get('timestamp', '')))
                     text += 'Backup id: {0}'.format(lid)
                     text += '\n'
-                    text += 'Hostname or ip: {0}'.format(list_catalog[lid]['name'])
+                    text += 'Hostname or ip: {0}'.format(bck_id.get('name', ''))
                     text += '\n'
-                    text += 'Timestamp: {0}'.format(list_catalog[lid]['timestamp'])
+                    text += 'Timestamp: {0}'.format(bck_id.get('timestamp', ''))
                     text += '\n\n'
             utility.pager(text)
         elif args.cleaned:
@@ -1758,23 +1736,25 @@ if __name__ == '__main__':
             utility.write_log(log_args['status'], log_args['destination'], 'INFO',
                               'BUTTERFLY BACKUP CATALOG (CLEANED)')
             for lid in list_catalog.sections():
-                if 'cleaned' in list_catalog[lid]:
+                # Get session backup id
+                bck_id = list_catalog[lid]
+                if 'cleaned' in bck_id:
                     utility.write_log(log_args['status'], log_args['destination'], 
                                       'INFO',
                                       'Backup id: {0}'.format(lid))
                     utility.write_log(log_args['status'], log_args['destination'], 
                                       'INFO',
                                       'Hostname or ip: {0}'
-                                      .format(list_catalog[lid]['name']))
+                                      .format(bck_id.get('name', '')))
                     utility.write_log(log_args['status'], log_args['destination'], 
                                       'INFO',
                                       'Timestamp: {0}'
-                                      .format(list_catalog[lid]['timestamp']))
+                                      .format(bck_id.get('timestamp', '')))
                     text += 'Backup id: {0}'.format(lid)
                     text += '\n'
-                    text += 'Hostname or ip: {0}'.format(list_catalog[lid]['name'])
+                    text += 'Hostname or ip: {0}'.format(bck_id.get('name', ''))
                     text += '\n'
-                    text += 'Timestamp: {0}'.format(list_catalog[lid]['timestamp'])
+                    text += 'Timestamp: {0}'.format(bck_id.get('timestamp', ''))
                     text += '\n\n'
             utility.pager(text)
         else:
@@ -1784,27 +1764,31 @@ if __name__ == '__main__':
                               'BUTTERFLY BACKUP CATALOG')
             if args.hostname:
                 for lid in list_catalog.sections():
-                    if list_catalog[lid]['name'] == args.hostname:
+                    # Get session backup id
+                    bck_id = list_catalog[lid]
+                    if bck_id.get('name') == args.hostname:
                         utility.write_log(log_args['status'], 
                                           log_args['destination'], 'INFO',
                                           'Backup id: {0}'.format(lid))
                         utility.write_log(log_args['status'], 
                                           log_args['destination'], 'INFO',
                                           'Hostname or ip: {0}'.format(
-                                              list_catalog[lid]['name'])
+                                              bck_id.get('name', ''))
                                           )
                         utility.write_log(log_args['status'], log_args['destination'], 
                                           'INFO',
                                           'Timestamp: {0}'
-                                          .format(list_catalog[lid]['timestamp']))
+                                          .format(bck_id.get('timestamp', '')))
                         text += 'Backup id: {0}'.format(lid)
                         text += '\n'
-                        text += 'Hostname or ip: {0}'.format(list_catalog[lid]['name'])
+                        text += 'Hostname or ip: {0}'.format(bck_id.get('name', ''))
                         text += '\n'
-                        text += 'Timestamp: {0}'.format(list_catalog[lid]['timestamp'])
+                        text += 'Timestamp: {0}'.format(bck_id.get('timestamp', ''))
                         text += '\n\n'
             else:
                 for lid in list_catalog.sections():
+                    # Get session backup id
+                    bck_id = list_catalog[lid]
                     utility.write_log(log_args['status'], log_args['destination'], 
                                       'INFO',
                                       'Backup id: {0}'
@@ -1812,16 +1796,16 @@ if __name__ == '__main__':
                     utility.write_log(log_args['status'], log_args['destination'], 
                                       'INFO',
                                       'Hostname or ip: {0}'
-                                      .format(list_catalog[lid]['name']))
+                                      .format(bck_id.get('name', '')))
                     utility.write_log(log_args['status'], log_args['destination'], 
                                       'INFO',
                                       'Timestamp: {0}'
-                                      .format(list_catalog[lid]['timestamp']))
+                                      .format(bck_id.get('timestamp', '')))
                     text += 'Backup id: {0}'.format(lid)
                     text += '\n'
-                    text += 'Hostname or ip: {0}'.format(list_catalog[lid]['name'])
+                    text += 'Hostname or ip: {0}'.format(bck_id.get('name', ''))
                     text += '\n'
-                    text += 'Timestamp: {0}'.format(list_catalog[lid]['timestamp'])
+                    text += 'Timestamp: {0}'.format(bck_id.get('timestamp', ''))
                     text += '\n\n'
             utility.pager(text)
 
