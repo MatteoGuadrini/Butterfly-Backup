@@ -229,14 +229,15 @@ def confirm(message):
     return answer == "y"
 
 
-def print_verbose(verbose_status, message):
+def print_verbose(verbose_status, *messages):
     """
     Print verbose information
     :return: Verbose message if verbose status is True
     :rtype: str
     """
     if verbose_status:
-        print('INFO: {0}'.format(message))
+        label = 'debug:'
+        print(label, *messages)
 
 
 def check_tool(name):
