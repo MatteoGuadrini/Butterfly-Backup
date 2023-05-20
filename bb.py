@@ -908,70 +908,25 @@ def new_configuration():
     """
     Create a new configuration (create a RSA key pair)
     """
-    from cryptography.hazmat.primitives import serialization
-    from cryptography.hazmat.primitives.asymmetric import rsa
-    from cryptography.hazmat.backends import default_backend
-
+    # Create home path
+    home = os.path.expanduser('~')
+    ssh_folder = os.path.join(home, '.ssh')
+    id_rsa_file = os.path.join(ssh_folder, 'id_rsa')
     if not dry_run('Generate private/public key pair'):
         # Generate private/public key pair
         print_verbose(args.verbose, 'Generate private/public key pair')
-        private_key = rsa.generate_private_key(backend=default_backend(),
-                                               public_exponent=65537,
-                                               key_size=2048)
-        # Get public key in OpenSSH format
-        print_verbose(args.verbose, 'Get public key in OpenSSH format')
-        public_key = private_key.public_key().public_bytes(
-            serialization.Encoding.OpenSSH,
-            serialization.PublicFormat.OpenSSH
-        )
-        # Get private key in PEM container format
-        print_verbose(args.verbose, 'Get private key in PEM container format')
-        pem = private_key.private_bytes(encoding=serialization.Encoding.PEM,
-                                        format=serialization.PrivateFormat.TraditionalOpenSSL,
-                                        encryption_algorithm=serialization.NoEncryption())
-        # Decode to printable strings
-        private_key_str = pem.decode('utf-8')
-        public_key_str = public_key.decode('utf-8')
-        # Create home path
-        home = os.path.expanduser('~')
-        # Create folder .ssh
-        ssh_folder = os.path.join(home, '.ssh')
-        print_verbose(args.verbose, 'Create folder {0}'.format(ssh_folder))
-        if not os.path.exists(ssh_folder):
-            os.mkdir(ssh_folder, mode=0o755)
-        # Create private key file
-        id_rsa_file = os.path.join(ssh_folder, 'id_rsa')
-        print_verbose(args.verbose, 'Create private key file {0}'.format(id_rsa_file))
-        if not os.path.exists(id_rsa_file):
-            with open(id_rsa_file, 'w') as id_rsa:
-                os.chmod(id_rsa_file, mode=0o600)
-                id_rsa.write(private_key_str)
-        else:
-            print(utility.PrintColor.YELLOW +
-                  "WARNING: Private key ~/.ssh/id_rsa exists" +
-                  utility.PrintColor.END)
-            print('If you want to use the existing key, '
-                  'run "bb config --deploy name_of_machine", '
-                  'otherwise to remove it, '
-                  'run "bb config --remove"')
-            exit(2)
-        # Create private key file
-        id_rsa_pub_file = os.path.join(ssh_folder, 'id_rsa.pub')
+        return_code = subprocess.call(
+            'ssh-keygen -t rsa -b 4096 -N "" -f {0} <<< y'.format(id_rsa_file)
+            )
         print_verbose(args.verbose,
-                      'Create public key file {0}'.format(id_rsa_pub_file))
-        if not os.path.exists(id_rsa_pub_file):
-            with open(id_rsa_pub_file, 'w') as id_rsa_pub:
-                os.chmod(id_rsa_pub_file, mode=0o644)
-                id_rsa_pub.write(public_key_str)
-        else:
-            print(utility.PrintColor.YELLOW +
-                  "WARNING: Public key ~/.ssh/id_rsa.pub exists" +
+                      'Return code of ssh-keygen: {0}'.format(return_code))
+        # Check if something wrong
+        if return_code:
+            print(utility.PrintColor.RED +
+                  "ERROR: Creation of {0} error".format(id_rsa_file) +
                   utility.PrintColor.END)
-            print('If you want to use the existing key, '
-                  'run "bb config --deploy name_of_machine", '
-                  'otherwise to remove it, '
-                  'run "bb config --remove"')
             exit(2)
+        # Sucess!
         print(utility.PrintColor.GREEN +
               "SUCCESS: New configuration successfully created!" +
               utility.PrintColor.END)
