@@ -217,15 +217,23 @@ def list_from_string(string):
     return return_list
 
 
-def confirm(message):
+def confirm(message, default='n'):
     """
     Ask user to enter Y or N (case-insensitive).
+    :message: message to print
+    :default: default answer
     :return: True if the answer is Y.
     :rtype: bool
     """
     answer = ""
     while answer not in ["y", "n"]:
-        answer = input("{0} To continue [Y/N]? ".format(message)).lower()
+        answer = input("{0}\nTo continue? {1}".format(
+            message, '[Y/n]' if default == 'y' else '[y/N]'
+            )).lower()
+        # Check if default
+        if not answer:
+            answer = default
+            break
     return answer == "y"
 
 
