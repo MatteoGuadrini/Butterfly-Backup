@@ -953,7 +953,8 @@ def init_catalog(catalog):
     """
     config = read_catalog(catalog)
     for cid in config.sections():
-        if not os.path.exists(config[cid]['path']):
+        if (not config.get(cid, 'path') or
+            not os.path.exists(config.get(cid, 'path'))):
             print_verbose(args.verbose,
                           "Backup-id {0} has been removed to catalog!".format(cid))
             config.remove_section(cid)
@@ -972,7 +973,8 @@ def delete_host(catalog, host):
     root = os.path.join(os.path.dirname(catalog), host)
     for cid in config.sections():
         if config.get(cid, "name") == host:
-            if not os.path.exists(config[cid]['path']):
+            if (not config.get(cid, 'path') or
+                not os.path.exists(config.get(cid, 'path'))):
                 print_verbose(args.verbose,
                               "Backup-id {0} has been removed to catalog!".format(cid))
                 config.remove_section(cid)
