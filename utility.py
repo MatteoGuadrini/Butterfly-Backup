@@ -5,7 +5,7 @@
 # created by: matteo.guadrini
 # utility.py -- Butterfly-Backup
 #
-#     Copyright (C) 2018 Matteo Guadrini <matteo.guadrini@hotmail.it>
+#     Copyright (C) 2023 Matteo Guadrini <matteo.guadrini@hotmail.it>
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
+from pansi import ansi
 
 class PrintColor:
     """
@@ -36,6 +36,14 @@ class PrintColor:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     END = '\033[0m'
+
+
+def warning(message):
+    """Print warning message in yellow color
+
+    :param message: message to print
+    """
+    print("{ansi.yellow}warning: {0}{ansi.reset}".format(message, ansi=ansi))
 
 
 def touch(filename, times=None):
@@ -201,9 +209,7 @@ def make_symlink(source, destination):
             os.unlink(destination)
         os.symlink(source, destination)
     except OSError:
-        print(PrintColor.YELLOW + 
-              "WARNING: MS-DOS file system doesn't support symlink file." + 
-              PrintColor.END)
+        warning("MS-DOS file system doesn't support symlink file")
 
 
 def list_from_string(string):

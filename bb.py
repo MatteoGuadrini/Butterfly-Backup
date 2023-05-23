@@ -120,10 +120,10 @@ def check_rsync():
     """
     if not utility.check_tool('rsync'):
         print(utility.PrintColor.RED +
-              'ERROR: rsync tool is required!' +
+              'ERROR: rsync package is required!' +
               utility.PrintColor.END +
               """
-Red-Hat/CentOS/Fedora:    yum install rsync
+Red-Hat/CentOS/Fedora:    dnf install rsync
 Debian/Ubuntu/Mint:       apt-get install rsync
 Arch Linux:               aur install rsync
 Mac OS X:                 install homebrew; brew install rsync
@@ -302,9 +302,9 @@ def compose_command(flags, host):
         if os.path.exists(flags.rsync):
             command = [flags.rsync]
         else:
-            print(utility.PrintColor.YELLOW +
-                  'WARNING: rsync binary {0} not exist! Set default.'.format(args.rsync)
-                  + utility.PrintColor.END)
+            utility.warning(
+                'rsync binary {0} not exist! Set default.'.format(args.rsync)
+                )
             command = ['rsync']
     else:
         command = ['rsync']
@@ -861,9 +861,9 @@ def deploy_configuration(computer, user):
                       .format(computer) +
                       utility.PrintColor.END)
         else:
-            print(utility.PrintColor.YELLOW +
-                  "WARNING: Public key ~/.ssh/id_rsa.pub is not exist" +
-                  utility.PrintColor.END)
+            utility.warning(
+                'Public key ~/.ssh/id_rsa.pub is not exist'
+                )
             exit(2)
 
 
@@ -882,10 +882,9 @@ def remove_configuration():
             if os.path.exists(id_rsa_file):
                 os.remove(id_rsa_file)
             else:
-                print(
-                    utility.PrintColor.YELLOW +
-                    "WARNING: Private key ~/.ssh/id_rsa is not exist" +
-                    utility.PrintColor.END)
+                utility.warning(
+                'Private key ~/.ssh/id_rsa is not exist'
+                )
                 exit(2)
             # Remove public key file
             id_rsa_pub_file = os.path.join(ssh_folder, 'id_rsa.pub')
@@ -894,10 +893,9 @@ def remove_configuration():
             if os.path.exists(id_rsa_pub_file):
                 os.remove(id_rsa_pub_file)
             else:
-                print(
-                    utility.PrintColor.YELLOW +
-                    "WARNING: Public key ~/.ssh/id_rsa.pub is not exist" +
-                    utility.PrintColor.END)
+                utility.warning(
+                'Public key ~/.ssh/id_rsa.pub is not exist'
+                )
                 exit(2)
             print(utility.PrintColor.GREEN +
                   "SUCCESS: Removed configuration successfully!" +
@@ -1034,10 +1032,11 @@ def clean_catalog(catalog):
             config.set(cid, 'status', '0')
             mod = True
         if mod:
-            print(utility.PrintColor.YELLOW +
-                  'WARNING: The backup-id {0} has been set to default value, '
-                  'because he was corrupt. '
-                  'Check it!'.format(cid) + utility.PrintColor.END)
+            utility.warning(
+                'The backup-id {0} has been set to default value, '
+                'because he was corrupt. '
+                'Check it!'.format(cid)
+                )
     # Write file
     with open(catalog, 'w') as configfile:
         config.write(configfile)
@@ -1391,10 +1390,9 @@ if __name__ == '__main__':
                     if os.path.exists(backup_catalog[args.sfrom]['path']):
                         cmd.append('--copy-dest={0}'.format(backup_catalog[args.sfrom]['path']))
                     else:
-                        print(utility.PrintColor.YELLOW +
-                              'WARNING: Backup folder {0} not exist!'.format(
+                        utility.warning('Backup folder {0} not exist!'.format(
                                   backup_catalog[args.sfrom]['path'])
-                              + utility.PrintColor.END)
+                                  )
                 else:
                     print(utility.PrintColor.RED +
                           'ERROR: Backup id {0} not exist in catalog {1}!'.format(
