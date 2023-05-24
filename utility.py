@@ -46,6 +46,14 @@ def warning(message):
     print("{ansi.yellow}warning: {0}{ansi.reset}".format(message, ansi=ansi))
 
 
+def error(message):
+    """Print error message in red color
+
+    :param message: message to print
+    """
+    print("{ansi.red}error: {0}{ansi.reset}".format(message, ansi=ansi))
+
+
 def touch(filename, times=None):
     """
     Create an empty file
