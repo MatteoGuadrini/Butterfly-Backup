@@ -258,8 +258,9 @@ def print_verbose(verbose_status, *messages):
     :rtype: str
     """
     if verbose_status:
-        label = 'debug:'
-        print(label, *messages)
+        print("{ansi.white}debug:".format(ansi=ansi), 
+              *messages,
+              "{ansi.reset}".format(ansi=ansi))
 
 
 def check_tool(name):
