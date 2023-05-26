@@ -181,8 +181,7 @@ def run_in_parallel(fn, commands, limit):
                                      plog['destination'])
 
         else:
-            print(utility.PrintColor.GREEN + 'SUCCESS: Command {0}'.format(command) +
-                  utility.PrintColor.END)
+            utility.success('Command {0}'.format(command))
             utility.write_log(log_args['status'], plog['destination'], 'INFO',
                               'Finish process {0} on {1}'
                               .format(args.action, plog['hostname']))
@@ -751,9 +750,7 @@ def retention_policy(host, catalog, logpath):
                     cleanup = 0
                 if cleanup == 0:
                     write_catalog(catalog, bid, 'cleaned', 'True')
-                    print(utility.PrintColor.GREEN +
-                          'SUCCESS: Cleanup {0} successfully.'.format(path) +
-                          utility.PrintColor.END)
+                    utility.success('Cleanup {0} successfully.'.format(path))
                     utility.write_log(log_args['status'], logpath, 'INFO',
                                       'Cleanup {0} successfully.'.format(path))
                 elif cleanup == 1:
@@ -791,9 +788,7 @@ def archive_policy(catalog, destination):
                 archive = utility.archive(path, date, args.days, destination)
             if archive == 0:
                 write_catalog(catalog, bid, 'archived', 'True')
-                print(utility.PrintColor.GREEN +
-                      'SUCCESS: Archive {0} successfully.'.format(path) +
-                      utility.PrintColor.END)
+                utility.success('Archive {0} successfully.'.format(path))
                 utility.write_log(log_args['status'], logpath, 'INFO',
                                   'Archive {0} successfully.'.format(path))
             elif archive == 1:
@@ -830,10 +825,8 @@ def deploy_configuration(computer, user):
             print_verbose(args.verbose,
                           'Return code of ssh-copy-id: {0}'.format(return_code))
             if return_code == 0:
-                print(utility.PrintColor.GREEN +
-                      "SUCCESS: Configuration copied successfully on {0}!"
-                      .format(computer) +
-                      utility.PrintColor.END)
+                utility.success("Configuration copied successfully on {0}!"
+                                .format(computer))
             else:
                 utility.error("Configuration has not been copied successfully on {0}!"
                              .format(computer)
@@ -875,9 +868,7 @@ def remove_configuration():
                 'Public key ~/.ssh/id_rsa.pub is not exist'
                 )
                 exit(2)
-            print(utility.PrintColor.GREEN +
-                  "SUCCESS: Removed configuration successfully!" +
-                  utility.PrintColor.END)
+            utility.success("Removed configuration successfully!")
 
 
 def new_configuration():
@@ -901,9 +892,7 @@ def new_configuration():
             utility.error("Creation of {0} error".format(id_rsa_file))
             exit(2)
         # Sucess!
-        print(utility.PrintColor.GREEN +
-              "SUCCESS: New configuration successfully created!" +
-              utility.PrintColor.END)
+        utility.success("New configuration successfully created!")
 
 
 def check_configuration(ip):
@@ -957,9 +946,7 @@ def delete_host(catalog, host):
                 date = config.get(cid, 'timestamp')
                 cleanup = utility.cleanup(path, date, 0)
                 if cleanup == 0:
-                    print(utility.PrintColor.GREEN +
-                          'SUCCESS: Delete {0} successfully.'.format(path) +
-                          utility.PrintColor.END)
+                    utility.success('Delete {0} successfully.'.format(path))
                     print_verbose(args.verbose,
                                   "Backup-id {0} has been removed to catalog!"
                                   .format(cid))

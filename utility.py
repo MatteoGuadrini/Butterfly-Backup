@@ -54,6 +54,14 @@ def error(message):
     print("{ansi.red}error: {0}{ansi.reset}".format(message, ansi=ansi))
 
 
+def success(message):
+    """Print success message in green color
+
+    :param message: message to print
+    """
+    print("{ansi.green}success: {0}{ansi.reset}".format(message, ansi=ansi))
+
+
 def touch(filename, times=None):
     """
     Create an empty file
