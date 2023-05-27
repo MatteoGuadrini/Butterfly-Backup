@@ -62,6 +62,16 @@ def success(message):
     print("{ansi.green}success: {0}{ansi.reset}".format(message, ansi=ansi))
 
 
+def print_values(key, value, endline='\n'):
+    """Print key/value in cyan color
+
+    :param key: key to print
+    :param value: value to print
+    :param endline: endline value
+    """
+    print(key + ':', "{ansi.cyan}{0}{ansi.reset}".format(value, ansi=ansi), end=endline)
+
+
 def touch(filename, times=None):
     """
     Create an empty file
