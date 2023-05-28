@@ -1518,56 +1518,45 @@ if __name__ == '__main__':
             if not list_catalog.has_section(args.id):
                 utility.error('Backup-id {0} not exist!'.format(args.id))
                 exit(1)
-            print('Backup id: ' + utility.PrintColor.BOLD + args.id +
-                  utility.PrintColor.END,
-                  end=endline)
-            print('Hostname or ip: ' + utility.PrintColor.DARKCYAN + 
-                  bck_id.get('name', '') +
-                  utility.PrintColor.END,
-                  end=endline)
-            print('Type: ' + utility.PrintColor.DARKCYAN + 
-                  bck_id.get('type', '') +
-                  utility.PrintColor.END,
-                  end=endline)
-            print('Timestamp: ' + utility.PrintColor.DARKCYAN + 
-                  bck_id.get('timestamp', '') +
-                  utility.PrintColor.END,
-                  end=endline)
-            print('Start: ' + utility.PrintColor.DARKCYAN + 
-                  bck_id.get('start', '') +
-                  utility.PrintColor.END,
-                  end=endline)
-            print('Finish: ' + utility.PrintColor.DARKCYAN + 
-                  bck_id.get('end', '') +
-                  utility.PrintColor.END,
-                  end=endline)
-            print('OS: ' + utility.PrintColor.DARKCYAN + 
-                  bck_id.get('os', '') +
-                  utility.PrintColor.END,
-                  end=endline)
-            print('ExitCode: ' + utility.PrintColor.DARKCYAN + 
-                  bck_id.get('status', '') +
-                  utility.PrintColor.END,
-                  end=endline)
-            print('Path: ' + utility.PrintColor.DARKCYAN + 
-                  bck_id.get('path', '') +
-                  utility.PrintColor.END,
-                  end=endline)
+            utility.print_values('Backup id', 
+                                 args.id, 
+                                 endline=endline)
+            utility.print_values('Hostname or ip', 
+                                 bck_id.get('name', ''), 
+                                 endline=endline)
+            utility.print_values('Type', 
+                                 bck_id.get('type', ''), 
+                                 endline=endline)
+            utility.print_values('Timestamp', 
+                                 bck_id.get('timestamp', ''), 
+                                 endline=endline)
+            utility.print_values('Start', 
+                                 bck_id.get('start', ''), 
+                                 endline=endline)
+            utility.print_values('Finish', 
+                                 bck_id.get('end', ''), 
+                                 endline=endline)
+            utility.print_values('OS', 
+                                 bck_id.get('os', ''), 
+                                 endline=endline)
+            utility.print_values('ExitCode', 
+                                 bck_id.get('status', ''), 
+                                 endline=endline)
+            utility.print_values('Path', 
+                                 bck_id.get('path', ''), 
+                                 endline=endline)
             if list_catalog.get(args.id, 'cleaned', fallback=False):
-                print('Cleaned: ' + utility.PrintColor.DARKCYAN + 
-                      bck_id.get('cleaned', '') +
-                      utility.PrintColor.END,
-                      end=endline)
+                utility.print_values('Cleaned',
+                                     bck_id.get('cleaned', ''), 
+                                     endline=endline)
             elif list_catalog.get(args.id, 'archived', fallback=False):
-                print('Archived: ' + utility.PrintColor.DARKCYAN + 
-                      bck_id.get('archived', '') +
-                      utility.PrintColor.END,
-                      end=endline)
+                utility.print_values('Archived',
+                                     bck_id.get('archived', ''), 
+                                     endline=endline)
             else:
-                print('List: ' + utility.PrintColor.DARKCYAN + 
-                      '\n'.join(os.listdir(bck_id.get('path', '')))
-                      + utility.PrintColor.END,
-                      end=endline)
+                utility.print_values('List',
+                                     '\n'.join(os.listdir(bck_id.get('path', ''))), 
+                                     endline=endline)
             # Print a newline char if uses oneline option
             if args.oneline:
                 print()
@@ -1578,11 +1567,10 @@ if __name__ == '__main__':
             logs = [log_args]
             utility.print_verbose(args.verbose, 
                                   "List detail of backup-id: {0}".format(args.detail))
-            print('Detail of backup folder: ' + utility.PrintColor.DARKCYAN
-                  + bck_id.get('path', '') + utility.PrintColor.END)
-            print('List: ' + utility.PrintColor.DARKCYAN + '\n'.join(
-                  os.listdir(bck_id.get('path', '')) if bck_id.get('path') else '-')
-                  + utility.PrintColor.END)
+            utility.print_values('Detail of backup folder',
+                                 bck_id.get('path', ''))
+            utility.print_values('List',
+                                 '\n'.join(os.listdir(bck_id.get('path', '-'))))
             if log_args['status']:
                 utility.write_log(log_args['status'], log_args['destination'], 'INFO',
                                   'BUTTERFLY BACKUP DETAIL (BACKUP-ID: {0} PATH: {1})'
