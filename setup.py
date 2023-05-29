@@ -21,35 +21,39 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import shutil
-import os
-import platform
-manpath = '/usr/share/man/man1'
-manpage = 'bb.man'
+from setuptools import setup
 
-if platform.system() == 'Darwin':
-    # Mac OS installation
-    bb_path = '/Applications/bb'
-    bb_core = 'bb.py'
-    bb_utility = 'utility.py'
-    bb_command = '/usr/bin/bb'
-else:
-    # Unix installation
-    bb_path = '/opt/bb'
-    bb_core = 'bb.py'
-    bb_utility = 'utility.py'
-    bb_command = '/usr/bin/bb'
+with open("README.md") as rme:
+    long_description = rme.read()
 
-if not os.path.exists(bb_path):
-    os.mkdir(bb_path)
-
-# install Butterfly Backup
-shutil.copyfile(bb_core, os.path.join(bb_path, bb_core))
-shutil.copyfile(bb_utility, os.path.join(bb_path, bb_utility))
-os.chmod(os.path.join(bb_path, bb_core), mode=0o755)
-if not os.path.exists(bb_command):
-    os.symlink(os.path.join(bb_path, bb_core), bb_command)
-
-# install man page
-shutil.copyfile(manpage, os.path.join(manpath, 'bb.1'))
-os.system('gzip -f {0}/bb.1'.format(manpath))
+setup(
+    name='Butterfly-Backup',
+    py_modules=['bb', 'utility'],
+    version='1.8.0',
+    url='https://matteoguadrini.github.io/Butterfly-Backup/',
+    project_urls={
+        'Documentation': 'https://butterfly-backup.readthedocs.io/en/latest/',
+        'GitHub Project': 'https://github.com/MatteoGuadrini/Butterfly-Backup',
+        'Issue Tracker': 'https://github.com/MatteoGuadrini/Butterfly-Backup/issues'
+    },
+    dependencies = ["pansi"],
+    license='GNU General Public License v3.0',
+    author="Matteo Guadrini",
+    author_email="matteo.guadrini@hotmail.it",
+    maintainer="Matteo Guadrini",
+    maintainer_email="matteo.guadrini@hotmail.it",
+    description='Butterfly Backup is a simple command line wrapper of rsync.',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    classifiers=[
+            "Programming Language :: Python :: 3",
+            "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+            "Operating System :: POSIX :: Linux"
+        ],
+    entry_points={
+        'console_scripts': [
+            'bb = bb:main'
+        ]
+    },
+    python_requires='>=3.6'
+)
