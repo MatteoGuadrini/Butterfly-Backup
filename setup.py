@@ -55,5 +55,6 @@ setup(
             'bb = bb:main'
         ]
     },
+    data_files=[('/usr/share/man/man1', ['bb.1'])],
     python_requires='>=3.6'
 )
