@@ -22,20 +22,52 @@
 #
 from pansi import ansi
 
-class PrintColor:
+
+def print_version(version, verbose):
     """
-    Class for print string in color
+    Print version of Butterfly Backup
+    :return: str
     """
-    PURPLE = '\033[95m'
-    CYAN = '\033[96m'
-    DARKCYAN = '\033[36m'
-    BLUE = '\033[94m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-    END = '\033[0m'
+    global args
+
+    print_verbose(verbose, 'Print version and logo')
+    if verbose:
+        print_logo()
+    print("Version: {ansi.weight.bold}{0}{ansi.reset}".format(version, ansi=ansi))
+    exit()
+
+
+def print_logo():
+    """
+    Print logo design
+    :return: design of logo
+    """
+    print(
+        '''
+                .                   .
+    .OMMMM..   .....              ...   ...MNNM$...
+ .MNNNNNMM7=?..   ...            ..     ??$MMNNNNDN.
+ MNNNMMNN:,:,8N:.. ...        ....   :N8,,,:MNMNMNMM.
+.MMNMMM,::,,,DDD?8.....      ......+IDDD,,,:+,MMMNNM.
+.MNMDN:$,,,,DDD= .?..  ..   ......??.+DDD,,,,$:MDMNM.
+.MMMD::,,INN7N... ..?....   . ..$.. ...N7NN?,,,+DMDM.
+ DNM7=~:.  ..8..    .:N... ...M+.    ..8..   :=+$MMD
+  NI=,.  .:....M..   ..IZ?NN+O.     .M.. .~.  .,~IM.
+ .,N:..+..   .?NNMNDDNZ..?NZ..7NNDNMNN8.   ..?..~M8.
+   ,NND... ?D7..       .,?Z?~.       ..$D8....DDD.
+     .DDNDN7....       .D???N.       .. .ONDNDD.
+      ..$~N.. ,. .. .=....M....=. .  .O ..N~+..
+      .??ID.M..... ....., I....... .....M.DII?.
+       .?Z..   $.  ....,..?. ..... ..I. ...$I
+        .8... ... ?.?O   .?~  .MM.+........O.
+        ..I8N....:.N.    +??..  .N 8....NN7.
+            ..NOM.. .   .I??.     ..MZN.
+                         .?.
+
+
+                     [GRETA OTO]
+        '''
+    )
 
 
 def warning(message):
@@ -341,26 +373,17 @@ def archive(path, date, days, destination):
                     exitcode = 0
                     clean = cleanup(path, date, days)
                     if clean == 0:
-                        print(PrintColor.GREEN + 
-                              'SUCCESS: Delete {0} successfully.'.format(path) +
-                              PrintColor.END)
+                        success("Delete {0} successfully.".format(path))
                     elif clean != 0:
-                        print(PrintColor.RED + 
-                              'ERROR: Delete {0} failed.'.format(path) +
-                              PrintColor.END)
+                        error("Delete {0} failed.".format(path))
                     return exitcode
                 except OSError:
                     exitcode = 1
                     return exitcode
             else:
-                print(PrintColor.RED + 
-                      "ERROR: The destination path {0} is not exist."
-                      .format(destination) +
-                      PrintColor.END)
+                error("The destination path {0} is not exist.".format(destination))
         else:
-            print(PrintColor.RED + 
-                  "ERROR: The path {0} is not exist.".format(path) + 
-                  PrintColor.END)
+            error("The path {0} is not exist.".format(path))
 
 
 def pager(text):
