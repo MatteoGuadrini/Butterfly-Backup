@@ -36,7 +36,7 @@ setup(
         "GitHub Project": "https://github.com/MatteoGuadrini/Butterfly-Backup",
         "Issue Tracker": "https://github.com/MatteoGuadrini/Butterfly-Backup/issues",
     },
-    dependencies=["pansi"],
+    install_requires=["pansi"],
     license="GNU General Public License v3.0",
     author="Matteo Guadrini",
     author_email="matteo.guadrini@hotmail.it",

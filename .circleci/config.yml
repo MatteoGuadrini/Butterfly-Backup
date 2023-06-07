@@ -8,11 +8,11 @@ jobs:
     executor: python/default
     steps:
       - checkout
-      - run: sudo python setup.py install -f
+      - run: sudo python3 setup.py install -f
       - run: sudo apt update
       - run: sudo apt -y install rsync
       - run: sudo apt -y install glibc-source
-      - run: sudo pip install pansi
+      - run: sudo pip3 install pansi
       - run: bb -Vv
 
 workflows:
