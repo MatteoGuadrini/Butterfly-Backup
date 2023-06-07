@@ -56,9 +56,10 @@ import argparse
 import configparser
 import os
 import subprocess
-import utility
 import time
 from multiprocessing import Pool
+
+import utility
 from utility import print_verbose
 
 # region Global Variables
@@ -66,51 +67,6 @@ VERSION = '1.8.0'
 
 
 # endregion
-
-
-def print_version(version):
-    """
-    Print version of Butterfly Backup
-    :return: str
-    """
-    print_verbose(args.verbose, 'Print version and logo')
-    if args.verbose:
-        print_logo()
-    print(utility.PrintColor.BOLD + 'Version: ' + utility.PrintColor.END + version)
-    exit()
-
-
-def print_logo():
-    """
-    Print logo design
-    :return: design of logo
-    """
-    print(
-        '''
-                .                   .
-    .OMMMM..   .....              ...   ...MNNM$...
- .MNNNNNMM7=?..   ...            ..     ??$MMNNNNDN.
- MNNNMMNN:,:,8N:.. ...        ....   :N8,,,:MNMNMNMM.
-.MMNMMM,::,,,DDD?8.....      ......+IDDD,,,:+,MMMNNM.
-.MNMDN:$,,,,DDD= .?..  ..   ......??.+DDD,,,,$:MDMNM.
-.MMMD::,,INN7N... ..?....   . ..$.. ...N7NN?,,,+DMDM.
- DNM7=~:.  ..8..    .:N... ...M+.    ..8..   :=+$MMD
-  NI=,.  .:....M..   ..IZ?NN+O.     .M.. .~.  .,~IM.
- .,N:..+..   .?NNMNDDNZ..?NZ..7NNDNMNN8.   ..?..~M8.
-   ,NND... ?D7..       .,?Z?~.       ..$D8....DDD.
-     .DDNDN7....       .D???N.       .. .ONDNDD.
-      ..$~N.. ,. .. .=....M....=. .  .O ..N~+..
-      .??ID.M..... ....., I....... .....M.DII?.
-       .?Z..   $.  ....,..?. ..... ..I. ...$I
-        .8... ... ?.?O   .?~  .MM.+........O.
-        ..I8N....:.N.    +??..  .N 8....NN7.
-            ..NOM.. .   .I??.     ..MZN.
-                         .?.
-
-
-                     [GRETA OTO]
-        '''
-    )
 
 
 def check_rsync():
@@ -129,6 +85,8 @@ def dry_run(message):
     :param message: print message standard output
     :return: boolean
     """
+    global args
+
     if args.dry_run:
         print_verbose(True, message)
         return True
@@ -141,6 +99,8 @@ def run_in_parallel(fn, commands, limit):
     :param commands: args commands of function
     :param limit: number of parallel process
     """
+    global args, catalog_path
+    
     # Start a Pool with "limit" processes
     pool = Pool(processes=limit)
     jobs = []
@@ -225,6 +185,8 @@ def get_std_out():
     Return stdout and stderr
     :return: string
     """
+    global args
+    
     if args.action == 'backup':
         if args.list:
             stdout = 'DEVNULL'
@@ -285,6 +247,8 @@ def compose_command(flags, host):
     :param host: Hostname of machine
     :return: list
     """
+    global args, catalog_path, backup_id, rpath
+    
     print_verbose(args.verbose, 'Build a rsync command')
     # Set rsync binary
     if flags.rsync:
@@ -472,6 +436,8 @@ def compose_source(action, os_name, sources):
     :param sources: Dictionary or string than contains the paths of source
     :return: list
     """
+    global args, catalog_path, backup_id
+
     if action == 'backup':
         src_list = []
         # Add include to the list
@@ -538,6 +504,8 @@ def get_restore_os():
     Get the operating system value on catalog by id
     :return: os value (string)
     """
+    global args
+    
     config = read_catalog(os.path.join(args.catalog, '.catalog.cfg'))
     return config.get(args.id, 'os')
 
@@ -576,6 +544,8 @@ def get_last_full(catalog):
     :param catalog: configparser object
     :return: path (string), os (string)
     """
+    global hostname
+
     config = catalog
     if config:
         dates = []
@@ -609,6 +579,8 @@ def get_last_backup(catalog):
     :param catalog: configparser object
     :return: path (string), os (string)
     """
+    global hostname
+
     config = catalog
     dates = []
     if config:
@@ -672,6 +644,8 @@ def read_catalog(catalog):
     :param catalog: catalog file
     :return: catalog file (configparser)
     """
+    global args
+
     config = configparser.ConfigParser()
     file = config.read(catalog)
     if file:
@@ -696,6 +670,8 @@ def write_catalog(catalog, section, key, value):
     :param value: value of key of catalog file
     :return:
     """
+    global args
+    
     config = read_catalog(catalog)
     if not args.dry_run:
         # Add new section
@@ -716,6 +692,8 @@ def retention_policy(host, catalog, logpath):
     :param catalog: catalog file
     :param logpath: path of log file
     """
+    global args
+    
     config = read_catalog(catalog)
     full_count = count_full(config, host)
     if len(args.retention) >= 3:
@@ -769,6 +747,8 @@ def archive_policy(catalog, destination):
     :param catalog: catalog file
     :param destination: destination pth of archive file
     """
+    global args
+    
     config = read_catalog(catalog)
     archive = -1
     for bid in config.sections():
@@ -808,6 +788,8 @@ def deploy_configuration(computer, user):
     :param computer: remote computer than deploy RSA key
     :param user: remote user on computer
     """
+    global args
+    
     # Create home path
     home = os.path.expanduser('~')
     ssh_folder = os.path.join(home, '.ssh')
@@ -842,6 +824,8 @@ def remove_configuration():
     """
     Remove a new configuration (remove an exist RSA key pair)
     """
+    global args
+    
     # Create home path
     home = os.path.expanduser('~')
     ssh_folder = os.path.join(home, '.ssh')
@@ -875,6 +859,8 @@ def new_configuration():
     """
     Create a new configuration (create a RSA key pair)
     """
+    global args
+    
     # Create home path
     home = os.path.expanduser('~')
     ssh_folder = os.path.join(home, '.ssh')
@@ -931,6 +917,8 @@ def delete_host(catalog, host):
     :param catalog: catalog file
     :param host: hostname or ip address
     """
+    global args
+    
     from shutil import rmtree
     config = read_catalog(catalog)
     root = os.path.join(os.path.dirname(catalog), host)
@@ -963,6 +951,8 @@ def clean_catalog(catalog):
     """
     :param catalog: catalog file
     """
+    global args
+    
     config = read_catalog(catalog)
     print_verbose(args.verbose, "Start check catalog file: {0}!".format(catalog))
     for cid in config.sections():
@@ -1018,7 +1008,7 @@ def parse_arguments():
                                dest='dry_run', action='store_true')
 
     # Create principal parser
-    description = utility.PrintColor.BOLD + 'Butterfly Backup' + utility.PrintColor.END
+    description = 'Butterfly Backup'
     parser_object = argparse.ArgumentParser(prog='bb',
                                             description=description,
                                             epilog=check_rsync(),
@@ -1257,13 +1247,18 @@ def parse_arguments():
     return parser_object
 
 
-if __name__ == '__main__':
+def main():
+    """Main process"""
+
+    global args, catalog_path, backup_id, rpath, log_args, logs
+
+    # Create arguments object
     parser = parse_arguments()
     args = parser.parse_args()
 
     # Check version flag
     if args.version:
-        print_version(VERSION)
+        utility.print_version(VERSION, args.verbose)
 
     # Check action
     if not args.action:
@@ -1711,7 +1706,6 @@ if __name__ == '__main__':
                 logs = list()
                 logs.append(log_args)
                 # Compose command
-                print_verbose(args.verbose, 'Build a rsync command')
                 cmd = compose_command(args, None)
                 # Add source
                 cmd.append('{}'.format(os.path.join(args.catalog, '')))
@@ -1731,7 +1725,6 @@ if __name__ == '__main__':
                 logs = list()
                 logs.append(log_args)
                 # Compose command
-                print_verbose(args.verbose, 'Build a rsync command')
                 cmd = compose_command(args, None)
                 # Export
                 utility.write_log(log_args['status'], log_args['destination'], 'INFO',
@@ -1764,3 +1757,7 @@ if __name__ == '__main__':
         else:
             utility.error("Source or destination path doesn't exist!")
             exit(1)
+
+
+if __name__ == '__main__':
+    main()
