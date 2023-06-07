@@ -58,7 +58,7 @@ Install Butterfly Backup is very simple; run this:
 
    arthur@heartofgold$ git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
    arthur@heartofgold$ cd Butterfly-Backup
-   arthur@heartofgold$ sudo python3 setup.py
+   arthur@heartofgold$ sudo python3 setup.py install -f # -f is for upgrade
    arthur@heartofgold$ bb --help
    arthur@heartofgold$ man bb
 
