@@ -30,7 +30,7 @@ def print_version(version, verbose):
     """
     global args
 
-    print_verbose(verbose, 'Print version and logo')
+    print_verbose(verbose, "Print version and logo")
     if verbose:
         print_logo()
     print("Version: {ansi.weight.bold}{0}{ansi.reset}".format(version, ansi=ansi))
@@ -43,7 +43,7 @@ def print_logo():
     :return: design of logo
     """
     print(
-        '''
+        """
                 .                   .
     .OMMMM..   .....              ...   ...MNNM$...
  .MNNNNNMM7=?..   ...            ..     ??$MMNNNNDN.
@@ -66,7 +66,7 @@ def print_logo():
 
 
                      [GRETA OTO]
-        '''
+        """
     )
 
 
@@ -94,14 +94,14 @@ def success(message):
     print("{ansi.green}success: {0}{ansi.reset}".format(message, ansi=ansi))
 
 
-def print_values(key, value, endline='\n'):
+def print_values(key, value, endline="\n"):
     """Print key/value in cyan color
 
     :param key: key to print
     :param value: value to print
     :param endline: endline value
     """
-    print(key + ':', "{ansi.cyan}{0}{ansi.reset}".format(value, ansi=ansi), end=endline)
+    print(key + ":", "{ansi.cyan}{0}{ansi.reset}".format(value, ansi=ansi), end=endline)
 
 
 def touch(filename, times=None):
@@ -112,10 +112,11 @@ def touch(filename, times=None):
     :return:  file
     """
     import os
+
     # Verify folder exists
     if not os.path.exists(filename):
         # touch file
-        with open(filename, 'a'):
+        with open(filename, "a"):
             os.utime(filename, times)
 
 
@@ -131,7 +132,7 @@ def find_replace(filename, text_to_search, replacement_text):
 
     with fileinput.FileInput(filename, inplace=True) as file:
         for line in file:
-            print(line.replace(text_to_search, replacement_text), end='')
+            print(line.replace(text_to_search, replacement_text), end="")
 
 
 def write_log(status, log, level, message):
@@ -144,14 +145,13 @@ def write_log(status, log, level, message):
     """
     # Check if status is True
     if status:
-
         import logging
         import getpass
 
         # Create logging object
         f_o_r_m_a_t = logging.Formatter(
-            '%(asctime)s %(name)-4s %(levelname)-4s %(message)s'
-            )
+            "%(asctime)s %(name)-4s %(levelname)-4s %(message)s"
+        )
         handler = logging.FileHandler(log)
         handler.setFormatter(f_o_r_m_a_t)
         logger = logging.getLogger(getpass.getuser())
@@ -178,6 +178,7 @@ def make_dir(directory):
     :param directory: Path of folder
     """
     import os
+
     if not os.path.exists(directory):
         os.makedirs(directory)
 
@@ -188,7 +189,8 @@ def time_for_folder():
     :return: string time
     """
     import time
-    return time.strftime('%Y_%m_%d__%H_%M')
+
+    return time.strftime("%Y_%m_%d__%H_%M")
 
 
 def time_for_log():
@@ -197,7 +199,8 @@ def time_for_log():
     :return: string time
     """
     import time
-    return time.strftime('%Y-%m-%d %H:%M:%S')
+
+    return time.strftime("%Y-%m-%d %H:%M:%S")
 
 
 def cleanup(path, date, days):
@@ -211,6 +214,7 @@ def cleanup(path, date, days):
     from shutil import rmtree
     from time import mktime
     from datetime import datetime, timedelta
+
     d = datetime.today() - timedelta(days=days)
     seconds = mktime(d.timetuple())
     date_s = mktime(string_to_time(date).timetuple())
@@ -230,6 +234,7 @@ def new_id():
     :return: uuid object
     """
     import uuid
+
     return uuid.uuid1()
 
 
@@ -240,7 +245,8 @@ def string_to_time(string):
     :return: time object
     """
     from datetime import datetime
-    datetime_object = datetime.strptime(string, '%Y-%m-%d %H:%M:%S')
+
+    datetime_object = datetime.strptime(string, "%Y-%m-%d %H:%M:%S")
     return datetime_object
 
 
@@ -251,7 +257,8 @@ def time_to_string(date):
     :return: string
     """
     from datetime import datetime
-    string = datetime.strftime(date, '%Y-%m-%d %H:%M:%S')
+
+    string = datetime.strftime(date, "%Y-%m-%d %H:%M:%S")
     return string
 
 
@@ -262,6 +269,7 @@ def make_symlink(source, destination):
     :param destination: Destination path of symbolic link
     """
     import os
+
     try:
         if os.path.exists(destination):
             os.unlink(destination)
@@ -277,11 +285,11 @@ def list_from_string(string):
     :return: list
     """
     # Convert string to list separated with comma
-    return_list = string.split(',')
+    return_list = string.split(",")
     return return_list
 
 
-def confirm(message, default='n'):
+def confirm(message, default="n"):
     """
     Ask user to enter Y or N (case-insensitive).
     :message: message to print
@@ -291,9 +299,11 @@ def confirm(message, default='n'):
     """
     answer = ""
     while answer not in ["y", "n"]:
-        answer = input("{0}\nTo continue? {1}".format(
-            message, '[Y/n]' if default == 'y' else '[y/N]'
-            )).lower()
+        answer = input(
+            "{0}\nTo continue? {1}".format(
+                message, "[Y/n]" if default == "y" else "[y/N]"
+            )
+        ).lower()
         # Check if default
         if not answer:
             answer = default
@@ -308,9 +318,11 @@ def print_verbose(verbose_status, *messages):
     :rtype: str
     """
     if verbose_status:
-        print("{ansi.white}debug:".format(ansi=ansi), 
-              *messages,
-              "{ansi.reset}".format(ansi=ansi))
+        print(
+            "{ansi.white}debug:".format(ansi=ansi),
+            *messages,
+            "{ansi.reset}".format(ansi=ansi),
+        )
 
 
 def check_tool(name):
@@ -320,6 +332,7 @@ def check_tool(name):
     :return: boolean
     """
     from shutil import which
+
     return which(name) is not None
 
 
@@ -330,6 +343,7 @@ def check_ssh(ip, port=22):
     :param port: ssh port (default is 22)
     """
     import socket
+
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         s.connect((ip, port))
@@ -362,14 +376,14 @@ def archive(path, date, days, destination):
                 try:
                     archive_from = os.path.dirname(path)
                     archive_to = os.path.basename(path.strip(os.sep))
-                    final_dest = os.path.join(destination, os.path.basename(
-                        os.path.dirname(path))
-                        )
+                    final_dest = os.path.join(
+                        destination, os.path.basename(os.path.dirname(path))
+                    )
                     if not os.path.exists(final_dest):
                         os.mkdir(final_dest)
                     os.chdir(final_dest)
                     name = os.path.basename(path)
-                    shutil.make_archive(name, 'zip', archive_from, archive_to)
+                    shutil.make_archive(name, "zip", archive_from, archive_to)
                     exitcode = 0
                     clean = cleanup(path, date, days)
                     if clean == 0:
@@ -393,4 +407,5 @@ def pager(text):
     :return: docstring
     """
     import pydoc
+
     pydoc.pager(text)

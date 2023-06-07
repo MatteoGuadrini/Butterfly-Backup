@@ -1,5 +1,13 @@
 # Release notes
 
+## 1.9.0
+Jun 7, 2023
+* Refactoring _setup.py_
+* Add **main** function
+* Add **pansi** package for coloring output
+* Fix **list** command
+* Fix format modules with ruff
+
 ## 1.8.0
 Sep 2, 2019
 * Add --start-from to backup action

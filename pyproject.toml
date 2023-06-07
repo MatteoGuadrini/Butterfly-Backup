@@ -4,26 +4,22 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Butterfly-Backup"
-version = "1.8.0"
+version = "1.9.0"
 readme = "README.md"
 
-authors = [
-    {name = "Matteo Guadrini", email = "matteo.guadrini@hotmail.it"},
-]
+authors = [{ name = "Matteo Guadrini", email = "matteo.guadrini@hotmail.it" }]
 maintainers = [
-    {name = "Matteo Guadrini", email = "matteo.guadrini@hotmail.it"},
+    { name = "Matteo Guadrini", email = "matteo.guadrini@hotmail.it" },
 ]
 
 description = "Butterfly Backup is a simple command line wrapper of rsync for complex task, written in python."
 requires-python = ">=3.6"
 classifiers = [
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-        "Operating System :: POSIX :: Linux"
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: POSIX :: Linux",
 ]
-dependencies = [
-    "pansi"
-]
+dependencies = ["pansi"]
 
 [project.scripts]
 bb = "bb:main"
