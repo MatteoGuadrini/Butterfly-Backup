@@ -1,17 +1,15 @@
 version: 2.1
 
-orbs:
-  python: circleci/python@2.0.3
-
 jobs:
   build-and-test:
-    executor: python/default
+    docker:
+      - image: circleci/python
     steps:
       - checkout
+      - run: sudo chmod 777 /usr/share/man/man1
       - run: sudo python setup.py install -f
       - run: sudo apt update
       - run: sudo apt -y install rsync
-      - run: sudo apt -y install glibc-source
       - run: bb -Vv
 
 workflows:

@@ -1671,15 +1671,14 @@ def main():
             if args.sfrom:
                 if backup_catalog.has_section(args.sfrom):
                     # Check if exist path of backup
-                    if os.path.exists(backup_catalog[args.sfrom]["path"]):
+                    path = backup_catalog.get(args.sfrom, "path")
+                    if os.path.exists(path):
                         cmd.append(
-                            "--copy-dest={0}".format(backup_catalog[args.sfrom]["path"])
+                            "--copy-dest={0}".format(path)
                         )
                     else:
                         utility.warning(
-                            "Backup folder {0} not exist!".format(
-                                backup_catalog[args.sfrom]["path"]
-                            )
+                            "Backup folder {0} not exist!".format(path)
                         )
                 else:
                     utility.error(
@@ -1766,16 +1765,16 @@ def main():
             # Check catalog backup id
             if restore_catalog.has_section(args.id):
                 # Check if exist path of backup
-                if os.path.exists(restore_catalog[args.id]["path"]):
+                if os.path.exists(restore_catalog.get(args.id, "path")):
                     rhost = hostname
-                    rpath = restore_catalog[args.id]["path"]
-                    bos = restore_catalog[args.id]["os"]
+                    rpath = restore_catalog.get(args.id, "path")
+                    bos = restore_catalog.get(args.id, "os")
                     ros = args.type
                     rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
                 else:
                     utility.error(
                         "Backup folder {0} not exist!".format(
-                            restore_catalog[args.id]["path"]
+                            restore_catalog.get(args.id, "path")
                         )
                     )
                     exit(1)
@@ -1861,45 +1860,53 @@ def main():
         # Check specified argument backup-id
         if args.id:
             # Get session backup id
-            bck_id = list_catalog[args.id]
-            endline = " - " if args.oneline else "\n"
-            utility.print_verbose(args.verbose, "Select backup-id: {0}".format(args.id))
-            if not list_catalog.has_section(args.id):
-                utility.error("Backup-id {0} not exist!".format(args.id))
-                exit(1)
-            utility.print_values("Backup id", args.id, endline=endline)
-            utility.print_values(
-                "Hostname or ip", bck_id.get("name", ""), endline=endline
-            )
-            utility.print_values("Type", bck_id.get("type", ""), endline=endline)
-            utility.print_values(
-                "Timestamp", bck_id.get("timestamp", ""), endline=endline
-            )
-            utility.print_values("Start", bck_id.get("start", ""), endline=endline)
-            utility.print_values("Finish", bck_id.get("end", ""), endline=endline)
-            utility.print_values("OS", bck_id.get("os", ""), endline=endline)
-            utility.print_values("ExitCode", bck_id.get("status", ""), endline=endline)
-            utility.print_values("Path", bck_id.get("path", ""), endline=endline)
-            if list_catalog.get(args.id, "cleaned", fallback=False):
-                utility.print_values(
-                    "Cleaned", bck_id.get("cleaned", ""), endline=endline
+            bck_id = list_catalog.get(args.id)
+            if bck_id:
+                endline = " - " if args.oneline else "\n"
+                utility.print_verbose(
+                    args.verbose, "Select backup-id: {0}".format(args.id)
                 )
-            elif list_catalog.get(args.id, "archived", fallback=False):
+                if not list_catalog.has_section(args.id):
+                    utility.error("Backup-id {0} not exist!".format(args.id))
+                    exit(1)
+                utility.print_values("Backup id", args.id, endline=endline)
                 utility.print_values(
-                    "Archived", bck_id.get("archived", ""), endline=endline
+                    "Hostname or ip", bck_id.get("name", ""), endline=endline
                 )
+                utility.print_values("Type", bck_id.get("type", ""), endline=endline)
+                utility.print_values(
+                    "Timestamp", bck_id.get("timestamp", ""), endline=endline
+                )
+                utility.print_values("Start", bck_id.get("start", ""), endline=endline)
+                utility.print_values("Finish", bck_id.get("end", ""), endline=endline)
+                utility.print_values("OS", bck_id.get("os", ""), endline=endline)
+                utility.print_values(
+                    "ExitCode", bck_id.get("status", ""), endline=endline
+                )
+                utility.print_values("Path", bck_id.get("path", ""), endline=endline)
+                if list_catalog.get(args.id, "cleaned", fallback=False):
+                    utility.print_values(
+                        "Cleaned", bck_id.get("cleaned", ""), endline=endline
+                    )
+                elif list_catalog.get(args.id, "archived", fallback=False):
+                    utility.print_values(
+                        "Archived", bck_id.get("archived", ""), endline=endline
+                    )
+                else:
+                    utility.print_values(
+                        "List",
+                        "\n".join(os.listdir(bck_id.get("path", ""))),
+                        endline=endline,
+                    )
+                # Print a newline char if uses oneline option
+                if args.oneline:
+                    print()
             else:
-                utility.print_values(
-                    "List",
-                    "\n".join(os.listdir(bck_id.get("path", ""))),
-                    endline=endline,
-                )
-            # Print a newline char if uses oneline option
-            if args.oneline:
-                print()
+                utility.error("Backup id {0} doesn't exists".format(bck_id))
+                exit(1)
         elif args.detail:
             # Get session backup id
-            bck_id = list_catalog[args.detail]
+            bck_id = list_catalog.get(args.detail)
             log_args["hostname"] = bck_id.get("name")
             logs = [log_args]
             utility.print_verbose(
@@ -2096,7 +2103,7 @@ def main():
                     exit(1)
                 # Log info
                 log_args = {
-                    "hostname": export_catalog[args.id]["Name"],
+                    "hostname": export_catalog.get(args.id, "name"),
                     "status": args.log,
                     "destination": os.path.join(args.destination, "export.log"),
                 }
@@ -2110,18 +2117,18 @@ def main():
                     log_args["destination"],
                     "INFO",
                     "Export {0}. Folder {1} to {2}".format(
-                        args.id, export_catalog[args.id]["Path"], args.destination
+                        args.id, export_catalog.get(args.id, "path"), args.destination
                     ),
                 )
                 print_verbose(args.verbose, "Export backup with id {0}".format(args.id))
-                if os.path.exists(export_catalog[args.id]["Path"]):
+                if os.path.exists(export_catalog.get(args.id, "path")):
                     # Add source
-                    cmd.append("{}".format(export_catalog[args.id]["Path"]))
+                    cmd.append("{}".format(export_catalog.get(args.id, "path")))
                     # Add destination
                     cmd.append(
                         "{}".format(
                             os.path.join(
-                                args.destination, export_catalog[args.id]["Name"]
+                                args.destination, export_catalog.get(args.id, "name")
                             )
                         )
                     )
