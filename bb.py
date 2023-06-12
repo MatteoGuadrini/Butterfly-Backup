@@ -258,7 +258,7 @@ def compose_command(flags, host):
     :param host: Hostname of machine
     :return: list
     """
-    global args, catalog_path, backup_id, rpath
+    global args, catalog_path, backup_id, rpath, hostname
 
     print_verbose(args.verbose, "Build a rsync command")
     # Set rsync binary
@@ -879,10 +879,7 @@ def deploy_configuration(computer, user):
     if not dry_run("Copying configuration to {0}".format(computer)):
         if os.path.exists(id_rsa_pub_file):
             print(
-                "Copying configuration to"
-                + utility.PrintColor.BOLD
-                + " {0}".format(computer)
-                + utility.PrintColor.END
+                "Copying configuration to {0}".format(computer)
                 + "; write the password:"
             )
             return_code = subprocess.call(
@@ -1573,7 +1570,7 @@ def parse_arguments():
 def main():
     """Main process"""
 
-    global args, catalog_path, backup_id, rpath, log_args, logs
+    global args, catalog_path, backup_id, rpath, log_args, logs, hostname
 
     # Create arguments object
     parser = parse_arguments()
@@ -1606,13 +1603,7 @@ def main():
             clean_catalog(catalog_path)
         else:
             parser.print_usage()
-            print(
-                "For "
-                + utility.PrintColor.BOLD
-                + "config"
-                + utility.PrintColor.END
-                + ' usage, "--help" or "-h"'
-            )
+            print("For config usage, --help or -h")
             exit(1)
 
     # Check backup session
@@ -1635,13 +1626,7 @@ def main():
                 utility.error("The file {0} not exist!".format(args.list))
         else:
             parser.print_usage()
-            print(
-                "For "
-                + utility.PrintColor.BOLD
-                + "backup"
-                + utility.PrintColor.END
-                + ' usage, "--help" or "-h"'
-            )
+            print("For backup usage, --help or -h")
             exit(1)
         for hostname in hostnames:
             if not utility.check_ssh(hostname, port):
@@ -1673,13 +1658,9 @@ def main():
                     # Check if exist path of backup
                     path = backup_catalog.get(args.sfrom, "path")
                     if os.path.exists(path):
-                        cmd.append(
-                            "--copy-dest={0}".format(path)
-                        )
+                        cmd.append("--copy-dest={0}".format(path))
                     else:
-                        utility.warning(
-                            "Backup folder {0} not exist!".format(path)
-                        )
+                        utility.warning("Backup folder {0} not exist!".format(path))
                 else:
                     utility.error(
                         "Backup id {0} not exist in catalog {1}!".format(
@@ -1860,15 +1841,12 @@ def main():
         # Check specified argument backup-id
         if args.id:
             # Get session backup id
-            bck_id = list_catalog.get(args.id)
-            if bck_id:
+            if list_catalog.has_section(args.id):
+                bck_id = list_catalog[args.id]
                 endline = " - " if args.oneline else "\n"
                 utility.print_verbose(
                     args.verbose, "Select backup-id: {0}".format(args.id)
                 )
-                if not list_catalog.has_section(args.id):
-                    utility.error("Backup-id {0} not exist!".format(args.id))
-                    exit(1)
                 utility.print_values("Backup id", args.id, endline=endline)
                 utility.print_values(
                     "Hostname or ip", bck_id.get("name", ""), endline=endline
@@ -1902,33 +1880,45 @@ def main():
                 if args.oneline:
                     print()
             else:
-                utility.error("Backup id {0} doesn't exists".format(bck_id))
+                utility.error("Backup id {0} doesn't exists".format(args.id))
                 exit(1)
         elif args.detail:
             # Get session backup id
-            bck_id = list_catalog.get(args.detail)
-            log_args["hostname"] = bck_id.get("name")
-            logs = [log_args]
-            utility.print_verbose(
-                args.verbose, "List detail of backup-id: {0}".format(args.detail)
-            )
-            utility.print_values("Detail of backup folder", bck_id.get("path", ""))
-            utility.print_values("List", "\n".join(os.listdir(bck_id.get("path", "-"))))
-            if log_args["status"]:
-                utility.write_log(
-                    log_args["status"],
-                    log_args["destination"],
-                    "INFO",
-                    "BUTTERFLY BACKUP DETAIL (BACKUP-ID: {0} PATH: {1})".format(
-                        args.detail, bck_id.get("path", "")
-                    ),
+            if list_catalog.has_section(args.detail):
+                bck_id = list_catalog[args.detail]
+                log_args["hostname"] = bck_id.get("name")
+                logs = [log_args]
+                utility.print_verbose(
+                    args.verbose, "List detail of backup-id: {0}".format(args.detail)
                 )
-                cmd = "rsync --list-only -r --log-file={0} {1}".format(
-                    log_args["destination"], bck_id.get("path")
-                )
+                utility.print_values("Detail of backup folder", bck_id.get("path", ""))
+                if os.path.exists(bck_id.get("path")):
+                    utility.print_values(
+                        "List", "\n".join(os.listdir(bck_id.get("path", "-")))
+                    )
+                    if log_args["status"]:
+                        utility.write_log(
+                            log_args["status"],
+                            log_args["destination"],
+                            "INFO",
+                            "BUTTERFLY BACKUP DETAIL (BACKUP-ID: {0} PATH: {1})".format(
+                                args.detail, bck_id.get("path", "")
+                            ),
+                        )
+                        cmd = "rsync --list-only -r --log-file={0} {1}".format(
+                            log_args["destination"], bck_id.get("path")
+                        )
+                    else:
+                        cmd = "rsync --list-only -r {0}".format(bck_id.get("path"))
+                else:
+                    utility.error(
+                        "No such file or directory: {}".format(bck_id.get("path"))
+                    )
+                    exit(1)
+                start_process(cmd)
             else:
-                cmd = "rsync --list-only -r {0}".format(bck_id.get("path"))
-            start_process(cmd)
+                utility.error("Backup id {0} doesn't exists".format(args.id))
+                exit(1)
         elif args.archived:
             utility.print_verbose(args.verbose, "List all archived backup in catalog")
             text = "BUTTERFLY BACKUP CATALOG (ARCHIVED)\n\n"
