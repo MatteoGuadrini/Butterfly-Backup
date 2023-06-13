@@ -23,6 +23,16 @@
 from pansi import ansi
 
 
+def report_issue(exc):
+    """Report issue"""
+    error(
+        "{0} on line {1}, with error {2}".format(
+            type(exc).__name__, exc.__traceback__.tb_lineno, str(exc)
+        )
+    )
+    exit(1)
+
+
 def print_version(version, verbose):
     """
     Print version of Butterfly Backup

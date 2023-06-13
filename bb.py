@@ -1576,439 +1576,382 @@ def main():
     parser = parse_arguments()
     args = parser.parse_args()
 
-    # Check version flag
-    if args.version:
-        utility.print_version(VERSION, args.verbose)
+    try:
+        # Check version flag
+        if args.version:
+            utility.print_version(VERSION, args.verbose)
 
-    # Check action
-    if not args.action:
-        parser.print_help()
+        # Check action
+        if not args.action:
+            parser.print_help()
 
-    # Check config session
-    if args.action == "config":
-        if args.new_conf:
-            new_configuration()
-        elif args.remove_conf:
-            remove_configuration()
-        elif args.deploy_host:
-            deploy_configuration(args.deploy_host, args.deploy_user)
-        elif args.init:
-            catalog_path = os.path.join(args.init, ".catalog.cfg")
-            init_catalog(catalog_path)
-        elif args.delete:
-            catalog_path = os.path.join(args.delete[0], ".catalog.cfg")
-            delete_host(catalog_path, args.delete[1])
-        elif args.clean:
-            catalog_path = os.path.join(args.clean, ".catalog.cfg")
-            clean_catalog(catalog_path)
-        else:
-            parser.print_usage()
-            print("For config usage, --help or -h")
-            exit(1)
-
-    # Check backup session
-    if args.action == "backup":
-        # Check custom ssh port
-        port = args.port if args.port else 22
-        hostnames = []
-        cmds = []
-        logs = []
-        if args.hostname:
-            # Computer list
-            hostnames.append(args.hostname)
-        elif args.list:
-            if os.path.exists(args.list):
-                list_file = open(args.list, "r").read().split()
-                for line in list_file:
-                    # Computer list
-                    hostnames.append(line)
+        # Check config session
+        if args.action == "config":
+            if args.new_conf:
+                new_configuration()
+            elif args.remove_conf:
+                remove_configuration()
+            elif args.deploy_host:
+                deploy_configuration(args.deploy_host, args.deploy_user)
+            elif args.init:
+                catalog_path = os.path.join(args.init, ".catalog.cfg")
+                init_catalog(catalog_path)
+            elif args.delete:
+                catalog_path = os.path.join(args.delete[0], ".catalog.cfg")
+                delete_host(catalog_path, args.delete[1])
+            elif args.clean:
+                catalog_path = os.path.join(args.clean, ".catalog.cfg")
+                clean_catalog(catalog_path)
             else:
-                utility.error("The file {0} not exist!".format(args.list))
-        else:
-            parser.print_usage()
-            print("For backup usage, --help or -h")
-            exit(1)
-        for hostname in hostnames:
-            if not utility.check_ssh(hostname, port):
-                utility.error("The port 22 on {0} is closed!".format(hostname))
-                continue
-            if not args.verbose:
-                if check_configuration(hostname):
-                    utility.error(
-                        "For bulk or silently backup, deploy configuration!"
-                        "See bb deploy --help or specify --verbose"
-                    )
-                    continue
-            # Log information's
-            backup_id = "{}".format(utility.new_id())
-            log_args = {
-                "id": backup_id,
-                "hostname": hostname,
-                "status": args.log,
-                "destination": os.path.join(args.destination, hostname, "general.log"),
-            }
-            logs.append(log_args)
-            catalog_path = os.path.join(args.destination, ".catalog.cfg")
-            backup_catalog = read_catalog(catalog_path)
-            # Compose command
-            cmd = compose_command(args, hostname)
-            # Check if start-from is specified
-            if args.sfrom:
-                if backup_catalog.has_section(args.sfrom):
-                    # Check if exist path of backup
-                    path = backup_catalog.get(args.sfrom, "path")
-                    if os.path.exists(path):
-                        cmd.append("--copy-dest={0}".format(path))
-                    else:
-                        utility.warning("Backup folder {0} not exist!".format(path))
-                else:
-                    utility.error(
-                        "Backup id {0} not exist in catalog {1}!".format(
-                            args.sfrom, args.destination
-                        )
-                    )
-                    exit(1)
-            print_verbose(
-                args.verbose, "Create a folder structure for {0} os".format(args.type)
-            )
-            # Write catalog file
-            write_catalog(catalog_path, backup_id, "name", hostname)
-            # Compose source
-            if args.data:
-                srcs = args.data
-                source_list = compose_source(args.action, args.type, srcs)
-            elif args.customdata:
-                srcs = args.customdata
-                source_list = compose_source(args.action, args.type, srcs)
-            else:
-                source_list = []
-            # Check if hostname is localhost or 127.0.0.1
-            if (hostname.lower() == "localhost") or (hostname == "127.0.0.1"):
-                # Compose source with only path of folder list
-                cmd.append(" ".join(source_list)[1:])
-            else:
-                # Compose source <user>@<hostname> format
-                cmd.append(
-                    "{0}@{1}".format(args.user, hostname) + (" ".join(source_list))
-                )
-            # Compose destination
-            bck_dst = compose_destination(hostname, args.destination)
-            utility.write_log(
-                log_args["status"],
-                log_args["destination"],
-                "INFO",
-                "Backup on folder {0}".format(bck_dst),
-            )
-            cmd.append(bck_dst)
-            # Compose pull commands
-            cmds.append(" ".join(cmd))
-            # Write catalog file
-            write_catalog(catalog_path, backup_id, "timestamp", utility.time_for_log())
-            # Create a symlink for last backup
-            utility.make_symlink(
-                bck_dst, os.path.join(args.destination, hostname, "last_backup")
-            )
-        # Start backup
-        run_in_parallel(start_process, cmds, args.parallel)
-
-    # Check restore session
-    if args.action == "restore":
-        # Check custom ssh port
-        port = args.port if args.port else 22
-        cmds = []
-        logs = []
-        rhost = ""
-        hostname = args.hostname
-        rpath = ""
-        bos = ""
-        ros = ""
-        rfolders = ""
-        if not args.type and args.id:
-            args.type = get_restore_os()
-        # Read catalog file
-        catalog_path = os.path.join(args.catalog, ".catalog.cfg")
-        restore_catalog = read_catalog(catalog_path)
-        # Check if select backup-id or last backup
-        if args.last:
-            rhost = hostname
-            last_backup = get_last_backup(restore_catalog)
-            if not args.type:
-                args.type = last_backup[1]
-            rpath = last_backup[0]
-            if os.path.exists(rpath):
-                bos = last_backup[1]
-                ros = args.type
-                rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
-            else:
-                utility.error("Backup folder {0} not exist!".format(rpath))
+                parser.print_usage()
+                print("For config usage, --help or -h")
                 exit(1)
-        elif args.id:
-            # Check catalog backup id
-            if restore_catalog.has_section(args.id):
-                # Check if exist path of backup
-                if os.path.exists(restore_catalog.get(args.id, "path")):
-                    rhost = hostname
-                    rpath = restore_catalog.get(args.id, "path")
-                    bos = restore_catalog.get(args.id, "os")
+
+        # Check backup session
+        if args.action == "backup":
+            # Check custom ssh port
+            port = args.port if args.port else 22
+            hostnames = []
+            cmds = []
+            logs = []
+            if args.hostname:
+                # Computer list
+                hostnames.append(args.hostname)
+            elif args.list:
+                if os.path.exists(args.list):
+                    list_file = open(args.list, "r").read().split()
+                    for line in list_file:
+                        # Computer list
+                        hostnames.append(line)
+                else:
+                    utility.error("The file {0} not exist!".format(args.list))
+            else:
+                parser.print_usage()
+                print("For backup usage, --help or -h")
+                exit(1)
+            for hostname in hostnames:
+                if not utility.check_ssh(hostname, port):
+                    utility.error("The port 22 on {0} is closed!".format(hostname))
+                    continue
+                if not args.verbose:
+                    if check_configuration(hostname):
+                        utility.error(
+                            "For bulk or silently backup, deploy configuration!"
+                            "See bb deploy --help or specify --verbose"
+                        )
+                        continue
+                # Log information's
+                backup_id = "{}".format(utility.new_id())
+                log_args = {
+                    "id": backup_id,
+                    "hostname": hostname,
+                    "status": args.log,
+                    "destination": os.path.join(
+                        args.destination, hostname, "general.log"
+                    ),
+                }
+                logs.append(log_args)
+                catalog_path = os.path.join(args.destination, ".catalog.cfg")
+                backup_catalog = read_catalog(catalog_path)
+                # Compose command
+                cmd = compose_command(args, hostname)
+                # Check if start-from is specified
+                if args.sfrom:
+                    if backup_catalog.has_section(args.sfrom):
+                        # Check if exist path of backup
+                        path = backup_catalog.get(args.sfrom, "path")
+                        if os.path.exists(path):
+                            cmd.append("--copy-dest={0}".format(path))
+                        else:
+                            utility.warning("Backup folder {0} not exist!".format(path))
+                    else:
+                        utility.error(
+                            "Backup id {0} not exist in catalog {1}!".format(
+                                args.sfrom, args.destination
+                            )
+                        )
+                        exit(1)
+                print_verbose(
+                    args.verbose,
+                    "Create a folder structure for {0} os".format(args.type),
+                )
+                # Write catalog file
+                write_catalog(catalog_path, backup_id, "name", hostname)
+                # Compose source
+                if args.data:
+                    srcs = args.data
+                    source_list = compose_source(args.action, args.type, srcs)
+                elif args.customdata:
+                    srcs = args.customdata
+                    source_list = compose_source(args.action, args.type, srcs)
+                else:
+                    source_list = []
+                # Check if hostname is localhost or 127.0.0.1
+                if (hostname.lower() == "localhost") or (hostname == "127.0.0.1"):
+                    # Compose source with only path of folder list
+                    cmd.append(" ".join(source_list)[1:])
+                else:
+                    # Compose source <user>@<hostname> format
+                    cmd.append(
+                        "{0}@{1}".format(args.user, hostname) + (" ".join(source_list))
+                    )
+                # Compose destination
+                bck_dst = compose_destination(hostname, args.destination)
+                utility.write_log(
+                    log_args["status"],
+                    log_args["destination"],
+                    "INFO",
+                    "Backup on folder {0}".format(bck_dst),
+                )
+                cmd.append(bck_dst)
+                # Compose pull commands
+                cmds.append(" ".join(cmd))
+                # Write catalog file
+                write_catalog(
+                    catalog_path, backup_id, "timestamp", utility.time_for_log()
+                )
+                # Create a symlink for last backup
+                utility.make_symlink(
+                    bck_dst, os.path.join(args.destination, hostname, "last_backup")
+                )
+            # Start backup
+            run_in_parallel(start_process, cmds, args.parallel)
+
+        # Check restore session
+        if args.action == "restore":
+            # Check custom ssh port
+            port = args.port if args.port else 22
+            cmds = []
+            logs = []
+            rhost = ""
+            hostname = args.hostname
+            rpath = ""
+            bos = ""
+            ros = ""
+            rfolders = ""
+            if not args.type and args.id:
+                args.type = get_restore_os()
+            # Read catalog file
+            catalog_path = os.path.join(args.catalog, ".catalog.cfg")
+            restore_catalog = read_catalog(catalog_path)
+            # Check if select backup-id or last backup
+            if args.last:
+                rhost = hostname
+                last_backup = get_last_backup(restore_catalog)
+                if not args.type:
+                    args.type = last_backup[1]
+                rpath = last_backup[0]
+                if os.path.exists(rpath):
+                    bos = last_backup[1]
                     ros = args.type
                     rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
                 else:
+                    utility.error("Backup folder {0} not exist!".format(rpath))
+                    exit(1)
+            elif args.id:
+                # Check catalog backup id
+                if restore_catalog.has_section(args.id):
+                    # Check if exist path of backup
+                    if os.path.exists(restore_catalog.get(args.id, "path")):
+                        rhost = hostname
+                        rpath = restore_catalog.get(args.id, "path")
+                        bos = restore_catalog.get(args.id, "os")
+                        ros = args.type
+                        rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
+                    else:
+                        utility.error(
+                            "Backup folder {0} not exist!".format(
+                                restore_catalog.get(args.id, "path")
+                            )
+                        )
+                        exit(1)
+                else:
                     utility.error(
-                        "Backup folder {0} not exist!".format(
-                            restore_catalog.get(args.id, "path")
+                        "Backup id {0} not exist in catalog {1}!".format(
+                            args.id, args.catalog
                         )
                     )
                     exit(1)
-            else:
-                utility.error(
-                    "Backup id {0} not exist in catalog {1}!".format(
-                        args.id, args.catalog
+            # Test connection
+            if not utility.check_ssh(rhost, port):
+                utility.error("The port 22 on {0} is closed!".format(rhost))
+                exit(1)
+            if not args.verbose:
+                if not check_configuration(rhost):
+                    utility.error(
+                        "For bulk or silently backup to deploy configuration!"
+                        "See bb deploy --help or specify --verbose"
                     )
-                )
-                exit(1)
-        # Test connection
-        if not utility.check_ssh(rhost, port):
-            utility.error("The port 22 on {0} is closed!".format(rhost))
-            exit(1)
-        if not args.verbose:
-            if not check_configuration(rhost):
-                utility.error(
-                    "For bulk or silently backup to deploy configuration!"
-                    "See bb deploy --help or specify --verbose"
-                )
-                exit(1)
-        log_args = {
-            "hostname": rhost,
-            "status": args.log,
-            "destination": os.path.join(os.path.dirname(rpath), "general.log"),
-        }
-        utility.write_log(
-            log_args["status"],
-            log_args["destination"],
-            "INFO",
-            "Restore on {0}".format(rhost),
-        )
-        for rf in rfolders:
-            # Append logs
-            logs.append(log_args)
-            # Compose command
-            cmd = compose_command(args, rhost)
-            # ATTENTION: permit access to anyone users
-            if ros == "Windows":
-                cmd.append("--chmod=ugo=rwX")
-            # Compose source and destination
-            src_dst = compose_restore_src_dst(bos, ros, os.path.basename(rf))
-            if src_dst:
-                src = src_dst[0]
-                # Compose source
-                cmd.append(os.path.join(rpath, src))
-                dst = src_dst[1]
-                if (hostname.lower() == "localhost") or (hostname == "127.0.0.1"):
-                    # Compose destination only with path of folder
-                    cmd.append("{}".format(dst))
-                else:
-                    # Compose destination <user>@<hostname> format
-                    cmd.append("{0}@{1}:".format(args.user, rhost).__add__(dst))
-                # Add command
-                if utility.confirm(
-                    "Want to do restore path {0}?".format(os.path.join(rpath, src))
-                ):
-                    cmds.append(" ".join(cmd))
-        # Start restore
-        run_in_parallel(start_process, cmds, 1)
+                    exit(1)
+            log_args = {
+                "hostname": rhost,
+                "status": args.log,
+                "destination": os.path.join(os.path.dirname(rpath), "general.log"),
+            }
+            utility.write_log(
+                log_args["status"],
+                log_args["destination"],
+                "INFO",
+                "Restore on {0}".format(rhost),
+            )
+            for rf in rfolders:
+                # Append logs
+                logs.append(log_args)
+                # Compose command
+                cmd = compose_command(args, rhost)
+                # ATTENTION: permit access to anyone users
+                if ros == "Windows":
+                    cmd.append("--chmod=ugo=rwX")
+                # Compose source and destination
+                src_dst = compose_restore_src_dst(bos, ros, os.path.basename(rf))
+                if src_dst:
+                    src = src_dst[0]
+                    # Compose source
+                    cmd.append(os.path.join(rpath, src))
+                    dst = src_dst[1]
+                    if (hostname.lower() == "localhost") or (hostname == "127.0.0.1"):
+                        # Compose destination only with path of folder
+                        cmd.append("{}".format(dst))
+                    else:
+                        # Compose destination <user>@<hostname> format
+                        cmd.append("{0}@{1}:".format(args.user, rhost).__add__(dst))
+                    # Add command
+                    if utility.confirm(
+                        "Want to do restore path {0}?".format(os.path.join(rpath, src))
+                    ):
+                        cmds.append(" ".join(cmd))
+            # Start restore
+            run_in_parallel(start_process, cmds, 1)
 
-    # Check archive session
-    if args.action == "archive":
-        # Log info
-        log_args = {
-            "status": args.log,
-            "destination": os.path.join(args.catalog, "archive.log"),
-        }
-        # Read catalog file
-        archive_catalog = os.path.join(args.catalog, ".catalog.cfg")
-        # Archive paths
-        archive_policy(archive_catalog, args.destination)
+        # Check archive session
+        if args.action == "archive":
+            # Log info
+            log_args = {
+                "status": args.log,
+                "destination": os.path.join(args.catalog, "archive.log"),
+            }
+            # Read catalog file
+            archive_catalog = os.path.join(args.catalog, ".catalog.cfg")
+            # Archive paths
+            archive_policy(archive_catalog, args.destination)
 
-    # Check list session
-    if args.action == "list":
-        # Log info
-        log_args = {
-            "status": args.log,
-            "destination": os.path.join(args.catalog, "backup.list"),
-        }
-        # Read catalog file
-        list_catalog = read_catalog(os.path.join(args.catalog, ".catalog.cfg"))
-        # Check specified argument backup-id
-        if args.id:
-            # Get session backup id
-            if list_catalog.has_section(args.id):
-                bck_id = list_catalog[args.id]
-                endline = " - " if args.oneline else "\n"
-                utility.print_verbose(
-                    args.verbose, "Select backup-id: {0}".format(args.id)
-                )
-                utility.print_values("Backup id", args.id, endline=endline)
-                utility.print_values(
-                    "Hostname or ip", bck_id.get("name", ""), endline=endline
-                )
-                utility.print_values("Type", bck_id.get("type", ""), endline=endline)
-                utility.print_values(
-                    "Timestamp", bck_id.get("timestamp", ""), endline=endline
-                )
-                utility.print_values("Start", bck_id.get("start", ""), endline=endline)
-                utility.print_values("Finish", bck_id.get("end", ""), endline=endline)
-                utility.print_values("OS", bck_id.get("os", ""), endline=endline)
-                utility.print_values(
-                    "ExitCode", bck_id.get("status", ""), endline=endline
-                )
-                utility.print_values("Path", bck_id.get("path", ""), endline=endline)
-                if list_catalog.get(args.id, "cleaned", fallback=False):
-                    utility.print_values(
-                        "Cleaned", bck_id.get("cleaned", ""), endline=endline
+        # Check list session
+        if args.action == "list":
+            # Log info
+            log_args = {
+                "status": args.log,
+                "destination": os.path.join(args.catalog, "backup.list"),
+            }
+            # Read catalog file
+            list_catalog = read_catalog(os.path.join(args.catalog, ".catalog.cfg"))
+            # Check specified argument backup-id
+            if args.id:
+                # Get session backup id
+                if list_catalog.has_section(args.id):
+                    bck_id = list_catalog[args.id]
+                    endline = " - " if args.oneline else "\n"
+                    utility.print_verbose(
+                        args.verbose, "Select backup-id: {0}".format(args.id)
                     )
-                elif list_catalog.get(args.id, "archived", fallback=False):
+                    utility.print_values("Backup id", args.id, endline=endline)
                     utility.print_values(
-                        "Archived", bck_id.get("archived", ""), endline=endline
+                        "Hostname or ip", bck_id.get("name", ""), endline=endline
                     )
-                else:
                     utility.print_values(
-                        "List",
-                        "\n".join(os.listdir(bck_id.get("path", ""))),
-                        endline=endline,
+                        "Type", bck_id.get("type", ""), endline=endline
                     )
-                # Print a newline char if uses oneline option
-                if args.oneline:
-                    print()
-            else:
-                utility.error("Backup id {0} doesn't exists".format(args.id))
-                exit(1)
-        elif args.detail:
-            # Get session backup id
-            if list_catalog.has_section(args.detail):
-                bck_id = list_catalog[args.detail]
-                log_args["hostname"] = bck_id.get("name")
-                logs = [log_args]
-                utility.print_verbose(
-                    args.verbose, "List detail of backup-id: {0}".format(args.detail)
-                )
-                utility.print_values("Detail of backup folder", bck_id.get("path", ""))
-                if os.path.exists(bck_id.get("path")):
                     utility.print_values(
-                        "List", "\n".join(os.listdir(bck_id.get("path", "-")))
+                        "Timestamp", bck_id.get("timestamp", ""), endline=endline
                     )
-                    if log_args["status"]:
-                        utility.write_log(
-                            log_args["status"],
-                            log_args["destination"],
-                            "INFO",
-                            "BUTTERFLY BACKUP DETAIL (BACKUP-ID: {0} PATH: {1})".format(
-                                args.detail, bck_id.get("path", "")
-                            ),
+                    utility.print_values(
+                        "Start", bck_id.get("start", ""), endline=endline
+                    )
+                    utility.print_values(
+                        "Finish", bck_id.get("end", ""), endline=endline
+                    )
+                    utility.print_values("OS", bck_id.get("os", ""), endline=endline)
+                    utility.print_values(
+                        "ExitCode", bck_id.get("status", ""), endline=endline
+                    )
+                    utility.print_values(
+                        "Path", bck_id.get("path", ""), endline=endline
+                    )
+                    if list_catalog.get(args.id, "cleaned", fallback=False):
+                        utility.print_values(
+                            "Cleaned", bck_id.get("cleaned", ""), endline=endline
                         )
-                        cmd = "rsync --list-only -r --log-file={0} {1}".format(
-                            log_args["destination"], bck_id.get("path")
+                    elif list_catalog.get(args.id, "archived", fallback=False):
+                        utility.print_values(
+                            "Archived", bck_id.get("archived", ""), endline=endline
                         )
                     else:
-                        cmd = "rsync --list-only -r {0}".format(bck_id.get("path"))
+                        utility.print_values(
+                            "List",
+                            "\n".join(os.listdir(bck_id.get("path", ""))),
+                            endline=endline,
+                        )
+                    # Print a newline char if uses oneline option
+                    if args.oneline:
+                        print()
                 else:
-                    utility.error(
-                        "No such file or directory: {}".format(bck_id.get("path"))
-                    )
+                    utility.error("Backup id {0} doesn't exists".format(args.id))
                     exit(1)
-                start_process(cmd)
-            else:
-                utility.error("Backup id {0} doesn't exists".format(args.id))
-                exit(1)
-        elif args.archived:
-            utility.print_verbose(args.verbose, "List all archived backup in catalog")
-            text = "BUTTERFLY BACKUP CATALOG (ARCHIVED)\n\n"
-            utility.write_log(
-                log_args["status"],
-                log_args["destination"],
-                "INFO",
-                "BUTTERFLY BACKUP CATALOG (ARCHIVED)",
-            )
-            for lid in list_catalog.sections():
+            elif args.detail:
                 # Get session backup id
-                bck_id = list_catalog[lid]
-                if "archived" in bck_id:
-                    utility.write_log(
-                        log_args["status"],
-                        log_args["destination"],
-                        "INFO",
-                        "Backup id: {0}".format(lid),
+                if list_catalog.has_section(args.detail):
+                    bck_id = list_catalog[args.detail]
+                    log_args["hostname"] = bck_id.get("name")
+                    logs = [log_args]
+                    utility.print_verbose(
+                        args.verbose,
+                        "List detail of backup-id: {0}".format(args.detail),
                     )
-                    utility.write_log(
-                        log_args["status"],
-                        log_args["destination"],
-                        "INFO",
-                        "Hostname or ip: {0}".format(bck_id.get("name", "")),
+                    utility.print_values(
+                        "Detail of backup folder", bck_id.get("path", "")
                     )
-                    utility.write_log(
-                        log_args["status"],
-                        log_args["destination"],
-                        "INFO",
-                        "Timestamp: {0}".format(bck_id.get("timestamp", "")),
-                    )
-                    text += "Backup id: {0}".format(lid)
-                    text += "\n"
-                    text += "Hostname or ip: {0}".format(bck_id.get("name", ""))
-                    text += "\n"
-                    text += "Timestamp: {0}".format(bck_id.get("timestamp", ""))
-                    text += "\n\n"
-            utility.pager(text)
-        elif args.cleaned:
-            utility.print_verbose(args.verbose, "List all cleaned backup in catalog")
-            text = "BUTTERFLY BACKUP CATALOG (CLEANED)\n\n"
-            utility.write_log(
-                log_args["status"],
-                log_args["destination"],
-                "INFO",
-                "BUTTERFLY BACKUP CATALOG (CLEANED)",
-            )
-            for lid in list_catalog.sections():
-                # Get session backup id
-                bck_id = list_catalog[lid]
-                if "cleaned" in bck_id:
-                    utility.write_log(
-                        log_args["status"],
-                        log_args["destination"],
-                        "INFO",
-                        "Backup id: {0}".format(lid),
-                    )
-                    utility.write_log(
-                        log_args["status"],
-                        log_args["destination"],
-                        "INFO",
-                        "Hostname or ip: {0}".format(bck_id.get("name", "")),
-                    )
-                    utility.write_log(
-                        log_args["status"],
-                        log_args["destination"],
-                        "INFO",
-                        "Timestamp: {0}".format(bck_id.get("timestamp", "")),
-                    )
-                    text += "Backup id: {0}".format(lid)
-                    text += "\n"
-                    text += "Hostname or ip: {0}".format(bck_id.get("name", ""))
-                    text += "\n"
-                    text += "Timestamp: {0}".format(bck_id.get("timestamp", ""))
-                    text += "\n\n"
-            utility.pager(text)
-        else:
-            utility.print_verbose(args.verbose, "List all backup in catalog")
-            text = "BUTTERFLY BACKUP CATALOG\n\n"
-            utility.write_log(
-                log_args["status"],
-                log_args["destination"],
-                "INFO",
-                "BUTTERFLY BACKUP CATALOG",
-            )
-            if args.hostname:
+                    if os.path.exists(bck_id.get("path")):
+                        utility.print_values(
+                            "List", "\n".join(os.listdir(bck_id.get("path", "-")))
+                        )
+                        if log_args["status"]:
+                            utility.write_log(
+                                log_args["status"],
+                                log_args["destination"],
+                                "INFO",
+                                "BUTTERFLY BACKUP DETAIL "
+                                "(BACKUP-ID: {0} PATH: {1})".format(
+                                    args.detail, bck_id.get("path", "")
+                                ),
+                            )
+                            cmd = "rsync --list-only -r --log-file={0} {1}".format(
+                                log_args["destination"], bck_id.get("path")
+                            )
+                        else:
+                            cmd = "rsync --list-only -r {0}".format(bck_id.get("path"))
+                    else:
+                        utility.error(
+                            "No such file or directory: {}".format(bck_id.get("path"))
+                        )
+                        exit(1)
+                    start_process(cmd)
+                else:
+                    utility.error("Backup id {0} doesn't exists".format(args.id))
+                    exit(1)
+            elif args.archived:
+                utility.print_verbose(
+                    args.verbose, "List all archived backup in catalog"
+                )
+                text = "BUTTERFLY BACKUP CATALOG (ARCHIVED)\n\n"
+                utility.write_log(
+                    log_args["status"],
+                    log_args["destination"],
+                    "INFO",
+                    "BUTTERFLY BACKUP CATALOG (ARCHIVED)",
+                )
                 for lid in list_catalog.sections():
                     # Get session backup id
                     bck_id = list_catalog[lid]
-                    if bck_id.get("name") == args.hostname:
+                    if "archived" in bck_id:
                         utility.write_log(
                             log_args["status"],
                             log_args["destination"],
@@ -2033,122 +1976,209 @@ def main():
                         text += "\n"
                         text += "Timestamp: {0}".format(bck_id.get("timestamp", ""))
                         text += "\n\n"
-            else:
-                for lid in list_catalog.sections():
-                    # Get session backup id
-                    bck_id = list_catalog[lid]
-                    utility.write_log(
-                        log_args["status"],
-                        log_args["destination"],
-                        "INFO",
-                        "Backup id: {0}".format(lid),
-                    )
-                    utility.write_log(
-                        log_args["status"],
-                        log_args["destination"],
-                        "INFO",
-                        "Hostname or ip: {0}".format(bck_id.get("name", "")),
-                    )
-                    utility.write_log(
-                        log_args["status"],
-                        log_args["destination"],
-                        "INFO",
-                        "Timestamp: {0}".format(bck_id.get("timestamp", "")),
-                    )
-                    text += "Backup id: {0}".format(lid)
-                    text += "\n"
-                    text += "Hostname or ip: {0}".format(bck_id.get("name", ""))
-                    text += "\n"
-                    text += "Timestamp: {0}".format(bck_id.get("timestamp", ""))
-                    text += "\n\n"
-            utility.pager(text)
-
-    # Check export session
-    if args.action == "export":
-        cmds = list()
-        # Read catalog file
-        catalog_path = os.path.join(args.catalog, ".catalog.cfg")
-        export_catalog = read_catalog(catalog_path)
-        if os.path.exists(args.destination):
-            # Check one export or all
-            if args.all:
-                # Log info
-                log_args = {
-                    "hostname": "all_backup",
-                    "status": args.log,
-                    "destination": os.path.join(args.destination, "export.log"),
-                }
-                logs = list()
-                logs.append(log_args)
-                # Compose command
-                cmd = compose_command(args, None)
-                # Add source
-                cmd.append("{}".format(os.path.join(args.catalog, "")))
-                # Add destination
-                cmd.append("{}".format(args.destination))
-            else:
-                # Check specified argument backup-id
-                if not export_catalog.has_section(args.id):
-                    utility.error("Backup-id {0} not exist!".format(args.id))
-                    exit(1)
-                # Log info
-                log_args = {
-                    "hostname": export_catalog.get(args.id, "name"),
-                    "status": args.log,
-                    "destination": os.path.join(args.destination, "export.log"),
-                }
-                logs = list()
-                logs.append(log_args)
-                # Compose command
-                cmd = compose_command(args, None)
-                # Export
+                utility.pager(text)
+            elif args.cleaned:
+                utility.print_verbose(
+                    args.verbose, "List all cleaned backup in catalog"
+                )
+                text = "BUTTERFLY BACKUP CATALOG (CLEANED)\n\n"
                 utility.write_log(
                     log_args["status"],
                     log_args["destination"],
                     "INFO",
-                    "Export {0}. Folder {1} to {2}".format(
-                        args.id, export_catalog.get(args.id, "path"), args.destination
-                    ),
+                    "BUTTERFLY BACKUP CATALOG (CLEANED)",
                 )
-                print_verbose(args.verbose, "Export backup with id {0}".format(args.id))
-                if os.path.exists(export_catalog.get(args.id, "path")):
-                    # Add source
-                    cmd.append("{}".format(export_catalog.get(args.id, "path")))
-                    # Add destination
-                    cmd.append(
-                        "{}".format(
-                            os.path.join(
-                                args.destination, export_catalog.get(args.id, "name")
-                            )
+                for lid in list_catalog.sections():
+                    # Get session backup id
+                    bck_id = list_catalog[lid]
+                    if "cleaned" in bck_id:
+                        utility.write_log(
+                            log_args["status"],
+                            log_args["destination"],
+                            "INFO",
+                            "Backup id: {0}".format(lid),
                         )
-                    )
+                        utility.write_log(
+                            log_args["status"],
+                            log_args["destination"],
+                            "INFO",
+                            "Hostname or ip: {0}".format(bck_id.get("name", "")),
+                        )
+                        utility.write_log(
+                            log_args["status"],
+                            log_args["destination"],
+                            "INFO",
+                            "Timestamp: {0}".format(bck_id.get("timestamp", "")),
+                        )
+                        text += "Backup id: {0}".format(lid)
+                        text += "\n"
+                        text += "Hostname or ip: {0}".format(bck_id.get("name", ""))
+                        text += "\n"
+                        text += "Timestamp: {0}".format(bck_id.get("timestamp", ""))
+                        text += "\n\n"
+                utility.pager(text)
+            else:
+                utility.print_verbose(args.verbose, "List all backup in catalog")
+                text = "BUTTERFLY BACKUP CATALOG\n\n"
+                utility.write_log(
+                    log_args["status"],
+                    log_args["destination"],
+                    "INFO",
+                    "BUTTERFLY BACKUP CATALOG",
+                )
+                if args.hostname:
+                    for lid in list_catalog.sections():
+                        # Get session backup id
+                        bck_id = list_catalog[lid]
+                        if bck_id.get("name") == args.hostname:
+                            utility.write_log(
+                                log_args["status"],
+                                log_args["destination"],
+                                "INFO",
+                                "Backup id: {0}".format(lid),
+                            )
+                            utility.write_log(
+                                log_args["status"],
+                                log_args["destination"],
+                                "INFO",
+                                "Hostname or ip: {0}".format(bck_id.get("name", "")),
+                            )
+                            utility.write_log(
+                                log_args["status"],
+                                log_args["destination"],
+                                "INFO",
+                                "Timestamp: {0}".format(bck_id.get("timestamp", "")),
+                            )
+                            text += "Backup id: {0}".format(lid)
+                            text += "\n"
+                            text += "Hostname or ip: {0}".format(bck_id.get("name", ""))
+                            text += "\n"
+                            text += "Timestamp: {0}".format(bck_id.get("timestamp", ""))
+                            text += "\n\n"
+                else:
+                    for lid in list_catalog.sections():
+                        # Get session backup id
+                        bck_id = list_catalog[lid]
+                        utility.write_log(
+                            log_args["status"],
+                            log_args["destination"],
+                            "INFO",
+                            "Backup id: {0}".format(lid),
+                        )
+                        utility.write_log(
+                            log_args["status"],
+                            log_args["destination"],
+                            "INFO",
+                            "Hostname or ip: {0}".format(bck_id.get("name", "")),
+                        )
+                        utility.write_log(
+                            log_args["status"],
+                            log_args["destination"],
+                            "INFO",
+                            "Timestamp: {0}".format(bck_id.get("timestamp", "")),
+                        )
+                        text += "Backup id: {0}".format(lid)
+                        text += "\n"
+                        text += "Hostname or ip: {0}".format(bck_id.get("name", ""))
+                        text += "\n"
+                        text += "Timestamp: {0}".format(bck_id.get("timestamp", ""))
+                        text += "\n\n"
+                utility.pager(text)
+
+        # Check export session
+        if args.action == "export":
+            cmds = list()
+            # Read catalog file
+            catalog_path = os.path.join(args.catalog, ".catalog.cfg")
+            export_catalog = read_catalog(catalog_path)
+            if os.path.exists(args.destination):
+                # Check one export or all
+                if args.all:
+                    # Log info
+                    log_args = {
+                        "hostname": "all_backup",
+                        "status": args.log,
+                        "destination": os.path.join(args.destination, "export.log"),
+                    }
+                    logs = list()
+                    logs.append(log_args)
+                    # Compose command
+                    cmd = compose_command(args, None)
+                    # Add source
+                    cmd.append("{}".format(os.path.join(args.catalog, "")))
+                    # Add destination
+                    cmd.append("{}".format(args.destination))
+                else:
+                    # Check specified argument backup-id
+                    if not export_catalog.has_section(args.id):
+                        utility.error("Backup-id {0} not exist!".format(args.id))
+                        exit(1)
+                    # Log info
+                    log_args = {
+                        "hostname": export_catalog.get(args.id, "name"),
+                        "status": args.log,
+                        "destination": os.path.join(args.destination, "export.log"),
+                    }
+                    logs = list()
+                    logs.append(log_args)
+                    # Compose command
+                    cmd = compose_command(args, None)
+                    # Export
                     utility.write_log(
                         log_args["status"],
                         log_args["destination"],
                         "INFO",
-                        "Export command {0}.".format(" ".join(cmd)),
-                    )
-                    # Check cut option
-                    if args.cut:
-                        write_catalog(
-                            os.path.join(args.catalog, ".catalog.cfg"),
+                        "Export {0}. Folder {1} to {2}".format(
                             args.id,
-                            "cleaned",
-                            "True",
+                            export_catalog.get(args.id, "path"),
+                            args.destination,
+                        ),
+                    )
+                    print_verbose(
+                        args.verbose, "Export backup with id {0}".format(args.id)
+                    )
+                    if os.path.exists(export_catalog.get(args.id, "path")):
+                        # Add source
+                        cmd.append("{}".format(export_catalog.get(args.id, "path")))
+                        # Add destination
+                        cmd.append(
+                            "{}".format(
+                                os.path.join(
+                                    args.destination,
+                                    export_catalog.get(args.id, "name"),
+                                )
+                            )
                         )
-            # Start export
-            cmds.append(" ".join(cmd))
-            run_in_parallel(start_process, cmds, 1)
-            if os.path.exists(os.path.join(args.destination, ".catalog.cfg")):
-                # Migrate catalog to new file system
-                utility.find_replace(
-                    os.path.join(args.destination, ".catalog.cfg"),
-                    args.catalog.rstrip("/"),
-                    args.destination.rstrip("/"),
-                )
-        else:
-            utility.error("Source or destination path doesn't exist!")
-            exit(1)
+                        utility.write_log(
+                            log_args["status"],
+                            log_args["destination"],
+                            "INFO",
+                            "Export command {0}.".format(" ".join(cmd)),
+                        )
+                        # Check cut option
+                        if args.cut:
+                            write_catalog(
+                                os.path.join(args.catalog, ".catalog.cfg"),
+                                args.id,
+                                "cleaned",
+                                "True",
+                            )
+                # Start export
+                cmds.append(" ".join(cmd))
+                run_in_parallel(start_process, cmds, 1)
+                if os.path.exists(os.path.join(args.destination, ".catalog.cfg")):
+                    # Migrate catalog to new file system
+                    utility.find_replace(
+                        os.path.join(args.destination, ".catalog.cfg"),
+                        args.catalog.rstrip("/"),
+                        args.destination.rstrip("/"),
+                    )
+            else:
+                utility.error("Source or destination path doesn't exist!")
+                exit(1)
+
+    except Exception as err:
+        utility.report_issue(err)
 
 
 if __name__ == "__main__":
