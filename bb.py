@@ -758,7 +758,7 @@ def retention_policy(host, catalog, logpath):
         )
         exit(2)
     if args.retention[1]:
-        backup_list = list_backup(config, host)[-args.retention[1] :]
+        backup_list = list_backup(config, host)[-args.retention[1]:]
     else:
         backup_list = list()
     cleanup = -1
@@ -1092,7 +1092,7 @@ def parse_arguments():
         "--verbose", "-v", help="Enable verbosity", dest="verbose", action="store_true"
     )
     parent_parser.add_argument(
-        "--log", "-l", help="Create a log", dest="log", action="store_true"
+        "--log", "-l", help="Create logs", dest="log", action="store_true"
     )
     parent_parser.add_argument(
         "--dry-run", "-N", help="Dry run mode", dest="dry_run", action="store_true"
@@ -1112,6 +1112,7 @@ def parse_arguments():
         description="Valid action",
         help="Available actions",
         dest="action",
+        required=True
     )
     # config session
     config = action.add_parser(
@@ -1580,10 +1581,6 @@ def main():
         # Check version flag
         if args.version:
             utility.print_version(VERSION, args.verbose)
-
-        # Check action
-        if not args.action:
-            parser.print_help()
 
         # Check config session
         if args.action == "config":
@@ -2182,4 +2179,5 @@ def main():
 
 
 if __name__ == "__main__":
+    global args, catalog_path, backup_id, rpath, log_args, logs, hostname
     main()
