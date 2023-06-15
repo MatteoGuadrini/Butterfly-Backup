@@ -10,7 +10,7 @@ jobs:
       - run: sudo python setup.py install -f
       - run: sudo apt update
       - run: sudo apt -y install rsync
-      - run: bb -Vv
+      - run: bb -V
 
 workflows:
   main:

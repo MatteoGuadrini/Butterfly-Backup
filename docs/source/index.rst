@@ -32,9 +32,8 @@ Indices and tables
 Requirements
 ############
 
-Butterfly Backup is a *simple* wrapper of rsync written in python; this means the first requirements is python3.3 (required module `cryptography
-<https://cryptography.io/en/latest/>`_ for init action) or higher.
-The other requirement is a openssh and rsync (version 2.5 or higher).
+Butterfly Backup is a *simple* wrapper of rsync written in python; this means the first requirements is python3.3 or higher.
+The other requirement is a **openssh** and **rsync** (version 2.5 or higher).
 Ok, let's go!
 
 Test
@@ -153,7 +152,7 @@ It also has three flags that can be very useful, especially in case of error.
         --verbose, -v         Enable verbosity
         --log, -l             Create a log
         --dry-run, -N         Dry run mode, test your command
-        --version, -V         Print version...and more
+        --version, -V         Print version
 
 
 .. _config:

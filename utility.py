@@ -23,61 +23,26 @@
 from pansi import ansi
 
 
+def get_bckid(catalog, bckid):
+    """Get backup id from catalog"""
+    # Check if bckid is 8 char
+    if len(bckid) == 8:
+        for ids in catalog.sections():
+            if bckid == ids[:8]:
+                return catalog[ids]
+    # Get bckid, if exists
+    if catalog.has_section(bckid):
+        return catalog[bckid]
+
+
 def report_issue(exc):
     """Report issue"""
     error(
-        "{0} on line {1}, with error {2}".format(
+        "{0} on line {1}, with error '{2}'".format(
             type(exc).__name__, exc.__traceback__.tb_lineno, str(exc)
         )
     )
     exit(1)
-
-
-def print_version(version, verbose):
-    """
-    Print version of Butterfly Backup
-    :return: str
-    """
-    global args
-
-    print_verbose(verbose, "Print version and logo")
-    if verbose:
-        print_logo()
-    print("Version: {ansi.weight.bold}{0}{ansi.reset}".format(version, ansi=ansi))
-    exit()
-
-
-def print_logo():
-    """
-    Print logo design
-    :return: design of logo
-    """
-    print(
-        """
-                .                   .
-    .OMMMM..   .....              ...   ...MNNM$...
- .MNNNNNMM7=?..   ...            ..     ??$MMNNNNDN.
- MNNNMMNN:,:,8N:.. ...        ....   :N8,,,:MNMNMNMM.
-.MMNMMM,::,,,DDD?8.....      ......+IDDD,,,:+,MMMNNM.
-.MNMDN:$,,,,DDD= .?..  ..   ......??.+DDD,,,,$:MDMNM.
-.MMMD::,,INN7N... ..?....   . ..$.. ...N7NN?,,,+DMDM.
- DNM7=~:.  ..8..    .:N... ...M+.    ..8..   :=+$MMD
-  NI=,.  .:....M..   ..IZ?NN+O.     .M.. .~.  .,~IM.
- .,N:..+..   .?NNMNDDNZ..?NZ..7NNDNMNN8.   ..?..~M8.
-   ,NND... ?D7..       .,?Z?~.       ..$D8....DDD.
-     .DDNDN7....       .D???N.       .. .ONDNDD.
-      ..$~N.. ,. .. .=....M....=. .  .O ..N~+..
-      .??ID.M..... ....., I....... .....M.DII?.
-       .?Z..   $.  ....,..?. ..... ..I. ...$I
-        .8... ... ?.?O   .?~  .MM.+........O.
-        ..I8N....:.N.    +??..  .N 8....NN7.
-            ..NOM.. .   .I??.     ..MZN.
-                         .?.
-
-
-                     [GRETA OTO]
-        """
-    )
 
 
 def warning(message):

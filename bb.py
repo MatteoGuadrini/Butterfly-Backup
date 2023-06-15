@@ -758,7 +758,7 @@ def retention_policy(host, catalog, logpath):
         )
         exit(2)
     if args.retention[1]:
-        backup_list = list_backup(config, host)[-args.retention[1]:]
+        backup_list = list_backup(config, host)[-args.retention[1] :]
     else:
         backup_list = list()
     cleanup = -1
@@ -1029,7 +1029,9 @@ def delete_host(catalog, host):
                     config.remove_section(cid)
                 elif cleanup == 1:
                     utility.error("Delete {0} failed.".format(path))
-    rmtree(root)
+    # Remove root folder
+    if os.path.exists(root):
+        rmtree(root)
     # Write file
     with open(catalog, "w") as configfile:
         config.write(configfile)
@@ -1086,6 +1088,8 @@ def parse_arguments():
     Function get arguments than specified in command line
     :return: parser
     """
+    global VERSION
+
     # Create a common parser
     parent_parser = argparse.ArgumentParser(add_help=False)
     parent_parser.add_argument(
@@ -1112,7 +1116,7 @@ def parse_arguments():
         description="Valid action",
         help="Available actions",
         dest="action",
-        required=True
+        required=True,
     )
     # config session
     config = action.add_parser(
@@ -1563,7 +1567,11 @@ def parse_arguments():
     )
     # Return all args
     parser_object.add_argument(
-        "--version", "-V", help="Print version", dest="version", action="store_true"
+        "--version",
+        "-V",
+        help="Print version",
+        action="version",
+        version="%(prog)s " + VERSION,
     )
     return parser_object
 
@@ -1578,10 +1586,6 @@ def main():
     args = parser.parse_args()
 
     try:
-        # Check version flag
-        if args.version:
-            utility.print_version(VERSION, args.verbose)
-
         # Check config session
         if args.action == "config":
             if args.new_conf:
@@ -1628,7 +1632,9 @@ def main():
                 exit(1)
             for hostname in hostnames:
                 if not utility.check_ssh(hostname, port):
-                    utility.error("The port 22 on {0} is closed!".format(hostname))
+                    utility.error(
+                        "The port {0} on {1} is closed!".format(port, hostname)
+                    )
                     continue
                 if not args.verbose:
                     if check_configuration(hostname):
@@ -1747,19 +1753,18 @@ def main():
                     exit(1)
             elif args.id:
                 # Check catalog backup id
-                if restore_catalog.has_section(args.id):
+                bck_id = utility.get_bckid(restore_catalog, args.id)
+                if bck_id:
                     # Check if exist path of backup
-                    if os.path.exists(restore_catalog.get(args.id, "path")):
+                    if bck_id.get("path") and os.path.exists(bck_id.get("path")):
                         rhost = hostname
-                        rpath = restore_catalog.get(args.id, "path")
-                        bos = restore_catalog.get(args.id, "os")
+                        rpath = bck_id.get("path")
+                        bos = bck_id.get("os")
                         ros = args.type
                         rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
                     else:
                         utility.error(
-                            "Backup folder {0} not exist!".format(
-                                restore_catalog.get(args.id, "path")
-                            )
+                            "Backup folder {0} not exist!".format(bck_id.get("path"))
                         )
                         exit(1)
                 else:
@@ -1771,7 +1776,7 @@ def main():
                     exit(1)
             # Test connection
             if not utility.check_ssh(rhost, port):
-                utility.error("The port 22 on {0} is closed!".format(rhost))
+                utility.error("The port {0} on {1} is closed!".format(port, rhost))
                 exit(1)
             if not args.verbose:
                 if not check_configuration(rhost):
@@ -1844,13 +1849,13 @@ def main():
             # Check specified argument backup-id
             if args.id:
                 # Get session backup id
-                if list_catalog.has_section(args.id):
-                    bck_id = list_catalog[args.id]
+                bck_id = utility.get_bckid(list_catalog, args.id)
+                if bck_id:
                     endline = " - " if args.oneline else "\n"
                     utility.print_verbose(
-                        args.verbose, "Select backup-id: {0}".format(args.id)
+                        args.verbose, "Select backup-id: {0}".format(bck_id.name)
                     )
-                    utility.print_values("Backup id", args.id, endline=endline)
+                    utility.print_values("Backup id", bck_id.name, endline=endline)
                     utility.print_values(
                         "Hostname or ip", bck_id.get("name", ""), endline=endline
                     )
@@ -1875,38 +1880,37 @@ def main():
                     )
                     if list_catalog.get(args.id, "cleaned", fallback=False):
                         utility.print_values(
-                            "Cleaned", bck_id.get("cleaned", ""), endline=endline
+                            "Cleaned", bck_id.get("cleaned", "False"), endline=endline
                         )
                     elif list_catalog.get(args.id, "archived", fallback=False):
                         utility.print_values(
-                            "Archived", bck_id.get("archived", ""), endline=endline
+                            "Archived", bck_id.get("archived", "False"), endline=endline
                         )
                     else:
+                        newline = " " if args.oneline else "\n"
                         utility.print_values(
                             "List",
-                            "\n".join(os.listdir(bck_id.get("path", ""))),
-                            endline=endline,
+                            "{0}".format(newline).join(
+                                os.listdir(bck_id.get("path", ""))
+                            ),
                         )
-                    # Print a newline char if uses oneline option
-                    if args.oneline:
-                        print()
                 else:
                     utility.error("Backup id {0} doesn't exists".format(args.id))
                     exit(1)
             elif args.detail:
                 # Get session backup id
-                if list_catalog.has_section(args.detail):
-                    bck_id = list_catalog[args.detail]
+                bck_id = utility.get_bckid(list_catalog, args.detail)
+                if bck_id:
                     log_args["hostname"] = bck_id.get("name")
                     logs = [log_args]
                     utility.print_verbose(
                         args.verbose,
-                        "List detail of backup-id: {0}".format(args.detail),
+                        "List detail of backup-id: {0}".format(bck_id.name),
                     )
                     utility.print_values(
                         "Detail of backup folder", bck_id.get("path", "")
                     )
-                    if os.path.exists(bck_id.get("path")):
+                    if bck_id.get("path") and os.path.exists(bck_id.get("path")):
                         utility.print_values(
                             "List", "\n".join(os.listdir(bck_id.get("path", "-")))
                         )
@@ -1917,7 +1921,7 @@ def main():
                                 "INFO",
                                 "BUTTERFLY BACKUP DETAIL "
                                 "(BACKUP-ID: {0} PATH: {1})".format(
-                                    args.detail, bck_id.get("path", "")
+                                    bck_id.name, bck_id.get("path", "")
                                 ),
                             )
                             cmd = "rsync --list-only -r --log-file={0} {1}".format(
@@ -1932,7 +1936,7 @@ def main():
                         exit(1)
                     start_process(cmd)
                 else:
-                    utility.error("Backup id {0} doesn't exists".format(args.id))
+                    utility.error("Backup id {0} doesn't exists".format(args.detail))
                     exit(1)
             elif args.archived:
                 utility.print_verbose(
@@ -2107,12 +2111,13 @@ def main():
                     cmd.append("{}".format(args.destination))
                 else:
                     # Check specified argument backup-id
-                    if not export_catalog.has_section(args.id):
+                    bck_id = utility.get_bckid(export_catalog, args.id)
+                    if not bck_id:
                         utility.error("Backup-id {0} not exist!".format(args.id))
                         exit(1)
                     # Log info
                     log_args = {
-                        "hostname": export_catalog.get(args.id, "name"),
+                        "hostname": bck_id.get("name"),
                         "status": args.log,
                         "destination": os.path.join(args.destination, "export.log"),
                     }
@@ -2126,23 +2131,23 @@ def main():
                         log_args["destination"],
                         "INFO",
                         "Export {0}. Folder {1} to {2}".format(
-                            args.id,
-                            export_catalog.get(args.id, "path"),
+                            bck_id.name,
+                            bck_id.get("path"),
                             args.destination,
                         ),
                     )
                     print_verbose(
-                        args.verbose, "Export backup with id {0}".format(args.id)
+                        args.verbose, "Export backup with id {0}".format(bck_id.name)
                     )
-                    if os.path.exists(export_catalog.get(args.id, "path")):
+                    if bck_id.get("path") and os.path.exists(bck_id.get("path")):
                         # Add source
-                        cmd.append("{}".format(export_catalog.get(args.id, "path")))
+                        cmd.append("{}".format(bck_id.get("path")))
                         # Add destination
                         cmd.append(
                             "{}".format(
                                 os.path.join(
                                     args.destination,
-                                    export_catalog.get(args.id, "name"),
+                                    bck_id.get("name"),
                                 )
                             )
                         )
