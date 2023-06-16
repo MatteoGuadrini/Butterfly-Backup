@@ -1405,6 +1405,14 @@ def parse_arguments():
         action="store",
         nargs="+",
     )
+    group_restore.add_argument(
+        "--files",
+        "-f",
+        help="Restore files",
+        dest="files",
+        action="store",
+        nargs="+",
+    )
     # archive session
     archive = action.add_parser(
         "archive", help="Archive options", parents=[parent_parser]
@@ -1640,7 +1648,7 @@ def main():
                     if check_configuration(hostname):
                         utility.error(
                             "For bulk or silently backup, deploy configuration!"
-                            "See bb deploy --help or specify --verbose"
+                            "See bb config --help or specify --verbose"
                         )
                         continue
                 # Log information's
@@ -1782,7 +1790,7 @@ def main():
                 if not check_configuration(rhost):
                     utility.error(
                         "For bulk or silently backup to deploy configuration!"
-                        "See bb deploy --help or specify --verbose"
+                        "See bb config --help or specify --verbose"
                     )
                     exit(1)
             log_args = {
