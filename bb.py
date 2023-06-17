@@ -59,6 +59,7 @@ import getpass
 import subprocess
 import time
 from multiprocessing import Pool
+from glob import glob
 
 import utility
 from utility import print_verbose
@@ -1081,6 +1082,21 @@ def clean_catalog(catalog):
     # Write file
     with open(catalog, "w") as configfile:
         config.write(configfile)
+
+
+def get_files(catalog, bckid, files):
+    """Get list of files"""
+    # Get path from id
+    path = catalog.get(bckid, "path")
+    if path:
+        # Search files into backup folder
+        return [
+            f
+            for file in files
+            for f in glob(os.path.join(path, "**/*{0}*".format(file)), recursive=True)
+        ]
+    else:
+        return []
 
 
 def parse_arguments():
