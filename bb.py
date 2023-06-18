@@ -54,12 +54,12 @@ EXAMPLES
 
 import argparse
 import configparser
-import os
 import getpass
+import os
 import subprocess
 import time
-from multiprocessing import Pool
 from glob import glob
+from multiprocessing import Pool
 
 import utility
 from utility import print_verbose
@@ -1755,7 +1755,7 @@ def main():
             rpath = ""
             bos = ""
             ros = ""
-            rfolders = ""
+            rfolders = []
             if not args.type and args.id:
                 args.type = get_restore_os()
             # Read catalog file
@@ -1820,34 +1820,46 @@ def main():
                 "INFO",
                 "Restore on {0}".format(rhost),
             )
-            for rf in rfolders:
-                # Append logs
-                logs.append(log_args)
-                # Compose command
-                cmd = compose_command(args, rhost)
-                # ATTENTION: permit access to anyone users
-                if ros == "Windows":
-                    cmd.append("--chmod=ugo=rwX")
-                # Compose source and destination
-                src_dst = compose_restore_src_dst(bos, ros, os.path.basename(rf))
-                if src_dst:
-                    src = src_dst[0]
-                    # Compose source
-                    cmd.append(os.path.join(rpath, src))
-                    dst = src_dst[1]
-                    if (hostname.lower() == "localhost") or (hostname == "127.0.0.1"):
-                        # Compose destination only with path of folder
-                        cmd.append("{}".format(dst))
-                    else:
-                        # Compose destination <user>@<hostname> format
-                        cmd.append("{0}@{1}:".format(args.user, rhost).__add__(dst))
-                    # Add command
-                    if utility.confirm(
-                        "Want to do restore path {0}?".format(os.path.join(rpath, src))
-                    ):
-                        cmds.append(" ".join(cmd))
-            # Start restore
-            run_in_parallel(start_process, cmds, 1)
+            # Check if backup has folder to restore
+            if rfolders:
+                for rf in rfolders:
+                    # Append logs
+                    logs.append(log_args)
+                    # Compose command
+                    cmd = compose_command(args, rhost)
+                    # ATTENTION: permit access to anyone users
+                    if ros == "Windows":
+                        cmd.append("--chmod=ugo=rwX")
+                    # Compose source and destination
+                    src_dst = compose_restore_src_dst(bos, ros, os.path.basename(rf))
+                    if src_dst:
+                        src = src_dst[0]
+                        # Compose source
+                        cmd.append(os.path.join(rpath, src))
+                        dst = src_dst[1]
+                        if (hostname.lower() == "localhost") or (
+                            hostname == "127.0.0.1"
+                        ):
+                            # Compose destination only with path of folder
+                            cmd.append("{}".format(dst))
+                        else:
+                            # Compose destination <user>@<hostname> format
+                            cmd.append("{0}@{1}:".format(args.user, rhost).__add__(dst))
+                        # Add command
+                        if utility.confirm(
+                            "Want to do restore path {0}?".format(
+                                os.path.join(rpath, src)
+                            )
+                        ):
+                            cmds.append(" ".join(cmd))
+                # Start restore
+                run_in_parallel(start_process, cmds, 1)
+            else:
+                utility.warning(
+                    "Restore files or folders aren't available on backup id {0}".format(
+                        args.id if hasattr(args, "id") else args.last
+                    )
+                )
 
         # Check archive session
         if args.action == "archive":
