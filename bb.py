@@ -2216,7 +2216,7 @@ def main():
                 exit(1)
 
     except Exception as err:
-        utility.report_issue(err)
+        utility.report_issue(err, False)
 
 
 if __name__ == "__main__":

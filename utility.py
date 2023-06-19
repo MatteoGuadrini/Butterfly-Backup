@@ -21,6 +21,7 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from pansi import ansi
+import traceback
 
 
 def get_bckid(catalog, bckid):
@@ -35,13 +36,15 @@ def get_bckid(catalog, bckid):
         return catalog[bckid]
 
 
-def report_issue(exc):
+def report_issue(exc, tb):
     """Report issue"""
     error(
         "{0} on line {1}, with error '{2}'".format(
             type(exc).__name__, exc.__traceback__.tb_lineno, str(exc)
         )
     )
+    if tb:
+        traceback.print_exc()
     exit(1)
 
 
