@@ -20,8 +20,9 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from pansi import ansi
 import traceback
+
+from pansi import ansi
 
 
 def get_bckid(catalog, bckid):
@@ -123,8 +124,8 @@ def write_log(status, log, level, message):
     """
     # Check if status is True
     if status:
-        import logging
         import getpass
+        import logging
 
         # Create logging object
         f_o_r_m_a_t = logging.Formatter(
@@ -189,9 +190,9 @@ def cleanup(path, date, days):
     :param days: number of days
     :return:
     """
+    from datetime import datetime, timedelta
     from shutil import rmtree
     from time import mktime
-    from datetime import datetime, timedelta
 
     d = datetime.today() - timedelta(days=days)
     seconds = mktime(d.timetuple())
@@ -340,10 +341,10 @@ def archive(path, date, days, destination):
     :param destination: destination of zip file
     :return: boolean
     """
-    import shutil
     import os
-    from time import mktime
+    import shutil
     from datetime import datetime, timedelta
+    from time import mktime
 
     d = datetime.today() - timedelta(days=days)
     seconds = mktime(d.timetuple())

@@ -644,7 +644,7 @@ def get_last_backup(catalog):
                     dates.append(utility.string_to_time(config.get(bid, "timestamp")))
                 except configparser.NoOptionError:
                     utility.error(
-                        "Corrupted catalog! " "No found timestamp in {0}".format(bid)
+                        "Corrupted catalog! No found timestamp in {0}".format(bid)
                     )
                     exit(2)
         if dates:
@@ -656,7 +656,7 @@ def get_last_backup(catalog):
                         config.get(bid, "name") == hostname
                         and config.get(bid, "timestamp") == last
                     ):
-                        return config.get(bid, "path"), config.get(bid, "os")
+                        return config.get(bid, "path"), config.get(bid, "os"), bid
     else:
         return False
 
@@ -1084,17 +1084,13 @@ def clean_catalog(catalog):
         config.write(configfile)
 
 
-def get_files(catalog, bckid, files):
+def get_files(bckid, files):
     """Get list of files"""
     # Get path from id
-    path = catalog.get(bckid, "path")
+    path = bckid.get("path")
     if path:
         # Search files into backup folder
-        return [
-            f
-            for file in files
-            for f in glob(os.path.join(path, "**/*{0}*".format(file)), recursive=True)
-        ]
+        return [f for file in files for f in glob("{0}/**/*{1}*".format(path, file))]
     else:
         return []
 
@@ -1424,7 +1420,7 @@ def parse_arguments():
     group_restore.add_argument(
         "--files",
         "-f",
-        help="Restore files",
+        help="Restore only specified files",
         dest="files",
         action="store",
         nargs="+",
@@ -1771,7 +1767,13 @@ def main():
                 if os.path.exists(rpath):
                     bos = last_backup[1]
                     ros = args.type
-                    rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
+                    if args.files:
+                        rfolders = get_files(
+                            utility.get_bckid(restore_catalog, last_backup[2]),
+                            args.files,
+                        )
+                    else:
+                        rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
                 else:
                     utility.error("Backup folder {0} not exist!".format(rpath))
                     exit(1)
@@ -1785,7 +1787,10 @@ def main():
                         rpath = bck_id.get("path")
                         bos = bck_id.get("os")
                         ros = args.type
-                        rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
+                        if args.files:
+                            rfolders = get_files(bck_id, args.files)
+                        else:
+                            rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
                     else:
                         utility.error(
                             "Backup folder {0} not exist!".format(bck_id.get("path"))
@@ -1831,7 +1836,12 @@ def main():
                     if ros == "Windows":
                         cmd.append("--chmod=ugo=rwX")
                     # Compose source and destination
-                    src_dst = compose_restore_src_dst(bos, ros, os.path.basename(rf))
+                    if args.files:
+                        src_dst = compose_restore_src_dst(bos, ros, rf)
+                    else:
+                        src_dst = compose_restore_src_dst(
+                            bos, ros, os.path.basename(rf)
+                        )
                     if src_dst:
                         src = src_dst[0]
                         # Compose source
