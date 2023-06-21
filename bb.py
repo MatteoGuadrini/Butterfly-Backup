@@ -71,14 +71,19 @@ VERSION = "1.9.0"
 # endregion
 
 
-def check_rsync():
+def check_rsync(rsync_path=None):
     """
     Check if rsync tool is installed
     :return: string
     """
-    if not utility.check_tool("rsync"):
-        utility.error("rsync package is required!")
-        exit(1)
+    if rsync_path:
+        if not os.path.exists(rsync_path):
+            utility.error("{0} package not found!".format(rsync_path))
+            exit(1)
+    else:
+        if not utility.check_tool("rsync"):
+            utility.error("rsync package is required!")
+            exit(1)
 
 
 def dry_run(message):
@@ -1119,7 +1124,6 @@ def parse_arguments():
     parser_object = argparse.ArgumentParser(
         prog="bb",
         description=description,
-        epilog=check_rsync(),
         parents=[parent_parser],
     )
     # Create sub_parser "action"
@@ -1630,6 +1634,9 @@ def main():
 
         # Check backup session
         if args.action == "backup":
+            # Check rsync tool
+            rsync_path = args.rsync if hasattr(args, "rsync") else None
+            check_rsync(rsync_path)
             # Check custom ssh port
             port = args.port if args.port else 22
             hostnames = []
@@ -1742,6 +1749,9 @@ def main():
 
         # Check restore session
         if args.action == "restore":
+            # Check rsync tool
+            rsync_path = args.rsync if hasattr(args, "rsync") else None
+            check_rsync(rsync_path)
             # Check custom ssh port
             port = args.port if args.port else 22
             cmds = []
@@ -2134,6 +2144,9 @@ def main():
 
         # Check export session
         if args.action == "export":
+            # Check rsync tool
+            rsync_path = args.rsync if hasattr(args, "rsync") else None
+            check_rsync(rsync_path)
             cmds = list()
             # Read catalog file
             catalog_path = os.path.join(args.catalog, ".catalog.cfg")
