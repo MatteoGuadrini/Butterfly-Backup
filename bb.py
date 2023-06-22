@@ -2151,92 +2151,91 @@ def main():
             # Read catalog file
             catalog_path = os.path.join(args.catalog, ".catalog.cfg")
             export_catalog = read_catalog(catalog_path)
-            if os.path.exists(args.destination):
+            # Create destination folder if not exists
+            if not os.path.exists(args.destination):
+                utility.make_dir(args.destination)
                 # Check one export or all
-                if args.all:
-                    # Log info
-                    log_args = {
-                        "hostname": "all_backup",
-                        "status": args.log,
-                        "destination": os.path.join(args.destination, "export.log"),
-                    }
-                    logs = list()
-                    logs.append(log_args)
-                    # Compose command
-                    cmd = compose_command(args, None)
+            if args.all:
+                # Log info
+                log_args = {
+                    "hostname": "all_backup",
+                    "status": args.log,
+                    "destination": os.path.join(args.destination, "export.log"),
+                }
+                logs = list()
+                logs.append(log_args)
+                # Compose command
+                cmd = compose_command(args, None)
+                # Add source
+                cmd.append("{}".format(os.path.join(args.catalog, "")))
+                # Add destination
+                cmd.append("{}".format(args.destination))
+            else:
+                # Check specified argument backup-id
+                bck_id = utility.get_bckid(export_catalog, args.id)
+                if not bck_id:
+                    utility.error("Backup-id {0} not exist!".format(args.id))
+                    exit(1)
+                # Log info
+                log_args = {
+                    "hostname": bck_id.get("name"),
+                    "status": args.log,
+                    "destination": os.path.join(args.destination, "export.log"),
+                }
+                logs = list()
+                logs.append(log_args)
+                # Compose command
+                cmd = compose_command(args, None)
+                # Export
+                utility.write_log(
+                    log_args["status"],
+                    log_args["destination"],
+                    "INFO",
+                    "Export {0}. Folder {1} to {2}".format(
+                        bck_id.name,
+                        bck_id.get("path"),
+                        args.destination,
+                    ),
+                )
+                print_verbose(
+                    args.verbose, "Export backup with id {0}".format(bck_id.name)
+                )
+                if bck_id.get("path") and os.path.exists(bck_id.get("path")):
                     # Add source
-                    cmd.append("{}".format(os.path.join(args.catalog, "")))
+                    cmd.append("{}".format(bck_id.get("path")))
                     # Add destination
-                    cmd.append("{}".format(args.destination))
-                else:
-                    # Check specified argument backup-id
-                    bck_id = utility.get_bckid(export_catalog, args.id)
-                    if not bck_id:
-                        utility.error("Backup-id {0} not exist!".format(args.id))
-                        exit(1)
-                    # Log info
-                    log_args = {
-                        "hostname": bck_id.get("name"),
-                        "status": args.log,
-                        "destination": os.path.join(args.destination, "export.log"),
-                    }
-                    logs = list()
-                    logs.append(log_args)
-                    # Compose command
-                    cmd = compose_command(args, None)
-                    # Export
+                    cmd.append(
+                        "{}".format(
+                            os.path.join(
+                                args.destination,
+                                bck_id.get("name"),
+                            )
+                        )
+                    )
                     utility.write_log(
                         log_args["status"],
                         log_args["destination"],
                         "INFO",
-                        "Export {0}. Folder {1} to {2}".format(
-                            bck_id.name,
-                            bck_id.get("path"),
-                            args.destination,
-                        ),
+                        "Export command {0}.".format(" ".join(cmd)),
                     )
-                    print_verbose(
-                        args.verbose, "Export backup with id {0}".format(bck_id.name)
-                    )
-                    if bck_id.get("path") and os.path.exists(bck_id.get("path")):
-                        # Add source
-                        cmd.append("{}".format(bck_id.get("path")))
-                        # Add destination
-                        cmd.append(
-                            "{}".format(
-                                os.path.join(
-                                    args.destination,
-                                    bck_id.get("name"),
-                                )
-                            )
+                    # Check cut option
+                    if args.cut:
+                        write_catalog(
+                            os.path.join(args.catalog, ".catalog.cfg"),
+                            args.id,
+                            "cleaned",
+                            "True",
                         )
-                        utility.write_log(
-                            log_args["status"],
-                            log_args["destination"],
-                            "INFO",
-                            "Export command {0}.".format(" ".join(cmd)),
-                        )
-                        # Check cut option
-                        if args.cut:
-                            write_catalog(
-                                os.path.join(args.catalog, ".catalog.cfg"),
-                                args.id,
-                                "cleaned",
-                                "True",
-                            )
-                # Start export
-                cmds.append(" ".join(cmd))
-                run_in_parallel(start_process, cmds, 1)
-                if os.path.exists(os.path.join(args.destination, ".catalog.cfg")):
-                    # Migrate catalog to new file system
-                    utility.find_replace(
-                        os.path.join(args.destination, ".catalog.cfg"),
-                        args.catalog.rstrip("/"),
-                        args.destination.rstrip("/"),
-                    )
-            else:
-                utility.error("Source or destination path doesn't exist!")
-                exit(1)
+            # Start export
+            cmds.append(" ".join(cmd))
+            run_in_parallel(start_process, cmds, 1)
+            if os.path.exists(os.path.join(args.destination, ".catalog.cfg")):
+                # Migrate catalog to new file system
+                utility.find_replace(
+                    os.path.join(args.destination, ".catalog.cfg"),
+                    args.catalog.rstrip("/"),
+                    args.destination.rstrip("/"),
+                )
 
     except Exception as err:
         utility.report_issue(err, False)
