@@ -2154,7 +2154,7 @@ def main():
             # Create destination folder if not exists
             if not os.path.exists(args.destination):
                 utility.make_dir(args.destination)
-                # Check one export or all
+            # Check one export or all
             if args.all:
                 # Log info
                 log_args = {

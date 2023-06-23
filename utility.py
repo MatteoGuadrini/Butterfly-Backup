@@ -257,17 +257,6 @@ def make_symlink(source, destination):
         warning("MS-DOS file system doesn't support symlink file")
 
 
-def list_from_string(string):
-    """
-    Cast string in list
-    :param string: Input string must be transform in list
-    :return: list
-    """
-    # Convert string to list separated with comma
-    return_list = string.split(",")
-    return return_list
-
-
 def confirm(message, default="n"):
     """
     Ask user to enter Y or N (case-insensitive).
