@@ -23,6 +23,8 @@
 import traceback
 
 from pansi import ansi
+from fabric import Connection
+from paramiko.ssh_exception import AuthenticationException
 
 
 def get_bckid(catalog, bckid):
@@ -310,14 +312,18 @@ def check_ssh(ip, port=22):
     :param ip: ip address or hostname of machine
     :param port: ssh port (default is 22)
     """
-    import socket
-
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    conn = Connection(ip, port=port)
     try:
-        s.connect((ip, port))
-        s.shutdown(2)
+        conn.open()
+        conn.close()
         return True
-    except socket.error:
+    except AuthenticationException:
+        warning(
+            "Connection to the host {0} failed by authentication error."
+            "See 'bb config -h' to deploy configuration.".format(conn.host)
+        )
+        return True
+    except Exception:
         return False
 
 
