@@ -20,10 +20,11 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import os
 import traceback
 
-from pansi import ansi
 from fabric import Connection
+from pansi import ansi
 from paramiko.ssh_exception import AuthenticationException
 
 
@@ -249,7 +250,6 @@ def make_symlink(source, destination):
     :param source: Source path of symbolic link
     :param destination: Destination path of symbolic link
     """
-    import os
 
     try:
         if os.path.exists(destination):
@@ -306,20 +306,28 @@ def check_tool(name):
     return which(name) is not None
 
 
-def check_ssh(ip, port=22):
+def check_ssh(ip, user, port=22):
     """
     Test ssh connection
     :param ip: ip address or hostname of machine
+    :param user: user for connection
     :param port: ssh port (default is 22)
     """
-    conn = Connection(ip, port=port)
+    home = os.path.expanduser("~")
+    ssh_folder = os.path.join(home, ".ssh")
+    key_filename = os.path.join(ssh_folder, "id_rsa")
+    conn = Connection(ip, 
+                      port=port,
+                      user=user,
+                      connect_kwargs={"key_filename": key_filename}, 
+                      )
     try:
         conn.open()
         conn.close()
         return True
     except AuthenticationException:
         warning(
-            "Connection to the host {0} failed by authentication error."
+            "Connection to the host {0} failed by authentication error. "
             "See 'bb config -h' to deploy configuration.".format(conn.host)
         )
         return True
