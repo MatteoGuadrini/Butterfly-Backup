@@ -1238,8 +1238,9 @@ def parse_arguments():
         help="Data of which you want to backup",
         dest="data",
         action="store",
-        choices=["User", "Config", "Application", "System", "Log"],
+        choices=["user", "config", "application", "system", "log"],
         nargs="+",
+        type = str.lower,
     )
     data_or_custom.add_argument(
         "--custom-data",
@@ -1263,8 +1264,9 @@ def parse_arguments():
         help="Type of operating system to backup",
         dest="type",
         action="store",
-        choices=["Unix", "Windows", "MacOS"],
+        choices=["unix", "windows", "macos"],
         required=True,
+        type = str.lower,
     )
     group_backup.add_argument(
         "--compress", "-z", help="Compress data", dest="compress", action="store_true"
@@ -1658,7 +1660,7 @@ def main():
                 print("For backup usage, --help or -h")
                 exit(1)
             for hostname in hostnames:
-                if not utility.check_ssh(hostname, port):
+                if not utility.check_ssh(hostname, args.user, port):
                     utility.error(
                         "The port {0} on {1} is closed!".format(port, hostname)
                     )
@@ -1814,7 +1816,7 @@ def main():
                     )
                     exit(1)
             # Test connection
-            if not utility.check_ssh(rhost, port):
+            if not utility.check_ssh(rhost, args.user, port):
                 utility.error("The port {0} on {1} is closed!".format(port, rhost))
                 exit(1)
             if not args.verbose:
