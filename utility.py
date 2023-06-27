@@ -316,10 +316,11 @@ def check_ssh(ip, user, port=22):
     home = os.path.expanduser("~")
     ssh_folder = os.path.join(home, ".ssh")
     key_filename = os.path.join(ssh_folder, "id_rsa")
+    key_rsa = {"key_filename": key_filename} if os.path.exists(key_filename) else None
     conn = Connection(ip, 
                       port=port,
                       user=user,
-                      connect_kwargs={"key_filename": key_filename}, 
+                      connect_kwargs=key_rsa, 
                       )
     try:
         conn.open()
