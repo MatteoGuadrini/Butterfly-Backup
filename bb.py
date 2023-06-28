@@ -1019,7 +1019,7 @@ def delete_host(catalog, host):
             ):
                 print_verbose(
                     args.verbose,
-                    "Backup-id {0} has been removed to catalog!".format(cid),
+                    "Backup-id {0} has been removed from catalog!".format(cid),
                 )
                 config.remove_section(cid)
             else:
@@ -1030,7 +1030,7 @@ def delete_host(catalog, host):
                     utility.success("Delete {0} successfully.".format(path))
                     print_verbose(
                         args.verbose,
-                        "Backup-id {0} has been removed to catalog!".format(cid),
+                        "Backup-id {0} has been removed from catalog!".format(cid),
                     )
                     config.remove_section(cid)
                 elif cleanup == 1:
@@ -1038,6 +1038,41 @@ def delete_host(catalog, host):
     # Remove root folder
     if os.path.exists(root):
         rmtree(root)
+    # Write file
+    with open(catalog, "w") as configfile:
+        config.write(configfile)
+
+
+def delete_backup(catalog, bckid):
+    """
+    :param catalog: catalog file
+    :param bckid: backup id
+    """
+    global args
+
+    config = read_catalog(catalog)
+    # Check catalog backup id
+    bck_id = utility.get_bckid(config, bckid)
+    if bck_id:
+        if not bck_id.get("path") or not os.path.exists(bck_id.get("path")):
+            print_verbose(
+                args.verbose,
+                "Backup-id {0} has been removed from catalog!".format(bckid),
+            )
+            config.remove_section(bckid)
+        else:
+            path = bck_id.get("path")
+            date = bck_id.get("timestamp")
+            cleanup = utility.cleanup(path, date, 0)
+            if cleanup == 0:
+                utility.success("Delete {0} successfully.".format(path))
+                print_verbose(
+                    args.verbose,
+                    "Backup-id {0} has been removed from catalog!".format(bckid),
+                )
+                config.remove_section(bckid)
+            elif cleanup == 1:
+                utility.error("Delete {0} failed.".format(path))
     # Write file
     with open(catalog, "w") as configfile:
         config.write(configfile)
@@ -1157,7 +1192,7 @@ def parse_arguments():
     group_config_mutually.add_argument(
         "--init",
         "-i",
-        help="Reset catalog file. " "Specify path of backup folder.",
+        help="Reset catalog file. Specify path of backup folder.",
         dest="init",
         metavar="CATALOG",
         action="store",
@@ -1165,7 +1200,7 @@ def parse_arguments():
     group_config_mutually.add_argument(
         "--delete-host",
         "-D",
-        help="Delete all entry for a single " "HOST in catalog.",
+        help="Delete all entry for a single HOST in CATALOG.",
         nargs=2,
         dest="delete",
         metavar=("CATALOG", "HOST"),
@@ -1174,9 +1209,17 @@ def parse_arguments():
     group_config_mutually.add_argument(
         "--clean",
         "-c",
-        help="Cleans the catalog if it is corrupt, " "setting default values.",
+        help="Cleans the catalog if it is corrupt, setting default values.",
         dest="clean",
         metavar="CATALOG",
+        action="store",
+    )
+    group_config_mutually.add_argument(
+        "--delete-backup",
+        "-b",
+        nargs=2,
+        help="Delete specific backup ID from CATALOG",
+        metavar=("CATALOG", "ID"),
         action="store",
     )
     group_deploy = config.add_argument_group(title="Deploy configuration")
@@ -1184,7 +1227,7 @@ def parse_arguments():
     group_deploy_mutually.add_argument(
         "--deploy",
         "-d",
-        help="Deploy configuration to client: " "hostname or ip address",
+        help="Deploy configuration to client: hostname or ip address",
         dest="deploy_host",
         action="store",
     )
@@ -1210,7 +1253,7 @@ def parse_arguments():
     single_or_list_group.add_argument(
         "--list",
         "-L",
-        help="File list of computers or " "ip addresses to backup",
+        help="File list of computers or ip addresses to backup",
         dest="list",
         action="store",
     )
@@ -1240,7 +1283,7 @@ def parse_arguments():
         action="store",
         choices=["user", "config", "application", "system", "log"],
         nargs="+",
-        type = str.lower,
+        type=str.lower,
     )
     data_or_custom.add_argument(
         "--custom-data",
@@ -1253,7 +1296,7 @@ def parse_arguments():
     group_backup.add_argument(
         "--user",
         "-u",
-        help="Login name used to log into the remote host " "(being backed up)",
+        help="Login name used to log into the remote host (being backed up)",
         dest="user",
         action="store",
         default=getpass.getuser(),
@@ -1266,7 +1309,7 @@ def parse_arguments():
         action="store",
         choices=["unix", "windows", "macos"],
         required=True,
-        type = str.lower,
+        type=str.lower,
     )
     group_backup.add_argument(
         "--compress", "-z", help="Compress data", dest="compress", action="store_true"
@@ -1361,7 +1404,7 @@ def parse_arguments():
     group_restore.add_argument(
         "--user",
         "-u",
-        help="Login name used to log into the remote host " "(where you're restoring)",
+        help="Login name used to log into the remote host (where you're restoring)",
         dest="user",
         action="store",
         default=getpass.getuser(),
@@ -1502,7 +1545,7 @@ def parse_arguments():
     group_list_mutually.add_argument(
         "--detail",
         "-d",
-        help="List detail of file and folder of " "specific backup-id",
+        help="List detail of file and folder of specific backup-id",
         dest="detail",
         action="store",
         metavar="ID",
@@ -1626,6 +1669,9 @@ def main():
             elif args.delete:
                 catalog_path = os.path.join(args.delete[0], ".catalog.cfg")
                 delete_host(catalog_path, args.delete[1])
+            elif args.delete_backup:
+                catalog_path = os.path.join(args.delete_backup[0], ".catalog.cfg")
+                delete_backup(catalog_path, args.delete_backup[1])
             elif args.clean:
                 catalog_path = os.path.join(args.clean, ".catalog.cfg")
                 clean_catalog(catalog_path)
