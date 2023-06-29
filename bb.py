@@ -235,24 +235,24 @@ def map_dict_folder(os_name):
     # Set an empty dictionary folders
     folders = {}
     # Check operating system
-    if os_name == "Unix":
-        folders["User"] = "/home"
-        folders["Config"] = "/etc"
-        folders["Application"] = "/usr"
-        folders["System"] = "/"
-        folders["Log"] = "/var/log"
-    elif os_name == "Windows":
-        folders["User"] = "/cygdrive/c/Users"
-        folders["Config"] = "/cygdrive/c/ProgramData"
-        folders["Application"] = "'/cygdrive/c/Program\ Files'"
-        folders["System"] = "/cygdrive/c"
-        folders["Log"] = "/cygdrive/c/Windows/System32/winevt"
-    elif os_name == "MacOS":
-        folders["User"] = "/Users"
-        folders["Config"] = "/private/etc"
-        folders["Application"] = "/Applications"
-        folders["System"] = "/"
-        folders["Log"] = "/private/var/log"
+    if os_name == "unix":
+        folders["user"] = "/home"
+        folders["config"] = "/etc"
+        folders["application"] = "/usr"
+        folders["system"] = "/"
+        folders["log"] = "/var/log"
+    elif os_name == "windows":
+        folders["user"] = "/cygdrive/c/Users"
+        folders["config"] = "/cygdrive/c/ProgramData"
+        folders["application"] = "'/cygdrive/c/Program\ Files'"
+        folders["system"] = "/cygdrive/c"
+        folders["log"] = "/cygdrive/c/Windows/System32/winevt"
+    elif os_name == "macos":
+        folders["user"] = "/Users"
+        folders["config"] = "/private/etc"
+        folders["application"] = "/Applications"
+        folders["system"] = "/"
+        folders["log"] = "/private/var/log"
     # Return dictionary with folder structure
     return folders
 
@@ -281,12 +281,12 @@ def compose_command(flags, host):
     catalog = read_catalog(catalog_path)
     if flags.action == "backup":
         # Set mode option
-        if flags.mode == "Full":
+        if flags.mode == "full":
             command.append("-ah")
             command.append("--no-links")
             # Write catalog file
-            write_catalog(catalog_path, backup_id, "type", "Full")
-        elif flags.mode == "Incremental":
+            write_catalog(catalog_path, backup_id, "type", "full")
+        elif flags.mode == "incremental":
             last_bck = get_last_backup(catalog)
             if last_bck:
                 command.append("-ahu")
@@ -294,13 +294,13 @@ def compose_command(flags, host):
                 if not flags.sfrom:
                     command.append("--link-dest={0}".format(last_bck[0]))
                 # Write catalog file
-                write_catalog(catalog_path, backup_id, "type", "Incremental")
+                write_catalog(catalog_path, backup_id, "type", "incremental")
             else:
                 command.append("-ah")
                 command.append("--no-links")
                 # Write catalog file
-                write_catalog(catalog_path, backup_id, "type", "Full")
-        elif flags.mode == "Differential":
+                write_catalog(catalog_path, backup_id, "type", "full")
+        elif flags.mode == "differential":
             last_full = get_last_full(catalog)
             if last_full:
                 command.append("-ahu")
@@ -308,17 +308,17 @@ def compose_command(flags, host):
                 if not flags.sfrom:
                     command.append("--link-dest={0}".format(last_full[0]))
                 # Write catalog file
-                write_catalog(catalog_path, backup_id, "type", "Differential")
+                write_catalog(catalog_path, backup_id, "type", "differential")
             else:
                 command.append("-ah")
                 command.append("--no-links")
                 # Write catalog file
-                write_catalog(catalog_path, backup_id, "type", "Full")
-        elif flags.mode == "Mirror":
+                write_catalog(catalog_path, backup_id, "type", "full")
+        elif flags.mode == "mirror":
             command.append("-ah")
             command.append("--delete")
             # Write catalog file
-            write_catalog(catalog_path, backup_id, "type", "Mirror")
+            write_catalog(catalog_path, backup_id, "type", "mirror")
         # Set verbosity
         if flags.verbose:
             command.append("-vP")
@@ -481,20 +481,20 @@ def compose_source(action, os_name, sources):
         # Write catalog file
         write_catalog(catalog_path, backup_id, "os", os_name)
         custom = True
-        if "System" in sources:
-            src_list.append(":{0}".format(folders["System"]))
+        if "system" in sources:
+            src_list.append(":{0}".format(folders["system"]))
             return src_list
-        if "User" in sources:
-            src_list.append(":{0}".format(folders["User"]))
+        if "user" in sources:
+            src_list.append(":{0}".format(folders["user"]))
             custom = False
-        if "Config" in sources:
-            src_list.append(":{0}".format(folders["Config"]))
+        if "config" in sources:
+            src_list.append(":{0}".format(folders["config"]))
             custom = False
-        if "Application" in sources:
-            src_list.append(":{0}".format(folders["Application"]))
+        if "application" in sources:
+            src_list.append(":{0}".format(folders["application"]))
             custom = False
-        if "Log" in sources:
-            src_list.append(":{0}".format(folders["Log"]))
+        if "log" in sources:
+            src_list.append(":{0}".format(folders["log"]))
             custom = False
         if custom:
             # This is custom data
@@ -561,7 +561,7 @@ def compose_destination(computer_name, folder):
     # Create root folder of backup
     first_layer = os.path.join(folder, computer_name)
     # Check if backup is a Mirror or not
-    if args.mode != "Mirror":
+    if args.mode != "mirror":
         second_layer = os.path.join(first_layer, utility.time_for_folder())
     else:
         second_layer = os.path.join(first_layer, "mirror_backup")
@@ -600,7 +600,7 @@ def get_last_full(catalog):
         dates = []
         for bid in config.sections():
             if (
-                config.get(bid, "type") == "Full"
+                config.get(bid, "type") == "full"
                 and config.get(bid, "name") == hostname
                 and (
                     not config.has_option(bid, "cleaned")
@@ -620,7 +620,7 @@ def get_last_full(catalog):
                 print_verbose(args.verbose, "Last full is {0}".format(last_full))
                 for bid in config.sections():
                     if (
-                        config.get(bid, "type") == "Full"
+                        config.get(bid, "type") == "full"
                         and config.get(bid, "name") == hostname
                         and config.get(bid, "timestamp") == last_full
                     ):
@@ -677,8 +677,8 @@ def count_full(config, name):
     if config:
         for bid in config.sections():
             if (
-                config.get(bid, "type") == "Full"
-                or config.get(bid, "type") == "Incremental"
+                config.get(bid, "type") == "full"
+                or config.get(bid, "type") == "incremental"
             ) and config.get(bid, "name") == name:
                 count += 1
     return count
@@ -776,7 +776,7 @@ def retention_policy(host, catalog, logpath):
                 type_backup = config.get(bid, "type")
                 path = config.get(bid, "path")
                 date = config.get(bid, "timestamp")
-                if (type_backup == "Full" or type_backup == "Incremental") and (
+                if (type_backup == "full" or type_backup == "incremental") and (
                     full_count <= 1
                 ):
                     continue
@@ -840,7 +840,7 @@ def archive_policy(catalog, destination):
                 args.verbose,
                 "Check archive this backup {0}. Folder {1}".format(bid, path),
             )
-            if (type_backup == "Full") and (full_count <= 1):
+            if (type_backup == "full") and (full_count <= 1):
                 continue
             if not dry_run("Archive {0} backup folder".format(path)):
                 archive = utility.archive(path, date, args.days, destination)
@@ -1059,7 +1059,7 @@ def delete_backup(catalog, bckid):
                 args.verbose,
                 "Backup-id {0} has been removed from catalog!".format(bckid),
             )
-            config.remove_section(bckid)
+            config.remove_section(bck_id.name)
         else:
             path = bck_id.get("path")
             date = bck_id.get("timestamp")
@@ -1070,7 +1070,7 @@ def delete_backup(catalog, bckid):
                     args.verbose,
                     "Backup-id {0} has been removed from catalog!".format(bckid),
                 )
-                config.remove_section(bckid)
+                config.remove_section(bck_id.name)
             elif cleanup == 1:
                 utility.error("Delete {0} failed.".format(path))
     # Write file
@@ -1090,7 +1090,7 @@ def clean_catalog(catalog):
         print_verbose(args.verbose, "Check backup-id: {0}!".format(cid))
         mod = False
         if not config.get(cid, "type", fallback=""):
-            config.set(cid, "type", "Incremental")
+            config.set(cid, "type", "incremental")
             mod = True
         if not config.get(cid, "path", fallback=""):
             config.remove_section(cid)
@@ -1099,7 +1099,7 @@ def clean_catalog(catalog):
             config.set(cid, "name", "default")
             mod = True
         if not config.get(cid, "os", fallback=""):
-            config.set(cid, "os", "Unix")
+            config.set(cid, "os", "unix")
             mod = True
         if not config.get(cid, "timestamp", fallback=""):
             config.set(cid, "timestamp", utility.time_for_log())
@@ -1271,8 +1271,9 @@ def parse_arguments():
         help="Backup mode",
         dest="mode",
         action="store",
-        choices=["Full", "Incremental", "Differential", "Mirror"],
-        default="Incremental",
+        choices=["full", "incremental", "differential", "mirror"],
+        default="incremental",
+        type=str.lower,
     )
     data_or_custom = group_backup.add_mutually_exclusive_group(required=True)
     data_or_custom.add_argument(
@@ -1423,7 +1424,8 @@ def parse_arguments():
         help="Type of operating system to perform restore",
         dest="type",
         action="store",
-        choices=["Unix", "Windows", "MacOS"],
+        choices=["unix", "windows", "macos"],
+        type=str.lower,
     )
     group_restore.add_argument(
         "--timeout",
@@ -1891,7 +1893,7 @@ def main():
                     # Compose command
                     cmd = compose_command(args, rhost)
                     # ATTENTION: permit access to anyone users
-                    if ros == "Windows":
+                    if ros == "windows":
                         cmd.append("--chmod=ugo=rwX")
                     # Compose source and destination
                     if args.files:
@@ -1992,11 +1994,13 @@ def main():
                         )
                     else:
                         newline = " " if args.oneline else "\n"
+                        if bck_id.get("path"):
+                            dirs = os.listdir(bck_id.get("path"))
+                        else:
+                            dirs = []
                         utility.print_values(
                             "List",
-                            "{0}".format(newline).join(
-                                os.listdir(bck_id.get("path", ""))
-                            ),
+                            "{0}".format(newline).join(dirs),
                         )
                 else:
                     utility.error("Backup id {0} doesn't exists".format(args.id))
