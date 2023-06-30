@@ -1192,7 +1192,7 @@ def parse_arguments():
     group_config_mutually.add_argument(
         "--init",
         "-i",
-        help="Reset catalog file. Specify path of backup folder.",
+        help="Reset CATALOG file. Specify path of backup folder.",
         dest="init",
         metavar="CATALOG",
         action="store",
@@ -1209,7 +1209,7 @@ def parse_arguments():
     group_config_mutually.add_argument(
         "--clean",
         "-c",
-        help="Cleans the catalog if it is corrupt, setting default values.",
+        help="Cleans the CATALOG if it is corrupt, setting default values.",
         dest="clean",
         metavar="CATALOG",
         action="store",

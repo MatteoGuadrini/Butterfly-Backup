@@ -168,32 +168,31 @@ Let's see how to go about looking at the help:
 .. code-block:: console
 
    arthur@heartofgold$ bb config --help
-   usage: bb config [-h] [--verbose] [--log] [--dry-run]
-                    [--new | --remove | --init CATALOG | --delete-host CATALOG HOST | --clean CATALOG]
-                    [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
+   usage: bb config [-h] [--verbose] [--log] [--dry-run] [--new | --remove | --init CATALOG | --delete-host CATALOG HOST | --clean CATALOG | --delete-backup CATALOG ID] [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
 
-   optional arguments:
-     -h, --help            show this help message and exit
-     --verbose, -v         Enable verbosity
-     --log, -l             Create a log
-     --dry-run, -N         Dry run mode
+   options:
+   -h, --help            show this help message and exit
+   --verbose, -v         Enable verbosity
+   --log, -l             Create logs
+   --dry-run, -N         Dry run mode
 
    Init configuration:
-     --new, -n             Generate new configuration
-     --remove, -r          Remove exist configuration
-     --init CATALOG, -i CATALOG
-                           Reset catalog file. Specify path of backup folder.
-     --delete-host CATALOG HOST, -D CATALOG HOST
-                           Delete all entry for a single HOST in catalog.
-     --clean CATALOG, -c CATALOG
-                           Cleans the catalog if it is corrupt, setting default
-                           values.
+   --new, -n             Generate new configuration
+   --remove, -r          Remove exist configuration
+   --init CATALOG, -i CATALOG
+                         Reset CATALOG file. Specify path of backup folder.
+   --delete-host CATALOG HOST, -D CATALOG HOST
+                         Delete all entry for a single HOST in CATALOG.
+   --clean CATALOG, -c CATALOG
+                         Cleans the CATALOG if it is corrupt, setting default values.
+   --delete-backup CATALOG ID, -b CATALOG ID
+                         Delete specific backup ID from CATALOG
 
    Deploy configuration:
-     --deploy DEPLOY_HOST, -d DEPLOY_HOST
-                           Deploy configuration to client: hostname or ip address
-     --user DEPLOY_USER, -u DEPLOY_USER
-                           User of the remote machine
+   --deploy DEPLOY_HOST, -d DEPLOY_HOST
+                         Deploy configuration to client: hostname or ip address
+   --user DEPLOY_USER, -u DEPLOY_USER
+                         User of the remote machine
 
 
 Two macro-options are available:
@@ -202,8 +201,9 @@ Two macro-options are available:
      --new, -n             Generate new configuration.
      --remove, -r          Remove exist configuration.
      --init, -i            Reset catalog file. Specify path of backup folder.
-     --delete-host, -D     Delete all entry for a single HOST in catalog.
+     --delete-host, -D     Delete all entry for a single host in catalog.
      --clean, -c           Cleans the catalog if it is corrupt, setting default values.
+     --delete-backup, -b   Delete specific backup id from catalog.
 
 * **Deploy configuration**: Deploy configuration to client: hostname or ip address.
      --deploy, -d          Deploy configuration to client: hostname or ip address.

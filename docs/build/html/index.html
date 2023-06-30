@@ -237,32 +237,31 @@ the server pushes files into the client.</p>
 If you don’t want to discuss the merits of exchange keys and start, then go ahead. First, you must create a configuration (rsa keys).
 Let’s see how to go about looking at the help:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$ </span>bb<span class="w"> </span>config<span class="w"> </span>--help
-<span class="go">usage: bb config [-h] [--verbose] [--log] [--dry-run]</span>
-<span class="go">                 [--new | --remove | --init CATALOG | --delete-host CATALOG HOST | --clean CATALOG]</span>
-<span class="go">                 [--deploy DEPLOY_HOST] [--user DEPLOY_USER]</span>
+<span class="go">usage: bb config [-h] [--verbose] [--log] [--dry-run] [--new | --remove | --init CATALOG | --delete-host CATALOG HOST | --clean CATALOG | --delete-backup CATALOG ID] [--deploy DEPLOY_HOST] [--user DEPLOY_USER]</span>
 
-<span class="go">optional arguments:</span>
-<span class="go">  -h, --help            show this help message and exit</span>
-<span class="go">  --verbose, -v         Enable verbosity</span>
-<span class="go">  --log, -l             Create a log</span>
-<span class="go">  --dry-run, -N         Dry run mode</span>
+<span class="go">options:</span>
+<span class="go">-h, --help            show this help message and exit</span>
+<span class="go">--verbose, -v         Enable verbosity</span>
+<span class="go">--log, -l             Create logs</span>
+<span class="go">--dry-run, -N         Dry run mode</span>
 
 <span class="go">Init configuration:</span>
-<span class="go">  --new, -n             Generate new configuration</span>
-<span class="go">  --remove, -r          Remove exist configuration</span>
-<span class="go">  --init CATALOG, -i CATALOG</span>
-<span class="go">                        Reset catalog file. Specify path of backup folder.</span>
-<span class="go">  --delete-host CATALOG HOST, -D CATALOG HOST</span>
-<span class="go">                        Delete all entry for a single HOST in catalog.</span>
-<span class="go">  --clean CATALOG, -c CATALOG</span>
-<span class="go">                        Cleans the catalog if it is corrupt, setting default</span>
-<span class="go">                        values.</span>
+<span class="go">--new, -n             Generate new configuration</span>
+<span class="go">--remove, -r          Remove exist configuration</span>
+<span class="go">--init CATALOG, -i CATALOG</span>
+<span class="go">                      Reset CATALOG file. Specify path of backup folder.</span>
+<span class="go">--delete-host CATALOG HOST, -D CATALOG HOST</span>
+<span class="go">                      Delete all entry for a single HOST in CATALOG.</span>
+<span class="go">--clean CATALOG, -c CATALOG</span>
+<span class="go">                      Cleans the CATALOG if it is corrupt, setting default values.</span>
+<span class="go">--delete-backup CATALOG ID, -b CATALOG ID</span>
+<span class="go">                      Delete specific backup ID from CATALOG</span>
 
 <span class="go">Deploy configuration:</span>
-<span class="go">  --deploy DEPLOY_HOST, -d DEPLOY_HOST</span>
-<span class="go">                        Deploy configuration to client: hostname or ip address</span>
-<span class="go">  --user DEPLOY_USER, -u DEPLOY_USER</span>
-<span class="go">                        User of the remote machine</span>
+<span class="go">--deploy DEPLOY_HOST, -d DEPLOY_HOST</span>
+<span class="go">                      Deploy configuration to client: hostname or ip address</span>
+<span class="go">--user DEPLOY_USER, -u DEPLOY_USER</span>
+<span class="go">                      User of the remote machine</span>
 </pre></div>
 </div>
 <p>Two macro-options are available:</p>
@@ -279,10 +278,13 @@ Let’s see how to go about looking at the help:</p>
 <dd><p>Reset catalog file. Specify path of backup folder.</p>
 </dd>
 <dt><kbd><span class="option">--delete-host</span>, <span class="option">-D</span></kbd></dt>
-<dd><p>Delete all entry for a single HOST in catalog.</p>
+<dd><p>Delete all entry for a single host in catalog.</p>
 </dd>
 <dt><kbd><span class="option">--clean</span>, <span class="option">-c</span></kbd></dt>
 <dd><p>Cleans the catalog if it is corrupt, setting default values.</p>
+</dd>
+<dt><kbd><span class="option">--delete-backup</span>, <span class="option">-b</span></kbd></dt>
+<dd><p>Delete specific backup id from catalog.</p>
 </dd>
 </dl>
 </dd>

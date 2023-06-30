@@ -70,7 +70,7 @@ action:
   	--cleaned, -c         	List only cleaned backup
   	--computer HOSTNAME, -H HOSTNAME
                         	List only match hostname or ip
-    --detail ID, -d ID    List detail of file and folder of specific backup-id
+    --detail ID, -d ID      List detail of file and folder of specific backup-id
   	--oneline, -o           One line output
 
 .B restore
@@ -106,12 +106,12 @@ Init configuration:
     --new, -n               Generate new configuration
     --remove, -r            Remove exist configuration
     --init CATALOG, -i CATALOG
-                           Reset catalog file. Specify path of backup folder.
+                            Reset CATALOG file. Specify path of backup folder.
     --delete-host CATALOG HOST, -D CATALOG HOST
-                           Delete all entry for a single HOST in catalog.
+                            Delete all entry for a single HOST in CATALOG.
     --clean CATALOG, -c CATALOG
-                           Cleans the catalog if it is corrupt, setting default
-                           values.
+                            Cleans the CATALOG if it is corrupt, setting default values.
+    --delete-backup, -b     Delete specific backup ID from CATALOG.
 
 Deploy configuration:
     --deploy DEPLOY_HOST, -d DEPLOY_HOST
@@ -131,24 +131,24 @@ Deploy configuration:
 .B export
 [ACTION]
     --catalog CATALOG, -C CATALOG
-                           Folder where is catalog file
+                            Folder where is catalog file
     --backup-id ID, -i ID
-                          Backup-id of backup
-    --all, -A             All backup
+                            Backup-id of backup
+    --all, -A               All backup
     --destination DESTINATION, -d DESTINATION
-                          Destination path
-    --mirror, -m          Mirror mode
-    --cut, -c             Cut mode. Delete source
+                            Destination path
+    --mirror, -m            Mirror mode
+    --cut, -c               Cut mode. Delete source
     --include INCLUDE [INCLUDE ...], -I INCLUDE [INCLUDE ...]
-                          Include pattern
+                            Include pattern
     --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
-                          Exclude pattern
+                            Exclude pattern
     --timeout TIMEOUT, -T TIMEOUT
-                          I/O timeout in seconds
-    --skip-error, -e      Skip error
-    --rsync-path, -R      Select a custom rsync path.
-    --bwlimit, -b         Bandwidth limit in KBPS.
-    --ssh-port, -P        Custom ssh port.
+                            I/O timeout in seconds
+    --skip-error, -e        Skip error
+    --rsync-path, -R        Select a custom rsync path.
+    --bwlimit, -b           Bandwidth limit in KBPS.
+    --ssh-port, -P          Custom ssh port.
 
 .B optional arguments
 [OPTIONS]
