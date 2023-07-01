@@ -401,57 +401,50 @@ cygrunsrv -S sshd
 <span id="id3"></span><h2>Backup<a class="headerlink" href="#backup" title="Permalink to this heading"></a></h2>
 <p>There are two backup modes: single and bulk. Let’s see how to go about looking at the help:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">arthur@heartofgold$ </span>bb<span class="w"> </span>backup<span class="w"> </span>--help
-<span class="go">usage: bb backup [-h] [--verbose] [--log] [--dry-run]</span>
-<span class="go">                 (--computer HOSTNAME | --list LIST) --destination DESTINATION</span>
-<span class="go">                 [--mode {Full,Incremental,Differential,Mirror}]</span>
-<span class="go">                 (--data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...])</span>
-<span class="go">                 [--user USER] --type {Unix,Windows,MacOS} [--compress]</span>
-<span class="go">                 [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL]</span>
-<span class="go">                 [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC]</span>
-<span class="go">                 [--bwlimit BWLIMIT] [--ssh-port PORT]</span>
+<span class="go">usage: bb backup [-h] [--verbose] [--log] [--dry-run] (--computer HOSTNAME | --list LIST) --destination DESTINATION [--mode {full,incremental,differential,mirror}]</span>
+<span class="go">                 (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...]) [--user USER] --type {unix,windows,macos}</span>
+<span class="go">                 [--compress] [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]</span>
 <span class="go">                 [--exclude EXCLUDE [EXCLUDE ...]] [--start-from ID]</span>
 
-<span class="go">optional arguments:</span>
-<span class="go">  -h, --help            show this help message and exit</span>
-<span class="go">  --verbose, -v         Enable verbosity</span>
-<span class="go">  --log, -l             Create a log</span>
-<span class="go">  --dry-run, -N         Dry run mode</span>
+<span class="go">options:</span>
+<span class="go">   -h, --help            show this help message and exit</span>
+<span class="go">   --verbose, -v         Enable verbosity</span>
+<span class="go">   --log, -l             Create logs</span>
+<span class="go">   --dry-run, -N         Dry run mode</span>
 
-<span class="go">Backup options:</span>
-<span class="go">  --computer HOSTNAME, -c HOSTNAME</span>
-<span class="go">                        Hostname or ip address to backup</span>
-<span class="go">  --list LIST, -L LIST  File list of computers or ip addresses to backup</span>
-<span class="go">  --destination DESTINATION, -d DESTINATION</span>
-<span class="go">                        Destination path</span>
-<span class="go">  --mode {Full,Incremental,Differential,Mirror}, -m {Full,Incremental,Differential,Mirror}</span>
-<span class="go">                        Backup mode</span>
-<span class="go">  --data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...], -D {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...]</span>
-<span class="go">                        Data of which you want to backup</span>
-<span class="go">  --custom-data CUSTOMDATA [CUSTOMDATA ...], -C CUSTOMDATA [CUSTOMDATA ...]</span>
-<span class="go">                        Custom path of which you want to backup</span>
-<span class="go">  --user USER, -u USER  Login name used to log into the remote host (being</span>
-<span class="go">                        backed up)</span>
-<span class="go">  --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}</span>
-<span class="go">                        Type of operating system to backup</span>
-<span class="go">  --compress, -z        Compress data</span>
-<span class="go">  --retention [DAYS [NUMBER ...]], -r [DAYS [NUMBER ...]]</span>
-<span class="go">                        First argument are days of backup retention. Second</span>
-<span class="go">                        argument is minimum number of backup retention</span>
-<span class="go">  --parallel PARALLEL, -p PARALLEL</span>
-<span class="go">                        Number of parallel jobs</span>
-<span class="go">  --timeout TIMEOUT, -T TIMEOUT</span>
-<span class="go">                        I/O timeout in seconds</span>
-<span class="go">  --skip-error, -e      Skip error</span>
-<span class="go">  --rsync-path RSYNC, -R RSYNC</span>
-<span class="go">                        Custom rsync path</span>
-<span class="go">  --bwlimit BWLIMIT, -b BWLIMIT</span>
-<span class="go">                        Bandwidth limit in KBPS.</span>
-<span class="go">  --ssh-port PORT, -P PORT</span>
-<span class="go">                        Custom ssh port.</span>
-<span class="go">  --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]</span>
-<span class="go">                        Exclude pattern</span>
-<span class="go">  --start-from ID, -s ID</span>
-<span class="go">                        Backup id where start a new backup</span>
+<span class="go">   Backup options:</span>
+<span class="go">   --computer HOSTNAME, -c HOSTNAME</span>
+<span class="go">                         Hostname or ip address to backup</span>
+<span class="go">   --list LIST, -L LIST  File list of computers or ip addresses to backup</span>
+<span class="go">   --destination DESTINATION, -d DESTINATION</span>
+<span class="go">                         Destination path</span>
+<span class="go">   --mode {full,incremental,differential,mirror}, -m {full,incremental,differential,mirror}</span>
+<span class="go">                         Backup mode</span>
+<span class="go">   --data {user,config,application,system,log} [{user,config,application,system,log} ...], -D {user,config,application,system,log} [{user,config,application,system,log} ...]</span>
+<span class="go">                         Data of which you want to backup</span>
+<span class="go">   --custom-data CUSTOMDATA [CUSTOMDATA ...], -C CUSTOMDATA [CUSTOMDATA ...]</span>
+<span class="go">                         Custom path of which you want to backup</span>
+<span class="go">   --user USER, -u USER  Login name used to log into the remote host (being backed up)</span>
+<span class="go">   --type {unix,windows,macos}, -t {unix,windows,macos}</span>
+<span class="go">                         Type of operating system to backup</span>
+<span class="go">   --compress, -z        Compress data</span>
+<span class="go">   --retention [DAYS [NUMBER ...]], -r [DAYS [NUMBER ...]]</span>
+<span class="go">                         First argument are days of backup retention. Second argument is minimum number of backup retention</span>
+<span class="go">   --parallel PARALLEL, -p PARALLEL</span>
+<span class="go">                         Number of parallel jobs</span>
+<span class="go">   --timeout TIMEOUT, -T TIMEOUT</span>
+<span class="go">                         I/O timeout in seconds</span>
+<span class="go">   --skip-error, -e      Skip error</span>
+<span class="go">   --rsync-path RSYNC, -R RSYNC</span>
+<span class="go">                         Custom rsync path</span>
+<span class="go">   --bwlimit BWLIMIT, -b BWLIMIT</span>
+<span class="go">                         Bandwidth limit in KBPS.</span>
+<span class="go">   --ssh-port PORT, -P PORT</span>
+<span class="go">                         Custom ssh port.</span>
+<span class="go">   --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]</span>
+<span class="go">                         Exclude pattern</span>
+<span class="go">   --start-from ID, -s ID</span>
+<span class="go">                         Backup id where start a new backup</span>
 </pre></div>
 </div>
 <ul>
@@ -475,24 +468,24 @@ cygrunsrv -S sshd
 <dd><p>Select how rsync perform backup:</p>
 <ul class="simple">
 <li><dl class="simple">
-<dt>Full:</dt><dd><p>Complete (full) backup.</p>
+<dt><strong>full</strong>:</dt><dd><p>Complete (full) backup.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Incremental:</dt><dd><p>Incremental backup is based on the latest backup (the same files are linked with hard link).
+<dt><strong>incremental</strong>:</dt><dd><p>Incremental backup is based on the latest backup (the same files are linked with hard link).
 A Full backup is executed if this mode fails to find one.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Differential:</dt><dd><p>Incremental backup is based on the latest Full backup (the same files are linked with hard link).
+<dt><strong>differential</strong>:</dt><dd><p>Incremental backup is based on the latest Full backup (the same files are linked with hard link).
 A Full backup is executed if this mode fails to find one.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Mirror:</dt><dd><p>Complete mirror backup. If a file in the source no longer exists, BB deletes it from the destination.</p>
+<dt><strong>mirror</strong>:</dt><dd><p>Complete mirror backup. If a file in the source no longer exists, BB deletes it from the destination.</p>
 </dd>
 </dl>
 </li>
@@ -502,8 +495,8 @@ A Full backup is executed if this mode fails to find one.</p>
 <dd><p>Select the type of data to put under backup:
 The values change depending on the type of operating system:</p>
 <ul class="simple">
-<li><p><strong>User</strong> -&gt; folder containing the home.</p></li>
-<li><p><strong>Config</strong> -&gt; folder containing the configurations of the machine.</p></li>
+<li><p><strong>user</strong> -&gt; folder containing the home.</p></li>
+<li><p><strong>config</strong> -&gt; folder containing the configurations of the machine.</p></li>
 <li><p><strong>Log</strong> -&gt; folder containing the log.</p></li>
 <li><p><strong>Application</strong> -&gt; folder containing applications.</p></li>
 <li><p><strong>System</strong> -&gt; the entire system starting from the root.</p></li>
@@ -518,9 +511,9 @@ The values change depending on the type of operating system:</p>
 <dt><kbd><span class="option">--type</span>, <span class="option">-t</span></kbd></dt>
 <dd><p>Type of operating system to put under backup:</p>
 <ul class="simple">
-<li><p><strong>Unix</strong> -&gt; All UNIX os (Linux, BSD, Solaris).</p></li>
-<li><p><strong>Windows</strong> -&gt; Windows Vista or higher with cygwin installed.</p></li>
-<li><p><strong>MacOS</strong> -&gt; MacOSX 10.8 or higher.</p></li>
+<li><p><strong>unix</strong> -&gt; All UNIX os (Linux, BSD, Solaris).</p></li>
+<li><p><strong>windows</strong> -&gt; Windows Vista or higher with cygwin installed.</p></li>
+<li><p><strong>macos</strong> -&gt; MacOSX 10.8 or higher.</p></li>
 </ul>
 </dd>
 <dt><kbd><span class="option">--compress</span>, <span class="option">-z</span></kbd></dt>

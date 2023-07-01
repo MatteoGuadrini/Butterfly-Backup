@@ -1,5 +1,17 @@
 # Release notes
 
+## 1.10.0
+Jul 1, 2023
+* Add **report_issue** function
+* Add **get_bckid** function
+* Add **--files** argument in *restore* action
+* Add **--delete-backup** argument in *config* action
+* Add lowercase support on command line
+* Fix **check_rsync** function to include *sshconfig* file
+* Fix required to *action* subparser
+* Fix check for restore empty folders
+* Fix create folder in export action if destination doesn't exists
+
 ## 1.9.0
 Jun 7, 2023
 * Refactoring _setup.py_

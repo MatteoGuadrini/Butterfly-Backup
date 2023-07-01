@@ -1,6 +1,6 @@
 .\" Manpage for Butterfly Backup.
 .\" Contact matteo.guadrini@hotmail.it to correct errors or typos.
-.TH man 1 "Jun 20, 2023" "1.9.0" "bb man page"
+.TH man 1 "Jul 1, 2023" "1.10.0" "bb man page"
 .SH NAME
 bb \- Butterfly Backup - backup/restore/archive tool , agentless
 .SH SYNOPSIS
@@ -32,15 +32,14 @@ action:
  	--list LIST, -L LIST    File list of computers or ip addresses to backup
   	--destination DESTINATION, -d DESTINATION
                         	Destination path
-  	--mode {Full,Incremental,Differential,Mirror}, -m {Full,Incremental,Differential,Mirror}
+  	--mode {full,incremental,differential,mirror}, -m {full,incremental,differential,mirror}
                             Backup mode
-    --data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...], -D {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...]
+    --data {user,config,application,system,log} [{user,config,application,system,log} ...], -D {user,config,application,system,log} [{user,config,application,system,log} ...]
                         	Data of which you want to backup
   	--custom-data, -D CUSTOMDATA [CUSTOMDATA ...], -C CUSTOMDATA [CUSTOMDATA ...]
                         	Custom path of which you want to backup
-  	--user USER, -u USER    Login name used to log into the remote host (being
-                        	backed up)
-  	--type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
+  	--user USER, -u USER    Login name used to log into the remote host (being backed up)
+  	--type {unix,windows,macos}, -t {unix,windows,macos}
                         	Type of operating system to backup
   	--compress, -z          Compress data
   	--retention [DAYS [NUMBER ...]], -r [DAYS [NUMBER ...]]

@@ -65,7 +65,7 @@ import utility
 from utility import print_verbose
 
 # region Global Variables
-VERSION = "1.9.0"
+VERSION = "1.10.0"
 
 
 # endregion

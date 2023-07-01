@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Butterfly-Backup"
-version = "1.9.0"
+version = "1.10.0"
 readme = "README.md"
 
 authors = [{ name = "Matteo Guadrini", email = "matteo.guadrini@hotmail.it" }]

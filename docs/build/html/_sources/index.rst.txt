@@ -326,57 +326,50 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 .. code-block:: console
 
    arthur@heartofgold$ bb backup --help
-   usage: bb backup [-h] [--verbose] [--log] [--dry-run]
-                    (--computer HOSTNAME | --list LIST) --destination DESTINATION
-                    [--mode {Full,Incremental,Differential,Mirror}]
-                    (--data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...])
-                    [--user USER] --type {Unix,Windows,MacOS} [--compress]
-                    [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL]
-                    [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC]
-                    [--bwlimit BWLIMIT] [--ssh-port PORT]
+   usage: bb backup [-h] [--verbose] [--log] [--dry-run] (--computer HOSTNAME | --list LIST) --destination DESTINATION [--mode {full,incremental,differential,mirror}]
+                    (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...]) [--user USER] --type {unix,windows,macos}
+                    [--compress] [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]
                     [--exclude EXCLUDE [EXCLUDE ...]] [--start-from ID]
 
-   optional arguments:
-     -h, --help            show this help message and exit
-     --verbose, -v         Enable verbosity
-     --log, -l             Create a log
-     --dry-run, -N         Dry run mode
+   options:
+      -h, --help            show this help message and exit
+      --verbose, -v         Enable verbosity
+      --log, -l             Create logs
+      --dry-run, -N         Dry run mode
 
-   Backup options:
-     --computer HOSTNAME, -c HOSTNAME
-                           Hostname or ip address to backup
-     --list LIST, -L LIST  File list of computers or ip addresses to backup
-     --destination DESTINATION, -d DESTINATION
-                           Destination path
-     --mode {Full,Incremental,Differential,Mirror}, -m {Full,Incremental,Differential,Mirror}
-                           Backup mode
-     --data {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...], -D {User,Config,Application,System,Log} [{User,Config,Application,System,Log} ...]
-                           Data of which you want to backup
-     --custom-data CUSTOMDATA [CUSTOMDATA ...], -C CUSTOMDATA [CUSTOMDATA ...]
-                           Custom path of which you want to backup
-     --user USER, -u USER  Login name used to log into the remote host (being
-                           backed up)
-     --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
-                           Type of operating system to backup
-     --compress, -z        Compress data
-     --retention [DAYS [NUMBER ...]], -r [DAYS [NUMBER ...]]
-                           First argument are days of backup retention. Second
-                           argument is minimum number of backup retention
-     --parallel PARALLEL, -p PARALLEL
-                           Number of parallel jobs
-     --timeout TIMEOUT, -T TIMEOUT
-                           I/O timeout in seconds
-     --skip-error, -e      Skip error
-     --rsync-path RSYNC, -R RSYNC
-                           Custom rsync path
-     --bwlimit BWLIMIT, -b BWLIMIT
-                           Bandwidth limit in KBPS.
-     --ssh-port PORT, -P PORT
-                           Custom ssh port.
-     --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
-                           Exclude pattern
-     --start-from ID, -s ID
-                           Backup id where start a new backup
+      Backup options:
+      --computer HOSTNAME, -c HOSTNAME
+                            Hostname or ip address to backup
+      --list LIST, -L LIST  File list of computers or ip addresses to backup
+      --destination DESTINATION, -d DESTINATION
+                            Destination path
+      --mode {full,incremental,differential,mirror}, -m {full,incremental,differential,mirror}
+                            Backup mode
+      --data {user,config,application,system,log} [{user,config,application,system,log} ...], -D {user,config,application,system,log} [{user,config,application,system,log} ...]
+                            Data of which you want to backup
+      --custom-data CUSTOMDATA [CUSTOMDATA ...], -C CUSTOMDATA [CUSTOMDATA ...]
+                            Custom path of which you want to backup
+      --user USER, -u USER  Login name used to log into the remote host (being backed up)
+      --type {unix,windows,macos}, -t {unix,windows,macos}
+                            Type of operating system to backup
+      --compress, -z        Compress data
+      --retention [DAYS [NUMBER ...]], -r [DAYS [NUMBER ...]]
+                            First argument are days of backup retention. Second argument is minimum number of backup retention
+      --parallel PARALLEL, -p PARALLEL
+                            Number of parallel jobs
+      --timeout TIMEOUT, -T TIMEOUT
+                            I/O timeout in seconds
+      --skip-error, -e      Skip error
+      --rsync-path RSYNC, -R RSYNC
+                            Custom rsync path
+      --bwlimit BWLIMIT, -b BWLIMIT
+                            Bandwidth limit in KBPS.
+      --ssh-port PORT, -P PORT
+                            Custom ssh port.
+      --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
+                            Exclude pattern
+      --start-from ID, -s ID
+                            Backup id where start a new backup
 
 
 
@@ -396,21 +389,21 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
    --destination, -d       Select the destination folder (root).
    --mode, -m              Select how rsync perform backup:
 
-    * Full:
+    * **full**:
          Complete (full) backup.
-    * Incremental:
+    * **incremental**:
          Incremental backup is based on the latest backup (the same files are linked with hard link).
          A Full backup is executed if this mode fails to find one.
-    * Differential:
+    * **differential**:
          Incremental backup is based on the latest Full backup (the same files are linked with hard link).
          A Full backup is executed if this mode fails to find one.
-    * Mirror:
+    * **mirror**:
          Complete mirror backup. If a file in the source no longer exists, BB deletes it from the destination.
    --data, -D              Select the type of data to put under backup:
        The values change depending on the type of operating system:
 
-       * **User** -> folder containing the home.
-       * **Config** -> folder containing the configurations of the machine.
+       * **user** -> folder containing the home.
+       * **config** -> folder containing the configurations of the machine.
        * **Log** -> folder containing the log.
        * **Application** -> folder containing applications.
        * **System** -> the entire system starting from the root.
@@ -418,9 +411,9 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
    --user, -u              Login name used to log into the remote host (being backed up)
    --type, -t              Type of operating system to put under backup:
 
-       * **Unix** -> All UNIX os (Linux, BSD, Solaris).
-       * **Windows** -> Windows Vista or higher with cygwin installed.
-       * **MacOS** -> MacOSX 10.8 or higher.
+       * **unix** -> All UNIX os (Linux, BSD, Solaris).
+       * **windows** -> Windows Vista or higher with cygwin installed.
+       * **macos** -> MacOSX 10.8 or higher.
    --compress, -z          Compresses the data transmitted.
    --retention, -r         Number of days for which you want to keep your backups
                            and minimum number of backup retention (optional).
