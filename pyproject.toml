@@ -2,6 +2,9 @@
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+py-modules = ["bb", "utility"]
+
 [project]
 name = "Butterfly-Backup"
 version = "1.10.0"
