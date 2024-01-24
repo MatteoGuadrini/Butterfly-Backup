@@ -6,7 +6,9 @@ build-backend = "setuptools.build_meta"
 name = "Butterfly-Backup"
 version = "1.10.0"
 readme = "README.md"
-
+license = {text = "GNU General Public License v3.0"}
+keywords = ['backup', 'archive', 'restore', 'rsync', 'catalog', 'list',
+            'config', 'export', 'mirror', 'incremental', 'differential', 'clone', 'copy']
 authors = [{ name = "Matteo Guadrini", email = "matteo.guadrini@hotmail.it" }]
 maintainers = [
     { name = "Matteo Guadrini", email = "matteo.guadrini@hotmail.it" },
