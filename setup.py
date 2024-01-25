@@ -5,7 +5,7 @@
 # created by: matteo.guadrini
 # setup.py -- Butterfly-Backup
 #
-#     Copyright (C) 2023 Matteo Guadrini <matteo.guadrini@hotmail.it>
+#     Copyright (C) 2024 Matteo Guadrini <matteo.guadrini@hotmail.it>
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -38,6 +38,8 @@ setup(
     },
     install_requires=["pansi", "fabric"],
     license="GNU General Public License v3.0",
+    keywords = ['backup', 'archive', 'restore', 'rsync', 'catalog', 'list',
+            'config', 'export', 'mirror', 'incremental', 'differential', 'clone', 'copy'],
     author="Matteo Guadrini",
     author_email="matteo.guadrini@hotmail.it",
     maintainer="Matteo Guadrini",
