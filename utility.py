@@ -5,7 +5,7 @@
 # created by: matteo.guadrini
 # utility.py -- Butterfly-Backup
 #
-#     Copyright (C) 2023 Matteo Guadrini <matteo.guadrini@hotmail.it>
+#     Copyright (C) 2024 Matteo Guadrini <matteo.guadrini@hotmail.it>
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -187,11 +187,11 @@ def time_for_log():
 
 def cleanup(path, date, days):
     """
-    Delete folder to pass an first argument, when time of it is minor of certain date
+    Delete folder to pass a first argument, when time of it is minor of certain date
     :param path: path to delete
     :param date: date passed of path
     :param days: number of days
-    :return:
+    :return: int
     """
     from datetime import datetime, timedelta
     from shutil import rmtree
@@ -267,13 +267,13 @@ def confirm(message, default="n"):
     :return: True if the answer is Y.
     :rtype: bool
     """
-    answer = ""
-    while answer not in ["y", "n"]:
-        answer = input(
-            "{0}\nTo continue? {1}".format(
+    while (
+        answer := input(
+            "{0}\nTo continue? {1} ".format(
                 message, "[Y/n]" if default == "y" else "[y/N]"
             )
         ).lower()
+    ) not in ["y", "n"]:
         # Check if default
         if not answer:
             answer = default
