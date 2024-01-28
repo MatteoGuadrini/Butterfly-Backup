@@ -5,7 +5,7 @@
 # created by: matteo.guadrini
 # bb.py -- Butterfly-Backup
 #
-#     Copyright (C) 2023 Matteo Guadrini <matteo.guadrini@hotmail.it>
+#     Copyright (C) 2024 Matteo Guadrini <matteo.guadrini@hotmail.it>
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -97,6 +97,7 @@ def dry_run(message):
     if args.dry_run:
         print_verbose(True, message)
         return True
+    return False
 
 
 def run_in_parallel(fn, commands, limit):
@@ -464,54 +465,50 @@ def compose_command(flags, host):
     return command
 
 
-def compose_source(action, os_name, sources):
+def compose_source(os_name, sources):
     """
     Compose source
-    :param action: command action (backup, restore, archive)
     :param os_name: Name of operating system
     :param sources: Dictionary or string than contains the paths of source
     :return: list
     """
     global args, catalog_path, backup_id
 
-    if action == "backup":
-        src_list = []
-        # Add include to the list
-        folders = map_dict_folder(os_name)
-        # Write catalog file
-        write_catalog(catalog_path, backup_id, "os", os_name)
-        custom = True
-        if "system" in sources:
-            src_list.append(":{0}".format(folders["system"]))
-            return src_list
-        if "user" in sources:
-            src_list.append(":{0}".format(folders["user"]))
-            custom = False
-        if "config" in sources:
-            src_list.append(":{0}".format(folders["config"]))
-            custom = False
-        if "application" in sources:
-            src_list.append(":{0}".format(folders["application"]))
-            custom = False
-        if "log" in sources:
-            src_list.append(":{0}".format(folders["log"]))
-            custom = False
-        if custom:
-            # This is custom data
-            for custom_data in sources:
-                src_list.append(
-                    ":{0}".format("'" + custom_data.replace("'", "'\\''") + "'")
-                )
-        utility.write_log(
-            log_args["status"],
-            log_args["destination"],
-            "INFO",
-            "OS {0}; backup folder {1}".format(os_name, " ".join(src_list)),
-        )
-        print_verbose(
-            args.verbose, "Include this criteria: {0}".format(" ".join(src_list))
-        )
+    src_list = []
+    # Add include to the list
+    folders = map_dict_folder(os_name)
+    # Write catalog file
+    write_catalog(catalog_path, backup_id, "os", os_name)
+    custom = True
+    if "system" in sources:
+        src_list.append(":{0}".format(folders["system"]))
         return src_list
+    if "user" in sources:
+        src_list.append(":{0}".format(folders["user"]))
+        custom = False
+    if "config" in sources:
+        src_list.append(":{0}".format(folders["config"]))
+        custom = False
+    if "application" in sources:
+        src_list.append(":{0}".format(folders["application"]))
+        custom = False
+    if "log" in sources:
+        src_list.append(":{0}".format(folders["log"]))
+        custom = False
+    if custom:
+        # This is custom data
+        for custom_data in sources:
+            src_list.append(
+                ":{0}".format("'" + custom_data.replace("'", "'\\''") + "'")
+            )
+    utility.write_log(
+        log_args["status"],
+        log_args["destination"],
+        "INFO",
+        "OS {0}; backup folder {1}".format(os_name, " ".join(src_list)),
+    )
+    print_verbose(args.verbose, "Include this criteria: {0}".format(" ".join(src_list)))
+    return src_list
 
 
 def compose_restore_src_dst(backup_os, restore_os, restore_path):
@@ -538,6 +535,7 @@ def compose_restore_src_dst(backup_os, restore_os, restore_path):
             )
             if rsrc and rdst:
                 return rsrc, rdst
+    return ()
 
 
 def get_restore_os():
@@ -583,7 +581,6 @@ def compose_destination(computer_name, folder):
         )
     # Write catalog file
     write_catalog(catalog_path, backup_id, "path", second_layer)
-    print_verbose(args.verbose, "Destination is {0}".format(second_layer))
     return second_layer
 
 
@@ -626,7 +623,7 @@ def get_last_full(catalog):
                     ):
                         return config.get(bid, "path"), config.get(bid, "os")
     else:
-        return False
+        return ()
 
 
 def get_last_backup(catalog):
@@ -663,7 +660,7 @@ def get_last_backup(catalog):
                     ):
                         return config.get(bid, "path"), config.get(bid, "os"), bid
     else:
-        return False
+        return ()
 
 
 def count_full(config, name):
@@ -983,6 +980,7 @@ def check_configuration(ip):
             return False
     except subprocess.CalledProcessError:
         return False
+    return True
 
 
 def init_catalog(catalog):
@@ -1714,9 +1712,9 @@ def main():
                     )
                     continue
                 if not args.verbose:
-                    if check_configuration(hostname):
+                    if not check_configuration(hostname):
                         utility.error(
-                            "For bulk or silently backup, deploy configuration!"
+                            "For bulk or silently backup, deploy configuration! "
                             "See bb config --help or specify --verbose"
                         )
                         continue
@@ -1760,10 +1758,10 @@ def main():
                 # Compose source
                 if args.data:
                     srcs = args.data
-                    source_list = compose_source(args.action, args.type, srcs)
+                    source_list = compose_source(args.type, srcs)
                 elif args.customdata:
                     srcs = args.customdata
-                    source_list = compose_source(args.action, args.type, srcs)
+                    source_list = compose_source(args.type, srcs)
                 else:
                     source_list = []
                 # Check if hostname is localhost or 127.0.0.1
@@ -1777,6 +1775,7 @@ def main():
                     )
                 # Compose destination
                 bck_dst = compose_destination(hostname, args.destination)
+                print_verbose(args.verbose, "Destination is {0}".format(bck_dst))
                 utility.write_log(
                     log_args["status"],
                     log_args["destination"],
