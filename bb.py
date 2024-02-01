@@ -902,6 +902,7 @@ def deploy_configuration(computer, user):
                         computer
                     )
                 )
+                exit(2)
         else:
             utility.warning("Public key ~/.ssh/id_rsa.pub is not exist")
             exit(2)
@@ -1694,13 +1695,14 @@ def main():
                 # Computer list
                 hostnames.append(args.hostname)
             elif args.list:
-                if os.path.exists(args.list):
+                if os.path.exists(args.list) and os.path.isfile(args.list):
                     list_file = open(args.list, "r").read().split()
                     for line in list_file:
                         # Computer list
                         hostnames.append(line)
                 else:
-                    utility.error("The file {0} not exist!".format(args.list))
+                    utility.error("The file {0} not exist or is a directory!".format(args.list))
+                    exit(1)
             else:
                 parser.print_usage()
                 print("For backup usage, --help or -h")
