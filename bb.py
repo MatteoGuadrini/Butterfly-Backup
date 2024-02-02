@@ -465,47 +465,42 @@ def compose_command(flags, host):
     return command
 
 
-def compose_source(os_name, sources):
+def compose_source():
     """
-    Compose source
-    :param os_name: Name of operating system
-    :param sources: Dictionary or string than contains the paths of source
+    Compose sources
     :return: list
     """
     global args, catalog_path, backup_id
 
     src_list = []
     # Add include to the list
-    folders = map_dict_folder(os_name)
-    # Write catalog file
-    write_catalog(catalog_path, backup_id, "os", os_name)
-    custom = True
-    if "system" in sources:
-        src_list.append(":{0}".format(folders["system"]))
-        return src_list
-    if "user" in sources:
-        src_list.append(":{0}".format(folders["user"]))
-        custom = False
-    if "config" in sources:
-        src_list.append(":{0}".format(folders["config"]))
-        custom = False
-    if "application" in sources:
-        src_list.append(":{0}".format(folders["application"]))
-        custom = False
-    if "log" in sources:
-        src_list.append(":{0}".format(folders["log"]))
-        custom = False
-    if custom:
-        # This is custom data
-        for custom_data in sources:
-            src_list.append(
-                ":{0}".format("'" + custom_data.replace("'", "'\\''") + "'")
-            )
+    if args.data:
+        folders = map_dict_folder(args.type)
+        if "system" in args.data:
+            src_list.append(":{0}".format(folders["system"]))
+            return src_list
+        if "user" in args.data:
+            src_list.append(":{0}".format(folders["user"]))
+        if "config" in args.data:
+            src_list.append(":{0}".format(folders["config"]))
+        if "application" in args.data:
+            src_list.append(":{0}".format(folders["application"]))
+        if "log" in args.data:
+            src_list.append(":{0}".format(folders["log"]))
+    elif args.customdata:
+        # This is the custom data
+        for custom_data in args.customdata:
+            src_list.append(":'{0}'".format(custom_data.strip()))
+    elif args.filedata:
+        # This is the file custom data
+        with args.filedata as file_data:
+            for path in file_data.readlines():
+                src_list.append(":'{0}'".format(path.strip()))
     utility.write_log(
         log_args["status"],
         log_args["destination"],
         "INFO",
-        "OS {0}; backup folder {1}".format(os_name, " ".join(src_list)),
+        "OS {0}; backup folder {1}".format(args.type, " ".join(src_list)),
     )
     print_verbose(args.verbose, "Include this criteria: {0}".format(" ".join(src_list)))
     return src_list
@@ -1293,6 +1288,14 @@ def parse_arguments():
         action="store",
         nargs="+",
     )
+    data_or_custom.add_argument(
+        "--file-data",
+        "-F",
+        help="File with custom path of which you want to backup",
+        dest="filedata",
+        action="store",
+        type=argparse.FileType(),
+    )
     group_backup.add_argument(
         "--user",
         "-u",
@@ -1684,7 +1687,7 @@ def main():
         # Check backup session
         if args.action == "backup":
             # Check rsync tool
-            rsync_path = args.rsync if hasattr(args, "rsync") else None
+            rsync_path = args.rsync if args.rsync else None
             check_rsync(rsync_path)
             # Check custom ssh port
             port = args.port if args.port else 22
@@ -1701,7 +1704,9 @@ def main():
                         # Computer list
                         hostnames.append(line)
                 else:
-                    utility.error("The file {0} not exist or is a directory!".format(args.list))
+                    utility.error(
+                        "The file {0} not exist or is a directory!".format(args.list)
+                    )
                     exit(1)
             else:
                 parser.print_usage()
@@ -1757,15 +1762,9 @@ def main():
                 )
                 # Write catalog file
                 write_catalog(catalog_path, backup_id, "name", hostname)
+                write_catalog(catalog_path, backup_id, "os", args.type)
                 # Compose source
-                if args.data:
-                    srcs = args.data
-                    source_list = compose_source(args.type, srcs)
-                elif args.customdata:
-                    srcs = args.customdata
-                    source_list = compose_source(args.type, srcs)
-                else:
-                    source_list = []
+                source_list = compose_source()
                 # Check if hostname is localhost or 127.0.0.1
                 if (hostname.lower() == "localhost") or (hostname == "127.0.0.1"):
                     # Compose source with only path of folder list
@@ -1801,7 +1800,7 @@ def main():
         # Check restore session
         if args.action == "restore":
             # Check rsync tool
-            rsync_path = args.rsync if hasattr(args, "rsync") else None
+            rsync_path = args.rsync if args.rsync else None
             check_rsync(rsync_path)
             # Check custom ssh port
             port = args.port if args.port else 22
@@ -2198,7 +2197,7 @@ def main():
         # Check export session
         if args.action == "export":
             # Check rsync tool
-            rsync_path = args.rsync if hasattr(args, "rsync") else None
+            rsync_path = args.rsync if args.rsync else None
             check_rsync(rsync_path)
             cmds = list()
             # Read catalog file
