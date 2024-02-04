@@ -327,49 +327,50 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 
    arthur@heartofgold$ bb backup --help
    usage: bb backup [-h] [--verbose] [--log] [--dry-run] (--computer HOSTNAME | --list LIST) --destination DESTINATION [--mode {full,incremental,differential,mirror}]
-                    (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...]) [--user USER] --type {unix,windows,macos}
-                    [--compress] [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]
-                    [--exclude EXCLUDE [EXCLUDE ...]] [--start-from ID]
+                  (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...] | --file-data FILEDATA) [--user USER] --type {unix,windows,macos} [--compress]
+                  [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]] [--start-from ID]
 
-   options:
-      -h, --help            show this help message and exit
-      --verbose, -v         Enable verbosity
-      --log, -l             Create logs
-      --dry-run, -N         Dry run mode
+   optional arguments:
+   -h, --help            show this help message and exit
+   --verbose, -v         Enable verbosity
+   --log, -l             Create logs
+   --dry-run, -N         Dry run mode
 
-      Backup options:
-      --computer HOSTNAME, -c HOSTNAME
-                            Hostname or ip address to backup
-      --list LIST, -L LIST  File list of computers or ip addresses to backup
-      --destination DESTINATION, -d DESTINATION
-                            Destination path
-      --mode {full,incremental,differential,mirror}, -m {full,incremental,differential,mirror}
-                            Backup mode
-      --data {user,config,application,system,log} [{user,config,application,system,log} ...], -D {user,config,application,system,log} [{user,config,application,system,log} ...]
-                            Data of which you want to backup
-      --custom-data CUSTOMDATA [CUSTOMDATA ...], -C CUSTOMDATA [CUSTOMDATA ...]
-                            Custom path of which you want to backup
-      --user USER, -u USER  Login name used to log into the remote host (being backed up)
-      --type {unix,windows,macos}, -t {unix,windows,macos}
-                            Type of operating system to backup
-      --compress, -z        Compress data
-      --retention [DAYS [NUMBER ...]], -r [DAYS [NUMBER ...]]
-                            First argument are days of backup retention. Second argument is minimum number of backup retention
-      --parallel PARALLEL, -p PARALLEL
-                            Number of parallel jobs
-      --timeout TIMEOUT, -T TIMEOUT
-                            I/O timeout in seconds
-      --skip-error, -e      Skip error
-      --rsync-path RSYNC, -R RSYNC
-                            Custom rsync path
-      --bwlimit BWLIMIT, -b BWLIMIT
-                            Bandwidth limit in KBPS.
-      --ssh-port PORT, -P PORT
-                            Custom ssh port.
-      --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
-                            Exclude pattern
-      --start-from ID, -s ID
-                            Backup id where start a new backup
+   Backup options:
+   --computer HOSTNAME, -c HOSTNAME
+                           Hostname or ip address to backup
+   --list LIST, -L LIST  File list of computers or ip addresses to backup
+   --destination DESTINATION, -d DESTINATION
+                           Destination path
+   --mode {full,incremental,differential,mirror}, -m {full,incremental,differential,mirror}
+                           Backup mode
+   --data {user,config,application,system,log} [{user,config,application,system,log} ...], -D {user,config,application,system,log} [{user,config,application,system,log} ...]
+                           Data of which you want to backup
+   --custom-data CUSTOMDATA [CUSTOMDATA ...], -C CUSTOMDATA [CUSTOMDATA ...]
+                           Custom path of which you want to backup
+   --file-data FILEDATA, -F FILEDATA
+                           File with custom path of which you want to backup
+   --user USER, -u USER  Login name used to log into the remote host (being backed up)
+   --type {unix,windows,macos}, -t {unix,windows,macos}
+                           Type of operating system to backup
+   --compress, -z        Compress data
+   --retention [DAYS [NUMBER ...]], -r [DAYS [NUMBER ...]]
+                           First argument are days of backup retention. Second argument is minimum number of backup retention
+   --parallel PARALLEL, -p PARALLEL
+                           Number of parallel jobs
+   --timeout TIMEOUT, -T TIMEOUT
+                           I/O timeout in seconds
+   --skip-error, -e      Skip error
+   --rsync-path RSYNC, -R RSYNC
+                           Custom rsync path
+   --bwlimit BWLIMIT, -b BWLIMIT
+                           Bandwidth limit in KBPS.
+   --ssh-port PORT, -P PORT
+                           Custom ssh port.
+   --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
+                           Exclude pattern
+   --start-from ID, -s ID
+                           Backup id where start a new backup
 
 
 
@@ -404,10 +405,21 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 
        * **user** -> folder containing the home.
        * **config** -> folder containing the configurations of the machine.
-       * **Log** -> folder containing the log.
-       * **Application** -> folder containing applications.
-       * **System** -> the entire system starting from the root.
+       * **log** -> folder containing the log.
+       * **application** -> folder containing applications.
+       * **system** -> the entire system starting from the root.
    --custom-data           Select the absolute paths to put under backup.
+   --file-data             Select a file with the absolute paths to put under backup.
+
+                           [File_list.txt]
+
+                           /path1
+
+                           /path2/with spaces/
+
+                           "/path3/with quotes"
+
+                           ...
    --user, -u              Login name used to log into the remote host (being backed up)
    --type, -t              Type of operating system to put under backup:
 
