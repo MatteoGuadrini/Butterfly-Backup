@@ -641,7 +641,7 @@ def get_last_backup(catalog):
                     dates.append(utility.string_to_time(config.get(bid, "timestamp")))
                 except configparser.NoOptionError:
                     utility.error(
-                        "Corrupted catalog! No found timestamp in {0}".format(bid)
+                        "Corrupted catalog! No found timestamp in backup: {0}".format(bid)
                     )
                     exit(2)
         if dates:
@@ -654,8 +654,10 @@ def get_last_backup(catalog):
                         and config.get(bid, "timestamp") == last
                     ):
                         return config.get(bid, "path"), config.get(bid, "os"), bid
+                    else:
+                        return None
     else:
-        return ()
+        return None
 
 
 def count_full(config, name):
