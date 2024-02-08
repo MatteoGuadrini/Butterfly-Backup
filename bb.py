@@ -538,9 +538,9 @@ def get_restore_os():
     Get the operating system value on catalog by id
     :return: os value (string)
     """
-    global args
+    global args, catalog_file
 
-    config = read_catalog(os.path.join(args.catalog, ".catalog.cfg"))
+    config = read_catalog(os.path.join(args.catalog, catalog_file))
     return config.get(args.id, "os")
 
 
@@ -1659,6 +1659,7 @@ def main():
     # Create arguments object
     parser = parse_arguments()
     args = parser.parse_args()
+    catalog_file = ".catalog.cfg"
 
     try:
         # Check config session
@@ -1670,20 +1671,20 @@ def main():
             elif args.deploy_host:
                 deploy_configuration(args.deploy_host, args.deploy_user)
             elif args.init:
-                catalog_path = os.path.join(args.init, ".catalog.cfg")
+                catalog_path = os.path.join(args.init, catalog_file)
                 init_catalog(catalog_path)
             elif args.delete:
-                catalog_path = os.path.join(args.delete[0], ".catalog.cfg")
+                catalog_path = os.path.join(args.delete[0], catalog_file)
                 delete_host(catalog_path, args.delete[1])
             elif args.delete_backup:
-                catalog_path = os.path.join(args.delete_backup[0], ".catalog.cfg")
+                catalog_path = os.path.join(args.delete_backup[0], catalog_file)
                 delete_backup(catalog_path, args.delete_backup[1])
             elif args.clean:
-                catalog_path = os.path.join(args.clean, ".catalog.cfg")
+                catalog_path = os.path.join(args.clean, catalog_file)
                 clean_catalog(catalog_path)
             else:
                 parser.print_usage()
-                print("For config usage, --help or -h")
+                utility.error("For config usage, --help or -h")
                 exit(1)
 
         # Check backup session
@@ -1738,7 +1739,7 @@ def main():
                     ),
                 }
                 logs.append(log_args)
-                catalog_path = os.path.join(args.destination, ".catalog.cfg")
+                catalog_path = os.path.join(args.destination, catalog_file)
                 backup_catalog = read_catalog(catalog_path)
                 # Compose command
                 cmd = compose_command(args, hostname)
@@ -1817,7 +1818,7 @@ def main():
             if not args.type and args.id:
                 args.type = get_restore_os()
             # Read catalog file
-            catalog_path = os.path.join(args.catalog, ".catalog.cfg")
+            catalog_path = os.path.join(args.catalog, catalog_file)
             restore_catalog = read_catalog(catalog_path)
             # Check if select backup-id or last backup
             if args.last:
@@ -1941,7 +1942,7 @@ def main():
                 "destination": os.path.join(args.catalog, "archive.log"),
             }
             # Read catalog file
-            archive_catalog = os.path.join(args.catalog, ".catalog.cfg")
+            archive_catalog = os.path.join(args.catalog, catalog_file)
             # Archive paths
             archive_policy(archive_catalog, args.destination)
 
@@ -1953,7 +1954,7 @@ def main():
                 "destination": os.path.join(args.catalog, "backup.list"),
             }
             # Read catalog file
-            list_catalog = read_catalog(os.path.join(args.catalog, ".catalog.cfg"))
+            list_catalog = read_catalog(os.path.join(args.catalog, catalog_file))
             # Check specified argument backup-id
             if args.id:
                 # Get session backup id
@@ -2203,7 +2204,7 @@ def main():
             check_rsync(rsync_path)
             cmds = list()
             # Read catalog file
-            catalog_path = os.path.join(args.catalog, ".catalog.cfg")
+            catalog_path = os.path.join(args.catalog, catalog_file)
             export_catalog = read_catalog(catalog_path)
             # Create destination folder if not exists
             if not os.path.exists(args.destination):
@@ -2275,7 +2276,7 @@ def main():
                     # Check cut option
                     if args.cut:
                         write_catalog(
-                            os.path.join(args.catalog, ".catalog.cfg"),
+                            os.path.join(args.catalog, catalog_file),
                             args.id,
                             "cleaned",
                             "True",
@@ -2283,10 +2284,10 @@ def main():
             # Start export
             cmds.append(" ".join(cmd))
             run_in_parallel(start_process, cmds, 1)
-            if os.path.exists(os.path.join(args.destination, ".catalog.cfg")):
+            if os.path.exists(os.path.join(args.destination, catalog_file)):
                 # Migrate catalog to new file system
                 utility.find_replace(
-                    os.path.join(args.destination, ".catalog.cfg"),
+                    os.path.join(args.destination, catalog_file),
                     args.catalog.rstrip("/"),
                     args.destination.rstrip("/"),
                 )
