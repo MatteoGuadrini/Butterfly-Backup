@@ -259,14 +259,18 @@ def make_symlink(source, destination):
         warning("MS-DOS file system doesn't support symlink file")
 
 
-def confirm(message, default="n"):
+def confirm(message, default="n", force=False):
     """
     Ask user to enter Y or N (case-insensitive).
     :message: message to print
     :default: default answer
+    :force: ignore prompt message
     :return: True if the answer is Y.
     :rtype: bool
     """
+    # If force, answer is "yes"
+    if force:
+        return True
     while (
         answer := input(
             "{0}\nTo continue? {1} ".format(
