@@ -1149,6 +1149,9 @@ def parse_arguments():
     parent_parser.add_argument(
         "--dry-run", "-N", help="Dry run mode", dest="dry_run", action="store_true"
     )
+    parent_parser.add_argument(
+        "--force", "-O", help="Force an action without prompt", dest="force", action="store_true"
+    )
 
     # Create principal parser
     description = "Butterfly Backup"
