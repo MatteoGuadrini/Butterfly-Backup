@@ -641,7 +641,9 @@ def get_last_backup(catalog):
                     dates.append(utility.string_to_time(config.get(bid, "timestamp")))
                 except configparser.NoOptionError:
                     utility.error(
-                        "Corrupted catalog! No found timestamp in backup: {0}".format(bid)
+                        "Corrupted catalog! No found timestamp in backup: {0}".format(
+                            bid
+                        )
                     )
                     exit(2)
         if dates:
@@ -915,7 +917,9 @@ def remove_configuration():
     home = os.path.expanduser("~")
     ssh_folder = os.path.join(home, ".ssh")
     if not dry_run("Remove private id_rsa"):
-        if utility.confirm("Are you sure to remove existing rsa keys?"):
+        if utility.confirm(
+            "Are you sure to remove existing rsa keys?", force=args.force
+        ):
             # Remove private key file
             id_rsa_file = os.path.join(ssh_folder, "id_rsa")
             print_verbose(args.verbose, "Remove private id_rsa {0}".format(id_rsa_file))
@@ -1150,7 +1154,11 @@ def parse_arguments():
         "--dry-run", "-N", help="Dry run mode", dest="dry_run", action="store_true"
     )
     parent_parser.add_argument(
-        "--force", "-O", help="Force an action without prompt", dest="force", action="store_true"
+        "--force",
+        "-O",
+        help="Force an action without prompt",
+        dest="force",
+        action="store_true",
     )
 
     # Create principal parser
@@ -1925,7 +1933,8 @@ def main():
                         if utility.confirm(
                             "Want to do restore path {0}?".format(
                                 os.path.join(rpath, src)
-                            )
+                            ),
+                            force=args.force,
                         ):
                             cmds.append(" ".join(cmd))
                 # Start restore
