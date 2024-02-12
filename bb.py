@@ -987,18 +987,22 @@ def check_configuration(ip):
 
 def init_catalog(catalog):
     """
+    Initialize catalog file
     :param catalog: catalog file
     """
-    config = read_catalog(catalog)
-    for cid in config.sections():
-        if not config.get(cid, "path") or not os.path.exists(config.get(cid, "path")):
-            print_verbose(
-                args.verbose, "Backup-id {0} has been removed to catalog!".format(cid)
-            )
-            config.remove_section(cid)
-    # Write file
-    with open(catalog, "w") as configfile:
-        config.write(configfile)
+    global args
+
+    if utility.confirm("Initialize catalog {0}?".format(catalog), force=args.force):
+        config = read_catalog(catalog)
+        for cid in config.sections():
+            if not config.get(cid, "path") or not os.path.exists(config.get(cid, "path")):
+                print_verbose(
+                    args.verbose, "Backup-id {0} has been removed to catalog!".format(cid)
+                )
+                config.remove_section(cid)
+        # Write file
+        with open(catalog, "w") as configfile:
+            config.write(configfile)
 
 
 def delete_host(catalog, host):
@@ -1012,35 +1016,36 @@ def delete_host(catalog, host):
 
     config = read_catalog(catalog)
     root = os.path.join(os.path.dirname(catalog), host)
-    for cid in config.sections():
-        if config.get(cid, "name") == host:
-            if not config.get(cid, "path") or not os.path.exists(
-                config.get(cid, "path")
-            ):
-                print_verbose(
-                    args.verbose,
-                    "Backup-id {0} has been removed from catalog!".format(cid),
-                )
-                config.remove_section(cid)
-            else:
-                path = config.get(cid, "path")
-                date = config.get(cid, "timestamp")
-                cleanup = utility.cleanup(path, date, 0)
-                if cleanup == 0:
-                    utility.success("Delete {0} successfully.".format(path))
+    if utility.confirm("Delete all backups for host {0}?".format(host), force=args.force):
+        for cid in config.sections():
+            if config.get(cid, "name") == host:
+                if not config.get(cid, "path") or not os.path.exists(
+                    config.get(cid, "path")
+                ):
                     print_verbose(
                         args.verbose,
                         "Backup-id {0} has been removed from catalog!".format(cid),
                     )
                     config.remove_section(cid)
-                elif cleanup == 1:
-                    utility.error("Delete {0} failed.".format(path))
-    # Remove root folder
-    if os.path.exists(root):
-        rmtree(root)
-    # Write file
-    with open(catalog, "w") as configfile:
-        config.write(configfile)
+                else:
+                    path = config.get(cid, "path")
+                    date = config.get(cid, "timestamp")
+                    cleanup = utility.cleanup(path, date, 0)
+                    if cleanup == 0:
+                        utility.success("Delete {0} successfully.".format(path))
+                        print_verbose(
+                            args.verbose,
+                            "Backup-id {0} has been removed from catalog!".format(cid),
+                        )
+                        config.remove_section(cid)
+                    elif cleanup == 1:
+                        utility.error("Delete {0} failed.".format(path))
+        # Remove root folder
+        if os.path.exists(root):
+            rmtree(root)
+        # Write file
+        with open(catalog, "w") as configfile:
+            config.write(configfile)
 
 
 def delete_backup(catalog, bckid):
@@ -1053,29 +1058,30 @@ def delete_backup(catalog, bckid):
     config = read_catalog(catalog)
     # Check catalog backup id
     bck_id = utility.get_bckid(config, bckid)
-    if bck_id:
-        if not bck_id.get("path") or not os.path.exists(bck_id.get("path")):
-            print_verbose(
-                args.verbose,
-                "Backup-id {0} has been removed from catalog!".format(bckid),
-            )
-            config.remove_section(bck_id.name)
-        else:
-            path = bck_id.get("path")
-            date = bck_id.get("timestamp")
-            cleanup = utility.cleanup(path, date, 0)
-            if cleanup == 0:
-                utility.success("Delete {0} successfully.".format(path))
+    if utility.confirm("Delete backup {0} from catalog {1}?".format(bckid, catalog), force=args.force):
+        if bck_id:
+            if not bck_id.get("path") or not os.path.exists(bck_id.get("path")):
                 print_verbose(
                     args.verbose,
                     "Backup-id {0} has been removed from catalog!".format(bckid),
                 )
                 config.remove_section(bck_id.name)
-            elif cleanup == 1:
-                utility.error("Delete {0} failed.".format(path))
-    # Write file
-    with open(catalog, "w") as configfile:
-        config.write(configfile)
+            else:
+                path = bck_id.get("path")
+                date = bck_id.get("timestamp")
+                cleanup = utility.cleanup(path, date, 0)
+                if cleanup == 0:
+                    utility.success("Delete {0} successfully.".format(path))
+                    print_verbose(
+                        args.verbose,
+                        "Backup-id {0} has been removed from catalog!".format(bckid),
+                    )
+                    config.remove_section(bck_id.name)
+                elif cleanup == 1:
+                    utility.error("Delete {0} failed.".format(path))
+        # Write file
+        with open(catalog, "w") as configfile:
+            config.write(configfile)
 
 
 def clean_catalog(catalog):
