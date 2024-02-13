@@ -1174,6 +1174,14 @@ def parse_arguments():
         description=description,
         parents=[parent_parser],
     )
+    parser_object.add_argument(
+        "--version",
+        "-V",
+        help="Print version",
+        action="version",
+        version="%(prog)s " + VERSION,
+    )
+    
     # Create sub_parser "action"
     action = parser_object.add_subparsers(
         title="action",
@@ -1658,13 +1666,6 @@ def parse_arguments():
         type=int,
     )
     # Return all args
-    parser_object.add_argument(
-        "--version",
-        "-V",
-        help="Print version",
-        action="version",
-        version="%(prog)s " + VERSION,
-    )
     return parser_object
 
 
