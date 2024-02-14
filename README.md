@@ -201,6 +201,4 @@ The Telethon Foundation is a non-profit organization recognized by the Ministry 
 They were born in 1990 to respond to the appeal of patients suffering from rare diseases.
 Come today, we are organized to dare to listen to them and answers, every day of the year.
 
-<a href="https://www.telethon.it/sostienici/dona-ora"> <img src="https://www.telethon.it/dev/_nuxt/img/926807f.svg" alt="Telethon" title="Telethon" width="200" height="104" /> </a>
-
 [Adopt the future](https://www.ioadottoilfuturo.it/)

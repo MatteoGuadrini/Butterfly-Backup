@@ -113,7 +113,7 @@ Butterfly Backup has, in its core, six main operations:
 .. code-block:: console
 
    arthur@heartofgold$ bb --help
-   usage: bb [-h] [--verbose] [--log] [--dry-run] [--version]
+   usage: bb [-h] [--verbose] [--log] [--dry-run] [--force] [--version]
              {config,backup,restore,archive,list,export} ...
 
    Butterfly Backup
@@ -123,6 +123,7 @@ Butterfly Backup has, in its core, six main operations:
      --verbose, -v         Enable verbosity
      --log, -l             Create a log
      --dry-run, -N         Dry run mode
+     --force, -O           Force an action without prompt
      --version, -V         Print version
 
    action:
@@ -152,6 +153,7 @@ It also has three flags that can be very useful, especially in case of error.
         --verbose, -v         Enable verbosity
         --log, -l             Create a log
         --dry-run, -N         Dry run mode, test your command
+        --force, -O           Force an action without prompt
         --version, -V         Print version
 
 
@@ -168,13 +170,15 @@ Let's see how to go about looking at the help:
 .. code-block:: console
 
    arthur@heartofgold$ bb config --help
-   usage: bb config [-h] [--verbose] [--log] [--dry-run] [--new | --remove | --init CATALOG | --delete-host CATALOG HOST | --clean CATALOG | --delete-backup CATALOG ID] [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
+   usage: bb config [-h] [--verbose] [--log] [--dry-run] [--force] [--version] [--new | --remove | --init CATALOG | --delete-host CATALOG HOST | --clean CATALOG | --delete-backup CATALOG ID] [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
 
    options:
    -h, --help            show this help message and exit
    --verbose, -v         Enable verbosity
    --log, -l             Create logs
    --dry-run, -N         Dry run mode
+   --force, -O           Force an action without prompt
+   --version, -V         Print version
 
    Init configuration:
    --new, -n             Generate new configuration
@@ -326,7 +330,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 .. code-block:: console
 
    arthur@heartofgold$ bb backup --help
-   usage: bb backup [-h] [--verbose] [--log] [--dry-run] (--computer HOSTNAME | --list LIST) --destination DESTINATION [--mode {full,incremental,differential,mirror}]
+   usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--version] (--computer HOSTNAME | --list LIST) --destination DESTINATION [--mode {full,incremental,differential,mirror}]
                   (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...] | --file-data FILEDATA) [--user USER] --type {unix,windows,macos} [--compress]
                   [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]] [--start-from ID]
 
@@ -335,6 +339,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
    --verbose, -v         Enable verbosity
    --log, -l             Create logs
    --dry-run, -N         Dry run mode
+   --force, -O           Force an action without prompt
+   --version, -V         Print version
 
    Backup options:
    --computer HOSTNAME, -c HOSTNAME
@@ -622,7 +628,7 @@ To query this catalog, the list command exists.
 .. code-block:: console
 
    arthur@heartofgold$ bb list --help
-   usage: bb list [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
+   usage: bb list [-h] [--verbose] [--log] [--dry-run] [--force] [--version] --catalog CATALOG
                   [--backup-id ID | --archived | --cleaned | --computer HOSTNAME | --detail ID]
                   [--oneline]
 
@@ -631,6 +637,8 @@ To query this catalog, the list command exists.
      --verbose, -v         Enable verbosity
      --log, -l             Create a log
      --dry-run, -N         Dry run mode
+     --force, -O           Force an action without prompt
+     --version, -V         Print version
 
    List options:
      --catalog CATALOG, -C CATALOG
@@ -718,7 +726,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
 .. code-block:: console
 
    arthur@heartofgold$ bb restore --help
-   usage: bb restore [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG (--backup-id ID | --last) [--user USER] --computer HOSTNAME [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror] [--skip-error]
+   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--version] --catalog CATALOG (--backup-id ID | --last) [--user USER] --computer HOSTNAME [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror] [--skip-error]
                   [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]] [--files FILES [FILES ...]]
 
    options:
@@ -726,6 +734,8 @@ The restore process is the exact opposite of the backup process. It takes the fi
    --verbose, -v         Enable verbosity
    --log, -l             Create logs
    --dry-run, -N         Dry run mode
+   --force, -O           Force an action without prompt
+   --version, -V         Print version
 
    Restore options:
    --catalog CATALOG, -C CATALOG
@@ -837,7 +847,7 @@ Archive operations are used to store backups by saving disk space. Backups older
 .. code-block:: console
 
    arthur@heartofgold$ bb archive --help
-   usage: bb archive [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
+   usage: bb archive [-h] [--verbose] [--log] [--dry-run] [--force] [--version] --catalog CATALOG
                      [--days DAYS] --destination DESTINATION
 
    optional arguments:
@@ -845,6 +855,8 @@ Archive operations are used to store backups by saving disk space. Backups older
      --verbose, -v         Enable verbosity
      --log, -l             Create a log
      --dry-run, -N         Dry run mode
+     --force, -O           Force an action without prompt
+     --version, -V         Print version
 
    Archive options:
      --catalog CATALOG, -C CATALOG
@@ -903,7 +915,7 @@ The export function is used to copy a particular backup to another path.
 .. code-block:: console
 
    arthur@heartofgold$ bb export -h
-   usage: bb export [-h] [--verbose] [--log] [--dry-run] --catalog CATALOG
+   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--version] --catalog CATALOG
                     [--backup-id ID | --all] --destination DESTINATION [--mirror]
                     [--cut] [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE
                     [EXCLUDE ...]] [--timeout TIMEOUT] [--skip-error]
@@ -914,6 +926,8 @@ The export function is used to copy a particular backup to another path.
      --verbose, -v         Enable verbosity
      --log, -l             Create a log
      --dry-run, -N         Dry run mode
+     --force, -O           Force an action without prompt
+     --version, -V         Print version
 
    Export options:
      --catalog CATALOG, -C CATALOG
@@ -1016,10 +1030,5 @@ For `Telethon <http://www.telethon.it/>`_
 The Telethon Foundation is a non-profit organization recognized by the Ministry of University and Scientific and Technological Research.
 They were born in 1990 to respond to the appeal of patients suffering from rare diseases.
 Come today, we are organized to dare to listen to them and answers, every day of the year.
-
-.. figure:: https://www.telethon.it/dev/_nuxt/img/926807f.svg
-    :height: 104 px
-    :width: 200 px
-    :target: https://www.telethon.it/sostienici/dona-ora
 
 `Adopt the future <https://www.ioadottoilfuturo.it/>`_
