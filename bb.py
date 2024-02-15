@@ -31,7 +31,7 @@ DESCRIPTION
 SYNOPSIS
     bb [ACTION] [OPTIONS]
 
-    bb [-h] [--verbose] [--log] [--dry-run] [--version]
+    bb [-h] [--verbose] [--log] [--dry-run] [--force] [--version]
               {config,backup,restore,archive,list,export} ...
 
 OPTIONS
@@ -65,7 +65,7 @@ import utility
 from utility import print_verbose
 
 # region Global Variables
-VERSION = "1.10.0"
+VERSION = "1.11.0"
 
 
 # endregion

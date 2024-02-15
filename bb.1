@@ -1,6 +1,6 @@
 .\" Manpage for Butterfly Backup.
 .\" Contact matteo.guadrini@hotmail.it to correct errors or typos.
-.TH man 1 "Jul 1, 2023" "1.10.0" "bb man page"
+.TH man 1 "Feb 15, 2024" "1.11.0" "bb man page"
 .SH NAME
 bb \- Butterfly Backup - backup/restore/archive tool , agentless
 .SH SYNOPSIS
@@ -158,6 +158,7 @@ Deploy configuration:
   --verbose, -v             Enable verbosity
   --log, -l                 Create a log
   --dry-run, -N             Dry run mode
+  --force, -O               Force an action without prompt
   --version, -V             Print version
 
 .SH EXAMPLES
@@ -203,7 +204,8 @@ Reset backup catalog:
 Full documentation is here:
 https://butterfly-backup.readthedocs.io/en/latest/
 .SH BUGS
-No known bugs. If you known, open an issue here: https://github.com/MatteoGuadrini/Butterfly-Backup/issues
+Bug #7: differential backup seems to behave like full backup 
+If you known, open an issue here: https://github.com/MatteoGuadrini/Butterfly-Backup/issues
 .SH AUTHOR
 Matteo Guadrini <matteo.guadrini@hotmail.it>
 .SH COPYRIGHT

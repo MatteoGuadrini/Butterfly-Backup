@@ -1,5 +1,13 @@
 # Release notes
 
+## 1.11.0
+Feb 15, 2024
+* Add **-file-data** argument in *backup* action
+* Add **--force** argument in *every* action
+* Add *confirm* function to every potentially destrucive actions
+* Fix returns of *get_last_backup* function
+* Fix **--version** argument
+
 ## 1.10.0
 Jul 1, 2023
 * Add **report_issue** function
