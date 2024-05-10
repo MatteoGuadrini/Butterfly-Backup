@@ -245,7 +245,7 @@ def map_dict_folder(os_name):
     elif os_name == "windows":
         folders["user"] = "/cygdrive/c/Users"
         folders["config"] = "/cygdrive/c/ProgramData"
-        folders["application"] = "'/cygdrive/c/Program\ Files'"
+        folders["application"] = "'/cygdrive/c/Program Files'"
         folders["system"] = "/cygdrive/c"
         folders["log"] = "/cygdrive/c/Windows/System32/winevt"
     elif os_name == "macos":
