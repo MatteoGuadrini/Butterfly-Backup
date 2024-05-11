@@ -1166,6 +1166,13 @@ def parse_arguments():
         dest="force",
         action="store_true",
     )
+    parent_parser.add_argument(
+        "--no-color",
+        "-w",
+        help="Remove color into terminal",
+        dest="color",
+        action="store_true",
+    )
 
     # Create principal parser
     description = "Butterfly Backup"
