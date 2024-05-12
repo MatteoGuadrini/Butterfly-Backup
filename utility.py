@@ -52,12 +52,17 @@ def report_issue(exc, tb):
     exit(1)
 
 
-def warning(message):
+def warning(message, nocolor=False):
     """Print warning message in yellow color
 
     :param message: message to print
+    :param nocolor: no color message
     """
-    print("{ansi.yellow}warning: {0}{ansi.reset}".format(message, ansi=ansi))
+    if nocolor:
+        print("warning: {0}".format(message))
+    else:
+        print("{ansi.yellow}warning: {0}{ansi.reset}".format(message, ansi=ansi))
+        
 
 
 def error(message):
