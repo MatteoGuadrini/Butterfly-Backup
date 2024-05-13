@@ -65,12 +65,16 @@ def warning(message, nocolor=False):
         
 
 
-def error(message):
+def error(message, nocolor=False):
     """Print error message in red color
 
     :param message: message to print
+    :param nocolor: no color message
     """
-    print("{ansi.red}error: {0}{ansi.reset}".format(message, ansi=ansi))
+    if nocolor:
+        print("error: {0}".format(message))
+    else:
+        print("{ansi.red}error: {0}{ansi.reset}".format(message, ansi=ansi))
 
 
 def success(message):
