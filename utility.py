@@ -77,12 +77,16 @@ def error(message, nocolor=False):
         print("{ansi.red}error: {0}{ansi.reset}".format(message, ansi=ansi))
 
 
-def success(message):
+def success(message, nocolor=False):
     """Print success message in green color
 
     :param message: message to print
+    :param nocolor: no color message
     """
-    print("{ansi.green}success: {0}{ansi.reset}".format(message, ansi=ansi))
+    if nocolor:
+        print("success: {0}".format(message))
+    else:
+        print("{ansi.green}success: {0}{ansi.reset}".format(message, ansi=ansi))
 
 
 def print_values(key, value, endline="\n"):
