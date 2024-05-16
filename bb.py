@@ -25,7 +25,7 @@ NAME
     Butterfly Backup - backup/restore/archive tool , agentless
 
 DESCRIPTION
-    Butterfly Backup is a simple command line wrapper of rsync for complex task, 
+    Butterfly Backup is a simple command line wrapper of rsync for complex task,
     written in python
 
 SYNOPSIS
@@ -274,7 +274,8 @@ def compose_command(flags, host):
             command = [flags.rsync]
         else:
             utility.warning(
-                "rsync binary {0} not exist! Set default.".format(args.rsync)
+                "rsync binary {0} not exist! Set default.".format(args.rsync),
+                nocolor=args.color,
             )
             command = ["rsync"]
     else:
@@ -903,7 +904,9 @@ def deploy_configuration(computer, user):
                 )
                 exit(2)
         else:
-            utility.warning("Public key ~/.ssh/id_rsa.pub is not exist")
+            utility.warning(
+                "Public key ~/.ssh/id_rsa.pub is not exist", nocolor=args.color
+            )
             exit(2)
 
 
@@ -926,7 +929,9 @@ def remove_configuration():
             if os.path.exists(id_rsa_file):
                 os.remove(id_rsa_file)
             else:
-                utility.warning("Private key ~/.ssh/id_rsa is not exist")
+                utility.warning(
+                    "Private key ~/.ssh/id_rsa is not exist", nocolor=args.color
+                )
                 exit(2)
             # Remove public key file
             id_rsa_pub_file = os.path.join(ssh_folder, "id_rsa.pub")
@@ -936,7 +941,9 @@ def remove_configuration():
             if os.path.exists(id_rsa_pub_file):
                 os.remove(id_rsa_pub_file)
             else:
-                utility.warning("Public key ~/.ssh/id_rsa.pub is not exist")
+                utility.warning(
+                    "Public key ~/.ssh/id_rsa.pub is not exist", nocolor=args.color
+                )
                 exit(2)
             utility.success("Removed configuration successfully!")
 
@@ -995,9 +1002,12 @@ def init_catalog(catalog):
     if utility.confirm("Initialize catalog {0}?".format(catalog), force=args.force):
         config = read_catalog(catalog)
         for cid in config.sections():
-            if not config.get(cid, "path") or not os.path.exists(config.get(cid, "path")):
+            if not config.get(cid, "path") or not os.path.exists(
+                config.get(cid, "path")
+            ):
                 print_verbose(
-                    args.verbose, "Backup-id {0} has been removed to catalog!".format(cid)
+                    args.verbose,
+                    "Backup-id {0} has been removed to catalog!".format(cid),
                 )
                 config.remove_section(cid)
         # Write file
@@ -1016,7 +1026,9 @@ def delete_host(catalog, host):
 
     config = read_catalog(catalog)
     root = os.path.join(os.path.dirname(catalog), host)
-    if utility.confirm("Delete all backups for host {0}?".format(host), force=args.force):
+    if utility.confirm(
+        "Delete all backups for host {0}?".format(host), force=args.force
+    ):
         for cid in config.sections():
             if config.get(cid, "name") == host:
                 if not config.get(cid, "path") or not os.path.exists(
@@ -1058,7 +1070,9 @@ def delete_backup(catalog, bckid):
     config = read_catalog(catalog)
     # Check catalog backup id
     bck_id = utility.get_bckid(config, bckid)
-    if utility.confirm("Delete backup {0} from catalog {1}?".format(bckid, catalog), force=args.force):
+    if utility.confirm(
+        "Delete backup {0} from catalog {1}?".format(bckid, catalog), force=args.force
+    ):
         if bck_id:
             if not bck_id.get("path") or not os.path.exists(bck_id.get("path")):
                 print_verbose(
@@ -1123,7 +1137,8 @@ def clean_catalog(catalog):
             utility.warning(
                 "The backup-id {0} has been set to default value, "
                 "because he was corrupt. "
-                "Check it!".format(cid)
+                "Check it!".format(cid),
+                nocolor=args.color,
             )
     # Write file
     with open(catalog, "w") as configfile:
@@ -1188,7 +1203,7 @@ def parse_arguments():
         action="version",
         version="%(prog)s " + VERSION,
     )
-    
+
     # Create sub_parser "action"
     action = parser_object.add_subparsers(
         title="action",
@@ -1776,7 +1791,10 @@ def main():
                         if os.path.exists(path):
                             cmd.append("--copy-dest={0}".format(path))
                         else:
-                            utility.warning("Backup folder {0} not exist!".format(path))
+                            utility.warning(
+                                "Backup folder {0} not exist!".format(path),
+                                nocolor=args.color,
+                            )
                     else:
                         utility.error(
                             "Backup id {0} not exist in catalog {1}!".format(
@@ -1957,7 +1975,8 @@ def main():
                 utility.warning(
                     "Restore files or folders aren't available on backup id {0}".format(
                         args.id if hasattr(args, "id") else args.last
-                    )
+                    ),
+                    nocolor=args.color,
                 )
 
         # Check archive session
