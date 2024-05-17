@@ -78,11 +78,13 @@ def check_rsync(rsync_path=None):
     """
     if rsync_path:
         if not os.path.exists(rsync_path):
-            utility.error("{0} package not found!".format(rsync_path))
+            utility.error(
+                "{0} package not found!".format(rsync_path), nocolor=args.color
+            )
             exit(1)
     else:
         if not utility.check_tool("rsync"):
-            utility.error("rsync package is required!")
+            utility.error("rsync package is required!", nocolor=args.color)
             exit(1)
 
 
@@ -136,7 +138,10 @@ def run_in_parallel(fn, commands, limit):
     # Check exit code of command
     for p, command, plog in zip(jobs, commands, logs):
         if p.get() != 0:
-            utility.error("Command {0} exit with code: {1}".format(command, p.get()))
+            utility.error(
+                "Command {0} exit with code: {1}".format(command, p.get()),
+                nocolor=args.color,
+            )
             utility.write_log(
                 log_args["status"],
                 plog["destination"],
@@ -604,7 +609,8 @@ def get_last_full(catalog):
                     dates.append(utility.string_to_time(config.get(bid, "timestamp")))
                 except configparser.NoOptionError:
                     utility.error(
-                        "Corrupted catalog! No found timestamp in {0}".format(bid)
+                        "Corrupted catalog! No found timestamp in {0}".format(bid),
+                        nocolor=args.color,
                     )
                     exit(2)
         if dates:
@@ -644,7 +650,8 @@ def get_last_backup(catalog):
                     utility.error(
                         "Corrupted catalog! No found timestamp in backup: {0}".format(
                             bid
-                        )
+                        ),
+                        nocolor=args.color,
                     )
                     exit(2)
         if dates:
@@ -715,7 +722,10 @@ def read_catalog(catalog):
             config.read(catalog)
             return config
         else:
-            utility.error("Folder {0} not exist!".format(os.path.dirname(catalog)))
+            utility.error(
+                "Folder {0} not exist!".format(os.path.dirname(catalog)),
+                nocolor=args.color,
+            )
             exit(1)
 
 
@@ -757,7 +767,8 @@ def retention_policy(host, catalog, logpath):
     if len(args.retention) >= 3:
         utility.error(
             'The "--retention or -r" parameter must have max two integers. '
-            "Three or more arguments specified: {}".format(args.retention)
+            "Three or more arguments specified: {}".format(args.retention),
+            nocolor=args.color,
         )
         exit(2)
     if args.retention[1]:
@@ -800,7 +811,9 @@ def retention_policy(host, catalog, logpath):
                         "Cleanup {0} successfully.".format(path),
                     )
                 elif cleanup == 1:
-                    utility.error("Cleanup {0} failed.".format(path))
+                    utility.error(
+                        "Cleanup {0} failed.".format(path), nocolor=args.color
+                    )
                     utility.write_log(
                         log_args["status"],
                         logpath,
@@ -851,7 +864,7 @@ def archive_policy(catalog, destination):
                     "Archive {0} successfully.".format(path),
                 )
             elif archive == 1:
-                utility.error("Archive {0} failed.".format(path))
+                utility.error("Archive {0} failed.".format(path), nocolor=args.color)
                 utility.write_log(
                     log_args["status"],
                     logpath,
@@ -900,7 +913,8 @@ def deploy_configuration(computer, user):
                 utility.error(
                     "Configuration has not been copied successfully on {0}!".format(
                         computer
-                    )
+                    ),
+                    nocolor=args.color,
                 )
                 exit(2)
         else:
@@ -969,7 +983,9 @@ def new_configuration():
         )
         # Check if something wrong
         if return_code:
-            utility.error("Creation of {0} error".format(id_rsa_file))
+            utility.error(
+                "Creation of {0} error".format(id_rsa_file), nocolor=args.color
+            )
             exit(2)
         # Sucess!
         utility.success("New configuration successfully created!")
@@ -1051,7 +1067,9 @@ def delete_host(catalog, host):
                         )
                         config.remove_section(cid)
                     elif cleanup == 1:
-                        utility.error("Delete {0} failed.".format(path))
+                        utility.error(
+                            "Delete {0} failed.".format(path), nocolor=args.color
+                        )
         # Remove root folder
         if os.path.exists(root):
             rmtree(root)
@@ -1092,7 +1110,7 @@ def delete_backup(catalog, bckid):
                     )
                     config.remove_section(bck_id.name)
                 elif cleanup == 1:
-                    utility.error("Delete {0} failed.".format(path))
+                    utility.error("Delete {0} failed.".format(path), nocolor=args.color)
         # Write file
         with open(catalog, "w") as configfile:
             config.write(configfile)
@@ -1724,7 +1742,7 @@ def main():
                 clean_catalog(catalog_path)
             else:
                 parser.print_usage()
-                utility.error("For config usage, --help or -h")
+                utility.error("For config usage, --help or -h", nocolor=args.color)
                 exit(1)
 
         # Check backup session
@@ -1748,7 +1766,8 @@ def main():
                         hostnames.append(line)
                 else:
                     utility.error(
-                        "The file {0} not exist or is a directory!".format(args.list)
+                        "The file {0} not exist or is a directory!".format(args.list),
+                        nocolor=args.color,
                     )
                     exit(1)
             else:
@@ -1758,14 +1777,16 @@ def main():
             for hostname in hostnames:
                 if not utility.check_ssh(hostname, args.user, port):
                     utility.error(
-                        "The port {0} on {1} is closed!".format(port, hostname)
+                        "The port {0} on {1} is closed!".format(port, hostname),
+                        nocolor=args.color,
                     )
                     continue
                 if not args.verbose:
                     if not check_configuration(hostname):
                         utility.error(
                             "For bulk or silently backup, deploy configuration! "
-                            "See bb config --help or specify --verbose"
+                            "See bb config --help or specify --verbose",
+                            nocolor=args.color,
                         )
                         continue
                 # Log information's
@@ -1799,7 +1820,8 @@ def main():
                         utility.error(
                             "Backup id {0} not exist in catalog {1}!".format(
                                 args.sfrom, args.destination
-                            )
+                            ),
+                            nocolor=args.color,
                         )
                         exit(1)
                 print_verbose(
@@ -1881,7 +1903,9 @@ def main():
                     else:
                         rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
                 else:
-                    utility.error("Backup folder {0} not exist!".format(rpath))
+                    utility.error(
+                        "Backup folder {0} not exist!".format(rpath), nocolor=args.color
+                    )
                     exit(1)
             elif args.id:
                 # Check catalog backup id
@@ -1899,25 +1923,31 @@ def main():
                             rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
                     else:
                         utility.error(
-                            "Backup folder {0} not exist!".format(bck_id.get("path"))
+                            "Backup folder {0} not exist!".format(bck_id.get("path")),
+                            nocolor=args.color,
                         )
                         exit(1)
                 else:
                     utility.error(
                         "Backup id {0} not exist in catalog {1}!".format(
                             args.id, args.catalog
-                        )
+                        ),
+                        nocolor=args.color,
                     )
                     exit(1)
             # Test connection
             if not utility.check_ssh(rhost, args.user, port):
-                utility.error("The port {0} on {1} is closed!".format(port, rhost))
+                utility.error(
+                    "The port {0} on {1} is closed!".format(port, rhost),
+                    nocolor=args.color,
+                )
                 exit(1)
             if not args.verbose:
                 if not check_configuration(rhost):
                     utility.error(
                         "For bulk or silently backup to deploy configuration!"
-                        "See bb config --help or specify --verbose"
+                        "See bb config --help or specify --verbose",
+                        nocolor=args.color,
                     )
                     exit(1)
             log_args = {
@@ -2051,7 +2081,10 @@ def main():
                             "{0}".format(newline).join(dirs),
                         )
                 else:
-                    utility.error("Backup id {0} doesn't exists".format(args.id))
+                    utility.error(
+                        "Backup id {0} doesn't exists".format(args.id),
+                        nocolor=args.color,
+                    )
                     exit(1)
             elif args.detail:
                 # Get session backup id
@@ -2087,12 +2120,16 @@ def main():
                             cmd = "rsync --list-only -r {0}".format(bck_id.get("path"))
                     else:
                         utility.error(
-                            "No such file or directory: {}".format(bck_id.get("path"))
+                            "No such file or directory: {}".format(bck_id.get("path")),
+                            nocolor=args.color,
                         )
                         exit(1)
                     start_process(cmd)
                 else:
-                    utility.error("Backup id {0} doesn't exists".format(args.detail))
+                    utility.error(
+                        "Backup id {0} doesn't exists".format(args.detail),
+                        nocolor=args.color,
+                    )
                     exit(1)
             elif args.archived:
                 utility.print_verbose(
@@ -2274,7 +2311,9 @@ def main():
                 # Check specified argument backup-id
                 bck_id = utility.get_bckid(export_catalog, args.id)
                 if not bck_id:
-                    utility.error("Backup-id {0} not exist!".format(args.id))
+                    utility.error(
+                        "Backup-id {0} not exist!".format(args.id), nocolor=args.color
+                    )
                     exit(1)
                 # Log info
                 log_args = {
