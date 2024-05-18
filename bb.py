@@ -161,7 +161,7 @@ def run_in_parallel(fn, commands, limit):
                     )
 
         else:
-            utility.success("Command {0}".format(command))
+            utility.success("Command {0}".format(command), nocolor=args.color)
             utility.write_log(
                 log_args["status"],
                 plog["destination"],
@@ -803,7 +803,9 @@ def retention_policy(host, catalog, logpath):
                     cleanup = 0
                 if cleanup == 0:
                     write_catalog(catalog, bid, "cleaned", "True")
-                    utility.success("Cleanup {0} successfully.".format(path))
+                    utility.success(
+                        "Cleanup {0} successfully.".format(path), nocolor=args.color
+                    )
                     utility.write_log(
                         log_args["status"],
                         logpath,
@@ -856,7 +858,9 @@ def archive_policy(catalog, destination):
                 archive = utility.archive(path, date, args.days, destination)
             if archive == 0:
                 write_catalog(catalog, bid, "archived", "True")
-                utility.success("Archive {0} successfully.".format(path))
+                utility.success(
+                    "Archive {0} successfully.".format(path), nocolor=args.color
+                )
                 utility.write_log(
                     log_args["status"],
                     logpath,
@@ -907,7 +911,8 @@ def deploy_configuration(computer, user):
             )
             if return_code == 0:
                 utility.success(
-                    "Configuration copied successfully on {0}!".format(computer)
+                    "Configuration copied successfully on {0}!".format(computer),
+                    nocolor=args.color,
                 )
             else:
                 utility.error(
@@ -959,7 +964,7 @@ def remove_configuration():
                     "Public key ~/.ssh/id_rsa.pub is not exist", nocolor=args.color
                 )
                 exit(2)
-            utility.success("Removed configuration successfully!")
+            utility.success("Removed configuration successfully!", nocolor=args.color)
 
 
 def new_configuration():
@@ -988,7 +993,7 @@ def new_configuration():
             )
             exit(2)
         # Sucess!
-        utility.success("New configuration successfully created!")
+        utility.success("New configuration successfully created!", nocolor=args.color)
 
 
 def check_configuration(ip):
@@ -1060,7 +1065,9 @@ def delete_host(catalog, host):
                     date = config.get(cid, "timestamp")
                     cleanup = utility.cleanup(path, date, 0)
                     if cleanup == 0:
-                        utility.success("Delete {0} successfully.".format(path))
+                        utility.success(
+                            "Delete {0} successfully.".format(path), nocolor=args.color
+                        )
                         print_verbose(
                             args.verbose,
                             "Backup-id {0} has been removed from catalog!".format(cid),
@@ -1103,7 +1110,9 @@ def delete_backup(catalog, bckid):
                 date = bck_id.get("timestamp")
                 cleanup = utility.cleanup(path, date, 0)
                 if cleanup == 0:
-                    utility.success("Delete {0} successfully.".format(path))
+                    utility.success(
+                        "Delete {0} successfully.".format(path), nocolor=args.color
+                    )
                     print_verbose(
                         args.verbose,
                         "Backup-id {0} has been removed from catalog!".format(bckid),
