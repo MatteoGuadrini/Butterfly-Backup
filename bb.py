@@ -2048,36 +2048,36 @@ def main():
                     utility.print_verbose(
                         args.verbose, "Select backup-id: {0}".format(bck_id.name)
                     )
-                    utility.print_values("Backup id", bck_id.name, endline=endline)
+                    utility.print_values("Backup id", bck_id.name, nocolor=args.color, endline=endline)
                     utility.print_values(
-                        "Hostname or ip", bck_id.get("name", ""), endline=endline
+                        "Hostname or ip", bck_id.get("name", ""), nocolor=args.color, endline=endline
                     )
                     utility.print_values(
-                        "Type", bck_id.get("type", ""), endline=endline
+                        "Type", bck_id.get("type", ""), nocolor=args.color, endline=endline
                     )
                     utility.print_values(
-                        "Timestamp", bck_id.get("timestamp", ""), endline=endline
+                        "Timestamp", bck_id.get("timestamp", ""), nocolor=args.color, endline=endline
                     )
                     utility.print_values(
-                        "Start", bck_id.get("start", ""), endline=endline
+                        "Start", bck_id.get("start", ""), nocolor=args.color, endline=endline
                     )
                     utility.print_values(
-                        "Finish", bck_id.get("end", ""), endline=endline
+                        "Finish", bck_id.get("end", ""), nocolor=args.color, endline=endline
                     )
-                    utility.print_values("OS", bck_id.get("os", ""), endline=endline)
+                    utility.print_values("OS", bck_id.get("os", ""), nocolor=args.color, endline=endline)
                     utility.print_values(
-                        "ExitCode", bck_id.get("status", ""), endline=endline
+                        "ExitCode", bck_id.get("status", ""), nocolor=args.color, endline=endline
                     )
                     utility.print_values(
-                        "Path", bck_id.get("path", ""), endline=endline
+                        "Path", bck_id.get("path", ""), nocolor=args.color, endline=endline
                     )
                     if list_catalog.get(args.id, "cleaned", fallback=False):
                         utility.print_values(
-                            "Cleaned", bck_id.get("cleaned", "False"), endline=endline
+                            "Cleaned", bck_id.get("cleaned", "False"), nocolor=args.color, endline=endline
                         )
                     elif list_catalog.get(args.id, "archived", fallback=False):
                         utility.print_values(
-                            "Archived", bck_id.get("archived", "False"), endline=endline
+                            "Archived", bck_id.get("archived", "False"), nocolor=args.color, endline=endline
                         )
                     else:
                         newline = " " if args.oneline else "\n"
@@ -2087,7 +2087,7 @@ def main():
                             dirs = []
                         utility.print_values(
                             "List",
-                            "{0}".format(newline).join(dirs),
+                            "{0}".format(newline).join(dirs), nocolor=args.color, 
                         )
                 else:
                     utility.error(
@@ -2106,11 +2106,11 @@ def main():
                         "List detail of backup-id: {0}".format(bck_id.name),
                     )
                     utility.print_values(
-                        "Detail of backup folder", bck_id.get("path", "")
+                        "Detail of backup folder", bck_id.get("path", ""), nocolor=args.color, 
                     )
                     if bck_id.get("path") and os.path.exists(bck_id.get("path")):
                         utility.print_values(
-                            "List", "\n".join(os.listdir(bck_id.get("path", "-")))
+                            "List", "\n".join(os.listdir(bck_id.get("path", "-"))), nocolor=args.color
                         )
                         if log_args["status"]:
                             utility.write_log(
