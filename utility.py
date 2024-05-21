@@ -62,7 +62,6 @@ def warning(message, nocolor=False):
         print("warning: {0}".format(message))
     else:
         print("{ansi.yellow}warning: {0}{ansi.reset}".format(message, ansi=ansi))
-        
 
 
 def error(message, nocolor=False):
@@ -100,7 +99,11 @@ def print_values(key, value, nocolor=False, endline="\n"):
     if nocolor:
         print(key + ":", "{0}".format(value), end=endline)
     else:
-        print(key + ":", "{ansi.cyan}{0}{ansi.reset}".format(value, ansi=ansi), end=endline)
+        print(
+            key + ":",
+            "{ansi.cyan}{0}{ansi.reset}".format(value, ansi=ansi),
+            end=endline,
+        )
 
 
 def touch(filename, times=None):
@@ -302,18 +305,21 @@ def confirm(message, default="n", force=False):
     return answer == "y"
 
 
-def print_verbose(verbose_status, *messages):
+def print_verbose(verbose_status, nocolor=False, *messages):
     """
     Print verbose information
     :return: Verbose message if verbose status is True
     :rtype: str
     """
     if verbose_status:
-        print(
-            "{ansi.white}debug:".format(ansi=ansi),
-            *messages,
-            "{ansi.reset}".format(ansi=ansi),
-        )
+        if nocolor:
+            print("debug:", *messages)
+        else:
+            print(
+                "{ansi.white}debug:".format(ansi=ansi),
+                *messages,
+                "{ansi.reset}".format(ansi=ansi),
+            )
 
 
 def check_tool(name):
