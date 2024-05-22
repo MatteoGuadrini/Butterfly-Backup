@@ -62,7 +62,6 @@ from glob import glob
 from multiprocessing import Pool
 
 import utility
-from utility import print_verbose
 
 # region Global Variables
 VERSION = "1.11.0"
@@ -97,7 +96,7 @@ def dry_run(message):
     global args
 
     if args.dry_run:
-        print_verbose(True, message)
+        utility.print_verbose(True, message, nocolor=args.color)
         return True
     return False
 
@@ -120,7 +119,9 @@ def run_in_parallel(fn, commands, limit):
         proc = pool.apply_async(func=fn, args=(command,))
         jobs.append(proc)
         print("Start {0} {1}".format(args.action, plog["hostname"]))
-        print_verbose(args.verbose, "rsync command: {0}".format(command))
+        utility.print_verbose(
+            args.verbose, "rsync command: {0}".format(command), nocolor=args.color
+        )
         utility.write_log(
             log_args["status"],
             plog["destination"],
@@ -272,7 +273,7 @@ def compose_command(flags, host):
     """
     global args, catalog_path, backup_id, rpath, hostname
 
-    print_verbose(args.verbose, "Build a rsync command")
+    utility.print_verbose(args.verbose, "Build a rsync command", nocolor=args.color)
     # Set rsync binary
     if flags.rsync:
         if os.path.exists(flags.rsync):
@@ -467,7 +468,11 @@ def compose_command(flags, host):
                 "INFO",
                 "rsync log path: {0}".format(log_path),
             )
-    print_verbose(args.verbose, "Command flags are: {0}".format(" ".join(command)))
+    utility.print_verbose(
+        args.verbose,
+        "Command flags are: {0}".format(" ".join(command)),
+        nocolor=args.color,
+    )
     return command
 
 
@@ -508,7 +513,11 @@ def compose_source():
         "INFO",
         "OS {0}; backup folder {1}".format(args.type, " ".join(src_list)),
     )
-    print_verbose(args.verbose, "Include this criteria: {0}".format(" ".join(src_list)))
+    utility.print_verbose(
+        args.verbose,
+        "Include this criteria: {0}".format(" ".join(src_list)),
+        nocolor=args.color,
+    )
     return src_list
 
 
@@ -616,7 +625,11 @@ def get_last_full(catalog):
         if dates:
             last_full = utility.time_to_string(max(dates))
             if last_full:
-                print_verbose(args.verbose, "Last full is {0}".format(last_full))
+                utility.print_verbose(
+                    args.verbose,
+                    "Last full is {0}".format(last_full),
+                    nocolor=args.color,
+                )
                 for bid in config.sections():
                     if (
                         config.get(bid, "type") == "full"
@@ -716,7 +729,9 @@ def read_catalog(catalog):
     if file:
         return config
     else:
-        print_verbose(args.verbose, "Catalog not found! Create a new one.")
+        utility.print_verbose(
+            args.verbose, "Catalog not found! Create a new one.", nocolor=args.color
+        )
         if os.path.exists(os.path.dirname(catalog)):
             utility.touch(catalog)
             config.read(catalog)
@@ -791,6 +806,7 @@ def retention_policy(host, catalog, logpath):
                 utility.print_verbose(
                     args.verbose,
                     "Check cleanup this backup {0}. " "Folder {1}".format(bid, path),
+                    nocolor=args.color,
                 )
                 if not dry_run("Cleanup {0} backup folder".format(path)):
                     cleanup = utility.cleanup(path, date, args.retention[0])
@@ -799,6 +815,7 @@ def retention_policy(host, catalog, logpath):
                         args.verbose,
                         "This folder {0} does not exist. "
                         "The backup has already been cleaned.".format(path),
+                        nocolor=args.color,
                     )
                     cleanup = 0
                 if cleanup == 0:
@@ -826,6 +843,7 @@ def retention_policy(host, catalog, logpath):
                     utility.print_verbose(
                         args.verbose,
                         "No cleanup backup {0}. Folder {1}".format(bid, path),
+                        nocolor=args.color,
                     )
 
 
@@ -851,6 +869,7 @@ def archive_policy(catalog, destination):
             utility.print_verbose(
                 args.verbose,
                 "Check archive this backup {0}. Folder {1}".format(bid, path),
+                nocolor=args.color,
             )
             if (type_backup == "full") and (full_count <= 1):
                 continue
@@ -877,7 +896,9 @@ def archive_policy(catalog, destination):
                 )
             else:
                 utility.print_verbose(
-                    args.verbose, "No archive backup {0}. Folder {1}".format(bid, path)
+                    args.verbose,
+                    "No archive backup {0}. Folder {1}".format(bid, path),
+                    nocolor=args.color,
                 )
 
 
@@ -895,7 +916,9 @@ def deploy_configuration(computer, user):
     ssh_folder = os.path.join(home, ".ssh")
     # Remove private key file
     id_rsa_pub_file = os.path.join(ssh_folder, "id_rsa.pub")
-    print_verbose(args.verbose, "Public id_rsa is {0}".format(id_rsa_pub_file))
+    utility.print_verbose(
+        args.verbose, "Public id_rsa is {0}".format(id_rsa_pub_file), nocolor=args.color
+    )
     if not dry_run("Copying configuration to {0}".format(computer)):
         if os.path.exists(id_rsa_pub_file):
             print(
@@ -906,8 +929,10 @@ def deploy_configuration(computer, user):
                 "ssh-copy-id -i {0} {1}@{2}".format(id_rsa_pub_file, user, computer),
                 shell=True,
             )
-            print_verbose(
-                args.verbose, "Return code of ssh-copy-id: {0}".format(return_code)
+            utility.print_verbose(
+                args.verbose,
+                "Return code of ssh-copy-id: {0}".format(return_code),
+                nocolor=args.color,
             )
             if return_code == 0:
                 utility.success(
@@ -944,7 +969,11 @@ def remove_configuration():
         ):
             # Remove private key file
             id_rsa_file = os.path.join(ssh_folder, "id_rsa")
-            print_verbose(args.verbose, "Remove private id_rsa {0}".format(id_rsa_file))
+            utility.print_verbose(
+                args.verbose,
+                "Remove private id_rsa {0}".format(id_rsa_file),
+                nocolor=args.color,
+            )
             if os.path.exists(id_rsa_file):
                 os.remove(id_rsa_file)
             else:
@@ -954,8 +983,10 @@ def remove_configuration():
                 exit(2)
             # Remove public key file
             id_rsa_pub_file = os.path.join(ssh_folder, "id_rsa.pub")
-            print_verbose(
-                args.verbose, "Remove public id_rsa {0}".format(id_rsa_pub_file)
+            utility.print_verbose(
+                args.verbose,
+                "Remove public id_rsa {0}".format(id_rsa_pub_file),
+                nocolor=args.color,
             )
             if os.path.exists(id_rsa_pub_file):
                 os.remove(id_rsa_pub_file)
@@ -979,12 +1010,16 @@ def new_configuration():
     id_rsa_file = os.path.join(ssh_folder, "id_rsa")
     if not dry_run("Generate private/public key pair"):
         # Generate private/public key pair
-        print_verbose(args.verbose, "Generate private/public key pair")
+        utility.print_verbose(
+            args.verbose, "Generate private/public key pair", nocolor=args.color
+        )
         return_code = subprocess.call(
             'ssh-keygen -t rsa -b 4096 -N "" -f {0} <<< y'.format(id_rsa_file)
         )
-        print_verbose(
-            args.verbose, "Return code of ssh-keygen: {0}".format(return_code)
+        utility.print_verbose(
+            args.verbose,
+            "Return code of ssh-keygen: {0}".format(return_code),
+            nocolor=args.color,
         )
         # Check if something wrong
         if return_code:
@@ -1026,9 +1061,10 @@ def init_catalog(catalog):
             if not config.get(cid, "path") or not os.path.exists(
                 config.get(cid, "path")
             ):
-                print_verbose(
+                utility.print_verbose(
                     args.verbose,
                     "Backup-id {0} has been removed to catalog!".format(cid),
+                    nocolor=args.color,
                 )
                 config.remove_section(cid)
         # Write file
@@ -1055,9 +1091,10 @@ def delete_host(catalog, host):
                 if not config.get(cid, "path") or not os.path.exists(
                     config.get(cid, "path")
                 ):
-                    print_verbose(
+                    utility.print_verbose(
                         args.verbose,
                         "Backup-id {0} has been removed from catalog!".format(cid),
+                        nocolor=args.color,
                     )
                     config.remove_section(cid)
                 else:
@@ -1068,9 +1105,10 @@ def delete_host(catalog, host):
                         utility.success(
                             "Delete {0} successfully.".format(path), nocolor=args.color
                         )
-                        print_verbose(
+                        utility.print_verbose(
                             args.verbose,
                             "Backup-id {0} has been removed from catalog!".format(cid),
+                            nocolor=args.color,
                         )
                         config.remove_section(cid)
                     elif cleanup == 1:
@@ -1100,9 +1138,10 @@ def delete_backup(catalog, bckid):
     ):
         if bck_id:
             if not bck_id.get("path") or not os.path.exists(bck_id.get("path")):
-                print_verbose(
+                utility.print_verbose(
                     args.verbose,
                     "Backup-id {0} has been removed from catalog!".format(bckid),
+                    nocolor=args.color,
                 )
                 config.remove_section(bck_id.name)
             else:
@@ -1113,9 +1152,10 @@ def delete_backup(catalog, bckid):
                     utility.success(
                         "Delete {0} successfully.".format(path), nocolor=args.color
                     )
-                    print_verbose(
+                    utility.print_verbose(
                         args.verbose,
                         "Backup-id {0} has been removed from catalog!".format(bckid),
+                        nocolor=args.color,
                     )
                     config.remove_section(bck_id.name)
                 elif cleanup == 1:
@@ -1132,9 +1172,15 @@ def clean_catalog(catalog):
     global args
 
     config = read_catalog(catalog)
-    print_verbose(args.verbose, "Start check catalog file: {0}!".format(catalog))
+    utility.print_verbose(
+        args.verbose,
+        "Start check catalog file: {0}!".format(catalog),
+        nocolor=args.color,
+    )
     for cid in config.sections():
-        print_verbose(args.verbose, "Check backup-id: {0}!".format(cid))
+        utility.print_verbose(
+            args.verbose, "Check backup-id: {0}!".format(cid), nocolor=args.color
+        )
         mod = False
         if not config.get(cid, "type", fallback=""):
             config.set(cid, "type", "incremental")
@@ -1833,9 +1879,10 @@ def main():
                             nocolor=args.color,
                         )
                         exit(1)
-                print_verbose(
+                utility.print_verbose(
                     args.verbose,
                     "Create a folder structure for {0} os".format(args.type),
+                    nocolor=args.color,
                 )
                 # Write catalog file
                 write_catalog(catalog_path, backup_id, "name", hostname)
@@ -1853,7 +1900,11 @@ def main():
                     )
                 # Compose destination
                 bck_dst = compose_destination(hostname, args.destination)
-                print_verbose(args.verbose, "Destination is {0}".format(bck_dst))
+                utility.print_verbose(
+                    args.verbose,
+                    "Destination is {0}".format(bck_dst),
+                    nocolor=args.color,
+                )
                 utility.write_log(
                     log_args["status"],
                     log_args["destination"],
@@ -2046,38 +2097,71 @@ def main():
                 if bck_id:
                     endline = " - " if args.oneline else "\n"
                     utility.print_verbose(
-                        args.verbose, "Select backup-id: {0}".format(bck_id.name)
-                    )
-                    utility.print_values("Backup id", bck_id.name, nocolor=args.color, endline=endline)
-                    utility.print_values(
-                        "Hostname or ip", bck_id.get("name", ""), nocolor=args.color, endline=endline
+                        args.verbose,
+                        "Select backup-id: {0}".format(bck_id.name),
+                        nocolor=args.color,
                     )
                     utility.print_values(
-                        "Type", bck_id.get("type", ""), nocolor=args.color, endline=endline
+                        "Backup id", bck_id.name, nocolor=args.color, endline=endline
                     )
                     utility.print_values(
-                        "Timestamp", bck_id.get("timestamp", ""), nocolor=args.color, endline=endline
+                        "Hostname or ip",
+                        bck_id.get("name", ""),
+                        nocolor=args.color,
+                        endline=endline,
                     )
                     utility.print_values(
-                        "Start", bck_id.get("start", ""), nocolor=args.color, endline=endline
+                        "Type",
+                        bck_id.get("type", ""),
+                        nocolor=args.color,
+                        endline=endline,
                     )
                     utility.print_values(
-                        "Finish", bck_id.get("end", ""), nocolor=args.color, endline=endline
+                        "Timestamp",
+                        bck_id.get("timestamp", ""),
+                        nocolor=args.color,
+                        endline=endline,
                     )
-                    utility.print_values("OS", bck_id.get("os", ""), nocolor=args.color, endline=endline)
                     utility.print_values(
-                        "ExitCode", bck_id.get("status", ""), nocolor=args.color, endline=endline
+                        "Start",
+                        bck_id.get("start", ""),
+                        nocolor=args.color,
+                        endline=endline,
                     )
                     utility.print_values(
-                        "Path", bck_id.get("path", ""), nocolor=args.color, endline=endline
+                        "Finish",
+                        bck_id.get("end", ""),
+                        nocolor=args.color,
+                        endline=endline,
+                    )
+                    utility.print_values(
+                        "OS", bck_id.get("os", ""), nocolor=args.color, endline=endline
+                    )
+                    utility.print_values(
+                        "ExitCode",
+                        bck_id.get("status", ""),
+                        nocolor=args.color,
+                        endline=endline,
+                    )
+                    utility.print_values(
+                        "Path",
+                        bck_id.get("path", ""),
+                        nocolor=args.color,
+                        endline=endline,
                     )
                     if list_catalog.get(args.id, "cleaned", fallback=False):
                         utility.print_values(
-                            "Cleaned", bck_id.get("cleaned", "False"), nocolor=args.color, endline=endline
+                            "Cleaned",
+                            bck_id.get("cleaned", "False"),
+                            nocolor=args.color,
+                            endline=endline,
                         )
                     elif list_catalog.get(args.id, "archived", fallback=False):
                         utility.print_values(
-                            "Archived", bck_id.get("archived", "False"), nocolor=args.color, endline=endline
+                            "Archived",
+                            bck_id.get("archived", "False"),
+                            nocolor=args.color,
+                            endline=endline,
                         )
                     else:
                         newline = " " if args.oneline else "\n"
@@ -2087,7 +2171,8 @@ def main():
                             dirs = []
                         utility.print_values(
                             "List",
-                            "{0}".format(newline).join(dirs), nocolor=args.color, 
+                            "{0}".format(newline).join(dirs),
+                            nocolor=args.color,
                         )
                 else:
                     utility.error(
@@ -2104,13 +2189,18 @@ def main():
                     utility.print_verbose(
                         args.verbose,
                         "List detail of backup-id: {0}".format(bck_id.name),
+                        nocolor=args.color,
                     )
                     utility.print_values(
-                        "Detail of backup folder", bck_id.get("path", ""), nocolor=args.color, 
+                        "Detail of backup folder",
+                        bck_id.get("path", ""),
+                        nocolor=args.color,
                     )
                     if bck_id.get("path") and os.path.exists(bck_id.get("path")):
                         utility.print_values(
-                            "List", "\n".join(os.listdir(bck_id.get("path", "-"))), nocolor=args.color
+                            "List",
+                            "\n".join(os.listdir(bck_id.get("path", "-"))),
+                            nocolor=args.color,
                         )
                         if log_args["status"]:
                             utility.write_log(
@@ -2142,7 +2232,9 @@ def main():
                     exit(1)
             elif args.archived:
                 utility.print_verbose(
-                    args.verbose, "List all archived backup in catalog"
+                    args.verbose,
+                    "List all archived backup in catalog",
+                    nocolor=args.color,
                 )
                 text = "BUTTERFLY BACKUP CATALOG (ARCHIVED)\n\n"
                 utility.write_log(
@@ -2182,7 +2274,9 @@ def main():
                 utility.pager(text)
             elif args.cleaned:
                 utility.print_verbose(
-                    args.verbose, "List all cleaned backup in catalog"
+                    args.verbose,
+                    "List all cleaned backup in catalog",
+                    nocolor=args.color,
                 )
                 text = "BUTTERFLY BACKUP CATALOG (CLEANED)\n\n"
                 utility.write_log(
@@ -2221,7 +2315,9 @@ def main():
                         text += "\n\n"
                 utility.pager(text)
             else:
-                utility.print_verbose(args.verbose, "List all backup in catalog")
+                utility.print_verbose(
+                    args.verbose, "List all backup in catalog", nocolor=args.color
+                )
                 text = "BUTTERFLY BACKUP CATALOG\n\n"
                 utility.write_log(
                     log_args["status"],
@@ -2345,8 +2441,10 @@ def main():
                         args.destination,
                     ),
                 )
-                print_verbose(
-                    args.verbose, "Export backup with id {0}".format(bck_id.name)
+                utility.print_verbose(
+                    args.verbose,
+                    "Export backup with id {0}".format(bck_id.name),
+                    nocolor=args.color,
                 )
                 if bck_id.get("path") and os.path.exists(bck_id.get("path")):
                     # Add source
