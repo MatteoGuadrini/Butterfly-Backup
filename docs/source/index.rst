@@ -113,7 +113,7 @@ Butterfly Backup has, in its core, six main operations:
 .. code-block:: console
 
    arthur@heartofgold$ bb --help
-   usage: bb [-h] [--verbose] [--log] [--dry-run] [--force] [--version]
+   usage: bb [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version]
              {config,backup,restore,archive,list,export} ...
 
    Butterfly Backup
@@ -124,6 +124,7 @@ Butterfly Backup has, in its core, six main operations:
      --log, -l             Create a log
      --dry-run, -N         Dry run mode
      --force, -O           Force an action without prompt
+     --no-color, -w        Remove color into terminal
      --version, -V         Print version
 
    action:
@@ -154,6 +155,7 @@ It also has three flags that can be very useful, especially in case of error.
         --log, -l             Create a log
         --dry-run, -N         Dry run mode, test your command
         --force, -O           Force an action without prompt
+        --no-color, -w        Remove color into terminal
         --version, -V         Print version
 
 
@@ -170,7 +172,7 @@ Let's see how to go about looking at the help:
 .. code-block:: console
 
    arthur@heartofgold$ bb config --help
-   usage: bb config [-h] [--verbose] [--log] [--dry-run] [--force] [--version] [--new | --remove | --init CATALOG | --delete-host CATALOG HOST | --clean CATALOG | --delete-backup CATALOG ID] [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
+   usage: bb config [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] [--new | --remove | --init CATALOG | --delete-host CATALOG HOST | --clean CATALOG | --delete-backup CATALOG ID] [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
 
    options:
    -h, --help            show this help message and exit
@@ -178,6 +180,7 @@ Let's see how to go about looking at the help:
    --log, -l             Create logs
    --dry-run, -N         Dry run mode
    --force, -O           Force an action without prompt
+   --no-color, -w        Remove color into terminal
    --version, -V         Print version
 
    Init configuration:
@@ -330,7 +333,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 .. code-block:: console
 
    arthur@heartofgold$ bb backup --help
-   usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--version] (--computer HOSTNAME | --list LIST) --destination DESTINATION [--mode {full,incremental,differential,mirror}]
+   usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] (--computer HOSTNAME | --list LIST) --destination DESTINATION [--mode {full,incremental,differential,mirror}]
                   (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...] | --file-data FILEDATA) [--user USER] --type {unix,windows,macos} [--compress]
                   [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]] [--start-from ID]
 
@@ -340,6 +343,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
    --log, -l             Create logs
    --dry-run, -N         Dry run mode
    --force, -O           Force an action without prompt
+   --no-color, -w        Remove color into terminal
    --version, -V         Print version
 
    Backup options:
@@ -628,7 +632,7 @@ To query this catalog, the list command exists.
 .. code-block:: console
 
    arthur@heartofgold$ bb list --help
-   usage: bb list [-h] [--verbose] [--log] [--dry-run] [--force] [--version] --catalog CATALOG
+   usage: bb list [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] --catalog CATALOG
                   [--backup-id ID | --archived | --cleaned | --computer HOSTNAME | --detail ID]
                   [--oneline]
 
@@ -638,6 +642,7 @@ To query this catalog, the list command exists.
      --log, -l             Create a log
      --dry-run, -N         Dry run mode
      --force, -O           Force an action without prompt
+     --no-color, -w        Remove color into terminal
      --version, -V         Print version
 
    List options:
@@ -726,7 +731,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
 .. code-block:: console
 
    arthur@heartofgold$ bb restore --help
-   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--version] --catalog CATALOG (--backup-id ID | --last) [--user USER] --computer HOSTNAME [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror] [--skip-error]
+   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] --catalog CATALOG (--backup-id ID | --last) [--user USER] --computer HOSTNAME [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror] [--skip-error]
                   [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]] [--files FILES [FILES ...]]
 
    options:
@@ -735,6 +740,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
    --log, -l             Create logs
    --dry-run, -N         Dry run mode
    --force, -O           Force an action without prompt
+   --no-color, -w        Remove color into terminal
    --version, -V         Print version
 
    Restore options:
@@ -847,7 +853,7 @@ Archive operations are used to store backups by saving disk space. Backups older
 .. code-block:: console
 
    arthur@heartofgold$ bb archive --help
-   usage: bb archive [-h] [--verbose] [--log] [--dry-run] [--force] [--version] --catalog CATALOG
+   usage: bb archive [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] --catalog CATALOG
                      [--days DAYS] --destination DESTINATION
 
    optional arguments:
@@ -856,6 +862,7 @@ Archive operations are used to store backups by saving disk space. Backups older
      --log, -l             Create a log
      --dry-run, -N         Dry run mode
      --force, -O           Force an action without prompt
+     --no-color, -w        Remove color into terminal
      --version, -V         Print version
 
    Archive options:
@@ -915,7 +922,7 @@ The export function is used to copy a particular backup to another path.
 .. code-block:: console
 
    arthur@heartofgold$ bb export -h
-   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--version] --catalog CATALOG
+   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] --catalog CATALOG
                     [--backup-id ID | --all] --destination DESTINATION [--mirror]
                     [--cut] [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE
                     [EXCLUDE ...]] [--timeout TIMEOUT] [--skip-error]
@@ -927,6 +934,7 @@ The export function is used to copy a particular backup to another path.
      --log, -l             Create a log
      --dry-run, -N         Dry run mode
      --force, -O           Force an action without prompt
+     --no-color, -w        Remove color into terminal
      --version, -V         Print version
 
    Export options:
