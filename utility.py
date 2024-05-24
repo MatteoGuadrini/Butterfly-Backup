@@ -305,7 +305,7 @@ def confirm(message, default="n", force=False):
     return answer == "y"
 
 
-def print_verbose(verbose_status, nocolor=False, *messages):
+def print_verbose(verbose_status, *messages, nocolor=False):
     """
     Print verbose information
     :return: Verbose message if verbose status is True
