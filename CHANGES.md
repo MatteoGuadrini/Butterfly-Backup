@@ -1,8 +1,12 @@
 # Release notes
 
+## 1.12.0
+May 24, 2024
+* Add **--no-color** argument
+
 ## 1.11.0
 Feb 15, 2024
-* Add **-file-data** argument in *backup* action
+* Add **--file-data** argument in *backup* action
 * Add **--force** argument in *every* action
 * Add *confirm* function to every potentially destrucive actions
 * Fix returns of *get_last_backup* function
