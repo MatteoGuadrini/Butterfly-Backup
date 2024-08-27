@@ -1767,7 +1767,7 @@ def parse_arguments():
 def main():
     """Main process"""
 
-    global args, catalog_path, backup_id, rpath, log_args, logs, hostname
+    global args, catalog_path, backup_id, rpath, log_args, logs, hostname, catalog_file
 
     # Create arguments object
     parser = parse_arguments()
