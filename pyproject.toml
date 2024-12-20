@@ -24,7 +24,7 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: POSIX :: Linux",
 ]
-dependencies = ["pansi", "fabric"]
+dependencies = ["pansi==2020.7.3", "fabric"]
 
 [project.scripts]
 bb = "bb:main"

@@ -36,7 +36,7 @@ setup(
         "GitHub Project": "https://github.com/MatteoGuadrini/Butterfly-Backup",
         "Issue Tracker": "https://github.com/MatteoGuadrini/Butterfly-Backup/issues",
     },
-    install_requires=["pansi", "fabric"],
+    install_requires=["pansi==2020.7.3", "fabric"],
     license="GNU General Public License v3.0",
     keywords = ['backup', 'archive', 'restore', 'rsync', 'catalog', 'list',
             'config', 'export', 'mirror', 'incremental', 'differential', 'clone', 'copy'],
