@@ -637,6 +637,7 @@ def get_last_full(catalog):
                         and config.get(bid, "timestamp") == last_full
                     ):
                         return config.get(bid, "path"), config.get(bid, "os")
+                return ()
     else:
         return ()
 
@@ -673,14 +674,13 @@ def get_last_backup(catalog):
             if last:
                 for bid in config.sections():
                     if (
-                        config.get(bid, "name") == hostname
-                        and config.get(bid, "timestamp") == last
+                        config.get(bid, "name") == hostname and
+                        config.get(bid, "timestamp") == last
                     ):
                         return config.get(bid, "path"), config.get(bid, "os"), bid
-                    else:
-                        return None
+                return ()
     else:
-        return None
+        return ()
 
 
 def count_full(config, name):
