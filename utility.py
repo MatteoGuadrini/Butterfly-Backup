@@ -276,7 +276,7 @@ def make_symlink(source, destination):
             os.unlink(destination)
         os.symlink(source, destination)
     except OSError:
-        warning("MS-DOS file system doesn't support symlink file")
+        warning(f"Link {destination} doesn't created")
 
 
 def confirm(message, default="n", force=False):
