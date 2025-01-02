@@ -1,5 +1,9 @@
 # Release notes
 
+## 1.13.0
+Jan 02, 2025
+* Fix return of **get_last_backup** function for incremental and differential backup, refs #7
+
 ## 1.12.0
 May 24, 2024
 * Add **--no-color** argument

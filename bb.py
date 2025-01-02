@@ -64,7 +64,7 @@ from multiprocessing import Pool
 import utility
 
 # region Global Variables
-VERSION = "1.12.0"
+VERSION = "1.13.0"
 
 
 # endregion
@@ -600,7 +600,7 @@ def get_last_full(catalog):
     :param catalog: configparser object
     :return: path (string), os (string)
     """
-    global hostname
+    global hostname, args
 
     config = catalog
     if config:
@@ -627,7 +627,7 @@ def get_last_full(catalog):
             if last_full:
                 utility.print_verbose(
                     args.verbose,
-                    "Last full is {0}".format(last_full),
+                    "Last full backup is {0}".format(last_full),
                     nocolor=args.color,
                 )
                 for bid in config.sections():
@@ -648,7 +648,7 @@ def get_last_backup(catalog):
     :param catalog: configparser object
     :return: path (string), os (string)
     """
-    global hostname
+    global hostname, args
 
     config = catalog
     dates = []
@@ -672,6 +672,11 @@ def get_last_backup(catalog):
             dates.sort()
             last = utility.time_to_string(dates[-1])
             if last:
+                utility.print_verbose(
+                    args.verbose,
+                    "Last backup is {0}".format(last),
+                    nocolor=args.color,
+                )
                 for bid in config.sections():
                     if (
                         config.get(bid, "name") == hostname and
