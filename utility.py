@@ -279,6 +279,15 @@ def make_symlink(source, destination):
         warning(f"Link {destination} doesn't created")
 
 
+def unlink(link):
+    """Unlink symbolic link
+
+    :param link: Path of symbolic link
+    """
+    if not os.path.exists(os.readlink(link)):
+        os.unlink(link)
+
+
 def confirm(message, default="n", force=False):
     """
     Ask user to enter Y or N (case-insensitive).
