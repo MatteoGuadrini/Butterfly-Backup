@@ -679,8 +679,8 @@ def get_last_backup(catalog):
                 )
                 for bid in config.sections():
                     if (
-                        config.get(bid, "name") == hostname and
-                        config.get(bid, "timestamp") == last
+                        config.get(bid, "name") == hostname
+                        and config.get(bid, "timestamp") == last
                     ):
                         return config.get(bid, "path"), config.get(bid, "os"), bid
                 return ()
@@ -834,6 +834,7 @@ def retention_policy(host, catalog, logpath):
                         "INFO",
                         "Cleanup {0} successfully.".format(path),
                     )
+                    utility.unlink(os.path.join(catalog, host, "last_backup"))
                 elif cleanup == 1:
                     utility.error(
                         "Cleanup {0} failed.".format(path), nocolor=args.color
