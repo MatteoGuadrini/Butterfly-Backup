@@ -284,7 +284,7 @@ def unlink(link):
 
     :param link: Path of symbolic link
     """
-    if not os.path.exists(os.readlink(link)):
+    if os.path.exists(link) and not os.path.exists(os.readlink(link)):
         os.unlink(link)
 
 
