@@ -139,18 +139,35 @@ def run_in_parallel(fn, commands, limit):
     # Check exit code of command
     for p, command, plog in zip(jobs, commands, logs):
         if p.get() != 0:
-            utility.error(
-                "Command {0} exit with code: {1}".format(command, p.get()),
-                nocolor=args.color,
-            )
-            utility.write_log(
-                log_args["status"],
-                plog["destination"],
-                "ERROR",
-                "Finish process {0} on {1} with error:{2}".format(
-                    args.action, plog["hostname"], p.get()
-                ),
-            )
+            # Print warning for partial transfer
+            if p.get() in (23, 24):
+                utility.warning(
+                    "Command {0} exit with code (partial transfer): {1}".format(
+                        command, p.get()
+                    ),
+                    nocolor=args.color,
+                )
+                utility.write_log(
+                    log_args["status"],
+                    plog["destination"],
+                    "WARNING",
+                    "Finish process {0} on {1} with error (partial transfer):{2}".format(
+                        args.action, plog["hostname"], p.get()
+                    ),
+                )
+            else:
+                utility.error(
+                    "Command {0} exit with code: {1}".format(command, p.get()),
+                    nocolor=args.color,
+                )
+                utility.write_log(
+                    log_args["status"],
+                    plog["destination"],
+                    "ERROR",
+                    "Finish process {0} on {1} with error:{2}".format(
+                        args.action, plog["hostname"], p.get()
+                    ),
+                )
             if args.action == "backup":
                 # Write catalog file
                 write_catalog(catalog_path, plog["id"], "end", utility.time_for_log())
