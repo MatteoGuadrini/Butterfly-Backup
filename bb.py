@@ -546,6 +546,8 @@ def compose_restore_src_dst(backup_os, restore_os, restore_path):
     :param restore_path: path of backup
     :return: set
     """
+    global args
+
     # Compare folder of the backup os and restore os
     b_folders = map_dict_folder(backup_os)
     r_folders = map_dict_folder(restore_os)
@@ -553,16 +555,22 @@ def compose_restore_src_dst(backup_os, restore_os, restore_path):
         if restore_path in b_folders[key]:
             rsrc = os.path.join(restore_path, "*")
             rdst = r_folders[key]
-            if rsrc and rdst:
-                return rsrc, rdst
+        elif args.root_dir:
+            rsrc = restore_path
+            rdst = (
+                os.path.join("/", args.root_dir)
+                if not args.root_dir.startswith("/")
+                else args.root_dir
+            )
         else:
             rsrc = restore_path
             rdst = os.path.join(
                 r_folders["System"], "restore_{0}".format(utility.time_for_folder())
             )
-            if rsrc and rdst:
-                return rsrc, rdst
-    return ()
+    if rsrc and rdst:
+        return rsrc, rdst
+    else:
+        return ()
 
 
 def get_restore_os():
@@ -1547,7 +1555,11 @@ def parse_arguments():
         "--backup-id", "-i", help="Backup-id of backup", dest="id", action="store"
     )
     restore_id_or_last.add_argument(
-        "--last", "-L", help="Last available backup", dest="last", action="store_true"
+        "--last",
+        "-L",
+        help="Last available backup of the same host",
+        dest="last",
+        action="store_true",
     )
     group_restore.add_argument(
         "--user",
@@ -1564,6 +1576,13 @@ def parse_arguments():
         dest="hostname",
         action="store",
         required=True,
+    )
+    group_restore.add_argument(
+        "--root-dir",
+        "-r",
+        help="Root directory to perform restore",
+        dest="root_dir",
+        action="store",
     )
     group_restore.add_argument(
         "--type",
