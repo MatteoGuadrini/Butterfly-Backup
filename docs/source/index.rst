@@ -731,7 +731,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
 .. code-block:: console
 
    arthur@heartofgold$ bb restore --help
-   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] --catalog CATALOG (--backup-id ID | --last) [--user USER] --computer HOSTNAME [--type {Unix,Windows,MacOS}] [--timeout TIMEOUT] [--mirror] [--skip-error]
+   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] --catalog CATALOG (--backup-id ID | --last) [--user USER] --computer HOSTNAME [--type {unix,windows,macos}] [--timeout TIMEOUT] [--mirror] [--skip-error]
                   [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]] [--files FILES [FILES ...]]
 
    options:
@@ -752,7 +752,9 @@ The restore process is the exact opposite of the backup process. It takes the fi
    --user USER, -u USER    Login name used to log into the remote host (where you're restoring)
    --computer HOSTNAME, -c HOSTNAME
                            Hostname or ip address to perform restore
-   --type {Unix,Windows,MacOS}, -t {Unix,Windows,MacOS}
+   --root-dir, -r ROOT_DIR
+                           Root directory to perform restore
+   --type {unix,windows,macos}, -t {unix,windows,macos}
                            Type of operating system to perform restore
    --timeout TIMEOUT, -T TIMEOUT
                            I/O timeout in seconds
@@ -776,6 +778,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
    --last, -L              Select last available backup in the catalog for same hostname or ip address.
    --user, -u              User of remote machine where you want to restore files.
    --computer, -c          Select the ip or hostname where to perform restore.
+   --root-dir, -r          Root directory to perform restore.
    --type, -t              Type of operating system to put under backup:
 
        * **Unix** -> All UNIX os (Linux, BSD, Solaris).
