@@ -565,7 +565,7 @@ def compose_restore_src_dst(backup_os, restore_os, restore_path):
         else:
             rsrc = restore_path
             rdst = os.path.join(
-                r_folders["System"], "restore_{0}".format(utility.time_for_folder())
+                r_folders["system"], "restore_{0}".format(utility.time_for_folder())
             )
     if rsrc and rdst:
         return rsrc, rdst
@@ -2106,8 +2106,8 @@ def main():
                             cmd.append("{0}@{1}:".format(args.user, rhost).__add__(dst))
                         # Add command
                         if utility.confirm(
-                            "Want to do restore path {0}?".format(
-                                os.path.join(rpath, src)
+                            "Want to do restore path {0} into {1} at {2}?".format(
+                                os.path.join(rpath, src), rhost, dst
                             ),
                             force=args.force,
                         ):
