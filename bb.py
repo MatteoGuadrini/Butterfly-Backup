@@ -1045,7 +1045,18 @@ def new_configuration():
             args.verbose, "Generate private/public key pair", nocolor=args.color
         )
         return_code = subprocess.call(
-            'ssh-keygen -t rsa -b 4096 -N "" -f {0} <<< y'.format(id_rsa_file)
+            [
+                "ssh-keygen",
+                "-t",
+                "rsa",
+                "-b",
+                "4096",
+                "-N",
+                '""',
+                "-f",
+                "{0}".format(id_rsa_file),
+                "-q",
+            ]
         )
         utility.print_verbose(
             args.verbose,
