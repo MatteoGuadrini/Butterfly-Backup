@@ -1885,7 +1885,7 @@ def main():
             for hostname in hostnames:
                 if not utility.check_ssh(hostname, args.user, port):
                     utility.error(
-                        "The port {0} on {1} is closed!".format(port, hostname),
+                        "SSH connection failed on {1}:{0}".format(port, hostname),
                         nocolor=args.color,
                     )
                     continue
@@ -2051,7 +2051,7 @@ def main():
             # Test connection
             if not utility.check_ssh(rhost, args.user, port):
                 utility.error(
-                    "The port {0} on {1} is closed!".format(port, rhost),
+                    "SSH connection failed on {1}:{0}".format(port, rhost),
                     nocolor=args.color,
                 )
                 exit(1)

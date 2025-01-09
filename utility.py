@@ -363,6 +363,11 @@ def check_ssh(ip, user, port=22):
         conn.open()
         conn.close()
         return True
+    except ValueError:
+        error(
+            "Connection error. Maybe you can deploy configuration. See 'bb config --help'"
+        )
+        return False
     except AuthenticationException:
         warning(
             "Connection to the host {0} failed by authentication error. "
