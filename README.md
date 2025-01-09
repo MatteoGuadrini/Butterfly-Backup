@@ -86,7 +86,6 @@ sudo python3 setup.py install -f # -f is for upgrade
 # or
 sudo pip install . --upgrade
 bb --help
-man bb
 ```
 
 ### Backup machine
@@ -181,9 +180,6 @@ A backup or restore is performed without any iteration responsibility on the par
 The performances are not altered.
 While all the operations of Butterfly Backup are carried out, the impacted machine can continuously work with _peace of mind_.
 
-## Follow the project
-See the new features in development through this [link](https://tree.taiga.io/project/matteoguadrini-butterfly-backup/kanban).
-
 ## Open source
 Butterfly Backup is a open source project. Any contribute, It's welcome.
 
@@ -202,3 +198,16 @@ They were born in 1990 to respond to the appeal of patients suffering from rare 
 Come today, we are organized to dare to listen to them and answers, every day of the year.
 
 [Adopt the future](https://www.ioadottoilfuturo.it/)
+
+## Acknowledgments
+
+Thanks to Mark Lutz for writing the _Learning Python_ and _Programming Python_ books that make up my python foundation.
+
+Thanks to Kenneth Reitz and Tanya Schlusser for writing the _The Hitchhiker’s Guide to Python_ books.
+
+Thanks to Dane Hillard for writing the _Practices of the Python Pro_ books.
+
+Special thanks go to my wife, who understood the hours of absence for this development. 
+Thanks to my children, for the daily inspiration they give me and to make me realize, that life must be simple.
+
+Thanks Python!

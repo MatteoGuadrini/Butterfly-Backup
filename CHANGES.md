@@ -1,5 +1,13 @@
 # Release notes
 
+## 1.14.0
+Jan 09, 2025
+* Add **--root-dir** argument in _restore_ action
+* Add warning on exit command if rsync error is `23` or `24`
+* Add more check for ssh connection
+* Unlink _last_backup_ folder if retention is applied
+* Fix _system_ key into **compose_restore_src_dst** function
+
 ## 1.13.0
 Jan 02, 2025
 * Fix return of **get_last_backup** function for incremental and differential backup, refs #7
