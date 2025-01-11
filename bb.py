@@ -1715,11 +1715,11 @@ def parse_arguments():
         action="store_true",
     )
     group_list_mutually.add_argument(
-        "--computer",
-        "-H",
-        help="List only match hostname or ip",
-        dest="hostname",
-        action="store",
+        "--last",
+        "-L",
+        help="Only last backup",
+        dest="last",
+        action="store_true",
     )
     group_list_mutually.add_argument(
         "--detail",
@@ -1731,6 +1731,13 @@ def parse_arguments():
     )
     group_list.add_argument(
         "--oneline", "-o", help="One line output", dest="oneline", action="store_true"
+    )
+    group_list.add_argument(
+        "--computer",
+        "-H",
+        help="List only match hostname or ip",
+        dest="hostname",
+        action="store",
     )
     # export session
     export_action = action.add_parser(
@@ -2233,6 +2240,105 @@ def main():
                         nocolor=args.color,
                     )
                     exit(1)
+            elif args.last:
+                bck_id = None
+                # Reverse catalog
+                list_sections = list_catalog.sections()
+                list_sections.reverse()
+                for lid in list_sections:
+                    # Filter for hostname
+                    if args.hostname:
+                        if args.hostname != list_catalog[lid].get("name", ""):
+                            continue
+                    # Get session backup id
+                    bck_id = list_catalog[lid]
+                    break
+                if bck_id:
+                    endline = " - " if args.oneline else "\n"
+                    utility.print_verbose(
+                        args.verbose,
+                        "Select backup-id: {0}".format(bck_id.name),
+                        nocolor=args.color,
+                    )
+                    utility.print_values(
+                        "Backup id", bck_id.name, nocolor=args.color, endline=endline
+                    )
+                    utility.print_values(
+                        "Hostname or ip",
+                        bck_id.get("name", ""),
+                        nocolor=args.color,
+                        endline=endline,
+                    )
+                    utility.print_values(
+                        "Type",
+                        bck_id.get("type", ""),
+                        nocolor=args.color,
+                        endline=endline,
+                    )
+                    utility.print_values(
+                        "Timestamp",
+                        bck_id.get("timestamp", ""),
+                        nocolor=args.color,
+                        endline=endline,
+                    )
+                    utility.print_values(
+                        "Start",
+                        bck_id.get("start", ""),
+                        nocolor=args.color,
+                        endline=endline,
+                    )
+                    utility.print_values(
+                        "Finish",
+                        bck_id.get("end", ""),
+                        nocolor=args.color,
+                        endline=endline,
+                    )
+                    utility.print_values(
+                        "OS", bck_id.get("os", ""), nocolor=args.color, endline=endline
+                    )
+                    utility.print_values(
+                        "ExitCode",
+                        bck_id.get("status", ""),
+                        nocolor=args.color,
+                        endline=endline,
+                    )
+                    utility.print_values(
+                        "Path",
+                        bck_id.get("path", ""),
+                        nocolor=args.color,
+                        endline=endline,
+                    )
+                    if list_catalog.get(args.id, "cleaned", fallback=False):
+                        utility.print_values(
+                            "Cleaned",
+                            bck_id.get("cleaned", "False"),
+                            nocolor=args.color,
+                            endline=endline,
+                        )
+                    elif list_catalog.get(args.id, "archived", fallback=False):
+                        utility.print_values(
+                            "Archived",
+                            bck_id.get("archived", "False"),
+                            nocolor=args.color,
+                            endline=endline,
+                        )
+                    else:
+                        newline = " " if args.oneline else "\n"
+                        if bck_id.get("path"):
+                            dirs = os.listdir(bck_id.get("path"))
+                        else:
+                            dirs = []
+                        utility.print_values(
+                            "List",
+                            "{0}".format(newline).join(dirs),
+                            nocolor=args.color,
+                        )
+                else:
+                    utility.warning(
+                        "No backup in list",
+                        nocolor=args.color,
+                    )
+                    exit(0)
             elif args.detail:
                 # Get session backup id
                 bck_id = utility.get_bckid(list_catalog, args.detail)
