@@ -118,7 +118,7 @@ def run_in_parallel(fn, commands, limit):
         # Run the function
         proc = pool.apply_async(func=fn, args=(command,))
         jobs.append(proc)
-        print("Start {0} {1}".format(args.action, plog["hostname"]))
+        print("info: Start {0} {1}".format(args.action, plog["hostname"]))
         utility.print_verbose(
             args.verbose, "rsync command: {0}".format(command), nocolor=args.color
         )
@@ -953,7 +953,7 @@ def deploy_configuration(computer, user):
     if not dry_run("Copying configuration to {0}".format(computer)):
         if os.path.exists(id_rsa_pub_file):
             print(
-                "Copying configuration to {0}".format(computer)
+                "info: Copying configuration to {0}".format(computer)
                 + "; write the password:"
             )
             return_code = subprocess.call(
@@ -1887,7 +1887,6 @@ def main():
                     exit(1)
             else:
                 parser.print_usage()
-                print("For backup usage, --help or -h")
                 exit(1)
             for hostname in hostnames:
                 if not utility.check_ssh(hostname, args.user, port):
