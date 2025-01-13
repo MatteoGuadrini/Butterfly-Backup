@@ -536,15 +536,15 @@ This is a few examples:
    arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS
    # host1 SSH-2.0-OpenSSH_7.5
    # host1 SSH-2.0-OpenSSH_7.5
-   error: The port 22 on host2 is closed!
-   error: The port 22 on host3 is closed!
+   error: SSH connection failed on host2:22
+   error: SSH connection failed on host3:22
    Start backup on host1
    success: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_50
 
 
 .. important::
    Port 22 (OpenSSH standard) is tested in order to verify the reachability of the machine. If the machine is not reachable, an error is generated:
-   ``error: The port 22 on host2 is closed!``
+   ``error: SSH connection failed on host2:22``
 
 This example, is the same as the previous one, with the only difference being that the parallel flag is specified at 2.
 This means that maximum two backup jobs will run at the same time. When a first process ends, another one is started.
@@ -555,8 +555,8 @@ This means that maximum two backup jobs will run at the same time. When a first 
    arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel 2 --log
    # host1 SSH-2.0-OpenSSH_7.5
    # host1 SSH-2.0-OpenSSH_7.5
-   error: The port 22 on host2 is closed!
-   error: The port 22 on host3 is closed!
+   error: SSH connection failed on host2:22
+   error: SSH connection failed on host3:22
    Start backup on host1
    success: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
 
@@ -572,8 +572,8 @@ This is the same example but specifying a retention at 3 (days). This means that
    debug: Include this criteria: :/Users :/private/etc
    debug: Destination is /mnt/backup/host1/2018_08_08__10_30
    Start backup on host1
-   error: The port 22 on host2 is closed!
-   error: The port 22 on host3 is closed!
+   error: SSH connection failed on host2:22
+   error: SSH connection failed on host3:22
    debug: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
    receiving file list ...
    39323 files to consider
@@ -599,8 +599,8 @@ Here we find the same example above but specifying a retention at 2 (days) and 5
    debug: Include this criteria: :/Users :/private/etc
    debug: Destination is /mnt/backup/host1/2018_08_08__10_30
    Start backup on host1
-   error: The port 22 on host2 is closed!
-   error: The port 22 on host3 is closed!
+   error: SSH connection failed on host2:22
+   error: SSH connection failed on host3:22
    debug: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
    receiving file list ...
    39323 files to consider
