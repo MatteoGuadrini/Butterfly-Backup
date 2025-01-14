@@ -467,6 +467,9 @@ def compose_command(flags, host):
         # No copy symbolic link
         if flags.all:
             command.append("--safe-links")
+        # Make hard links to specific path
+        if flags.link:
+            command.append("--link-dest={0}".format(flags.link))
         # Set dry-run mode
         if flags.dry_run:
             command.append("--dry-run")
@@ -1772,6 +1775,9 @@ def parse_arguments():
     )
     group_export.add_argument(
         "--cut", "-c", help="Cut mode. Delete source", dest="cut", action="store_true"
+    )
+    group_export.add_argument(
+        "--link", "-L", help="Hard link to path", dest="link", metavar="PATH"
     )
     group_export_mutually = group_export.add_mutually_exclusive_group()
     group_export_mutually.add_argument(

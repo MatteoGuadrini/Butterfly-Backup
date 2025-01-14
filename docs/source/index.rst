@@ -483,7 +483,7 @@ This is a few examples:
    arthur@heartofgold$ bb backup --computer host1 --destination /mnt/backup --data User Config --type MacOS
    # host1 SSH-2.0-OpenSSH_7.5
    # host1 SSH-2.0-OpenSSH_7.5
-   Start backup on host1
+   info: Start backup on host1
    success: Command rsync -ah --no-links arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_28
 
 .. important::
@@ -494,7 +494,7 @@ This is a few examples:
 
    arthur@heartofgold$ bb backup --computer host1 --destination /mnt/backup --mode Full --data User Config --type MacOS --user root
    root@host1's password:
-   Start backup on host1
+   info: Start backup on host1
    success: Command rsync -ah --no-links root@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_30
 
 .. code-block:: console
@@ -506,7 +506,7 @@ This is a few examples:
    debug: Create a folder structure for MacOS os
    debug: Include this criteria: :/Users :/private/etc
    debug: Destination is /mnt/backup/host1/2018_08_08__10_42
-   Start backup on host1
+   info: Start backup on host1
    debug: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_42
    receiving file list ...
    39323 files to consider
@@ -538,7 +538,7 @@ This is a few examples:
    # host1 SSH-2.0-OpenSSH_7.5
    error: SSH connection failed on host2:22
    error: SSH connection failed on host3:22
-   Start backup on host1
+   info: Start backup on host1
    success: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_50
 
 
@@ -557,7 +557,7 @@ This means that maximum two backup jobs will run at the same time. When a first 
    # host1 SSH-2.0-OpenSSH_7.5
    error: SSH connection failed on host2:22
    error: SSH connection failed on host3:22
-   Start backup on host1
+   info: Start backup on host1
    success: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
 
 This is the same example but specifying a retention at 3 (days). This means that in doing so we want to keep only 3 days backups.
@@ -571,7 +571,7 @@ This is the same example but specifying a retention at 3 (days). This means that
    debug: Create a folder structure for MacOS os
    debug: Include this criteria: :/Users :/private/etc
    debug: Destination is /mnt/backup/host1/2018_08_08__10_30
-   Start backup on host1
+   info: Start backup on host1
    error: SSH connection failed on host2:22
    error: SSH connection failed on host3:22
    debug: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
@@ -598,7 +598,7 @@ Here we find the same example above but specifying a retention at 2 (days) and 5
    debug: Create a folder structure for MacOS os
    debug: Include this criteria: :/Users :/private/etc
    debug: Destination is /mnt/backup/host1/2018_08_08__10_30
-   Start backup on host1
+   info: Start backup on host1
    error: SSH connection failed on host2:22
    error: SSH connection failed on host3:22
    debug: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
@@ -632,9 +632,9 @@ To query this catalog, the list command exists.
 .. code-block:: console
 
    arthur@heartofgold$ bb list --help
-   usage: bb list [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] --catalog CATALOG
-                  [--backup-id ID | --archived | --cleaned | --computer HOSTNAME | --detail ID]
-                  [--oneline]
+   usage: bb list [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] --catalog CATALOG
+                  [--backup-id ID | --archived | --cleaned | --last | --detail ID] [--oneline]
+                  [--computer HOSTNAME]
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -652,6 +652,7 @@ To query this catalog, the list command exists.
                            Backup-id of backup
      --archived, -a        List only archived backup
      --cleaned, -c         List only cleaned backup
+     --last, -L            Only last backup
      --computer HOSTNAME, -H HOSTNAME
                            List only match hostname or ip
      --detail ID, -d ID    List detail of file and folder of specific backup-id
@@ -663,6 +664,7 @@ To query this catalog, the list command exists.
    --backup-id, -i         Select backup id in the catalog.
    --archived, -a          List only archived backups.
    --cleaned, -c           List only cleaned backups.
+   --last, -L              Only last backup is selected with details.
    --computer, -H          List only match hostname or ip.
    --detail, -d            List detail of file and folder of specific backup-id.
    --oneline, -o           One line and concise output.
@@ -832,9 +834,9 @@ This example, is the same as the previous one, but restore to other machine and 
    debug: Build a rsync command
    debug: Command flags are: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log
    Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y
-   Start restore on host2
+   info: Start restore on host2
    debug: rsync command: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc/* arthur@host2:/etc
-   Start restore on host2
+   info: Start restore on host2
    debug: rsync command: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host2:/home
    building file list ...
    26633 files to consider
@@ -925,11 +927,12 @@ The export function is used to copy a particular backup to another path.
 .. code-block:: console
 
    arthur@heartofgold$ bb export -h
-   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] --catalog CATALOG
-                    [--backup-id ID | --all] --destination DESTINATION [--mirror]
-                    [--cut] [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE
-                    [EXCLUDE ...]] [--timeout TIMEOUT] [--skip-error]
-                    [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]
+   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] --catalog CATALOG
+                    [--backup-id ID | --all] --destination DESTINATION [--mirror] [--cut] [--link PATH]
+                    [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE [EXCLUDE ...]]
+                    [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT]
+                    [--ssh-port PORT]
+
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -950,6 +953,7 @@ The export function is used to copy a particular backup to another path.
                            Destination path
      --mirror, -m          Mirror mode
      --cut, -c             Cut mode. Delete source
+     --link PATH, -L PATH  Hard link to path
      --include INCLUDE [INCLUDE ...], -I INCLUDE [INCLUDE ...]
                            Include pattern
      --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
@@ -973,6 +977,7 @@ The export function is used to copy a particular backup to another path.
    --destination, -d       Destination path.
    --mirror, -m            Mirror backup on destination.
    --cut, -c               Delete source like a move.
+   --link, -L              Hard link to path.
    --include, -I           Include pattern. Follow rsync "Include Pattern Rules"
    --exclude, -E           Exclude pattern. Follow rsync "Exclude Pattern Rules"
    --timeout, -T           Specify number of seconds of I/O timeout.
@@ -989,7 +994,7 @@ Export a backup in other directory:
    arthur@heartofgold$ bb export --catalog /mnt/backup/ --backup-id f0f700e8-0435-11e9-9e78-005056a664e0 --destination /mnt/backup/export --verbose
    debug: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
    debug: Build a rsync command
-   Start export host1
+   info: Start export host1
    ...
    debug: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
    success: Command rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
@@ -1001,7 +1006,7 @@ Export all backup in other directory:
    arthur@heartofgold$ bb export --catalog /mnt/backup/ --all --destination /mnt/backup/export --verbose
    debug: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
    debug: Build a rsync command
-   Start export host1
+   info: Start export host1
    ...
    debug: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
    success: Command rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
@@ -1013,7 +1018,7 @@ Export a backup with exclude pdf files:
    arthur@heartofgold$ bb export --catalog /mnt/backup/ --backup-id f0f700e8-0435-11e9-9e78-005056a664e0 --destination /backup/export --verbose --exclude *.pdf
    debug: Export backup with id f0f700e8-0435-11e9-9e78-005056a664e0
    debug: Build a rsync command
-   Start export host1
+   info: Start export host1
    ...
    debug: rsync command: rsync -ah --no-links -vP --exclude=*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
    success: Command rsync -ah --no-links -vP --exclude=*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
