@@ -388,7 +388,9 @@ def compose_command(flags, host):
                 "rsync log path: {0}".format(log_path),
             )
     elif flags.action == "restore":
-        command.append("-ahu --no-perms --no-owner --no-group")
+        command.append("-ahu")
+        if not args.acl:
+            command.append("--no-perms --no-owner --no-group")
         if flags.verbose:
             command.append("-vP")
             # Set quite mode
@@ -1619,6 +1621,9 @@ def parse_arguments():
         "--mirror", "-m", help="Mirror mode", dest="mirror", action="store_true"
     )
     group_restore.add_argument(
+        "--acl", "-a", help="Preserve ACLs", dest="acl", action="store_true"
+    )
+    group_restore.add_argument(
         "--skip-error", "-e", help="Skip error", dest="skip_err", action="store_true"
     )
     group_restore.add_argument(
@@ -2093,9 +2098,6 @@ def main():
                     logs.append(log_args)
                     # Compose command
                     cmd = compose_command(args, rhost)
-                    # ATTENTION: permit access to anyone users
-                    if ros == "windows":
-                        cmd.append("--chmod=ugo=rwX")
                     # Compose source and destination
                     if args.files:
                         src_dst = compose_restore_src_dst(bos, ros, rf)
