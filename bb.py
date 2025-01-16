@@ -2019,12 +2019,12 @@ def main():
             if args.last:
                 rhost = hostname
                 last_backup = get_last_backup(restore_catalog)
-                if not args.type:
-                    args.type = last_backup[1]
                 rpath = last_backup[0]
                 if os.path.exists(rpath):
-                    bos = last_backup[1]
+                    if not args.type:
+                        args.type = last_backup[1]
                     ros = args.type
+                    bos = last_backup[1]
                     if args.files:
                         rfolders = get_files(
                             utility.get_bckid(restore_catalog, last_backup[2]),
