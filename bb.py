@@ -1001,7 +1001,7 @@ def remove_configuration():
     ssh_folder = os.path.join(home, ".ssh")
     if not dry_run("Remove private id_rsa"):
         if utility.confirm(
-            "Are you sure to remove existing rsa keys?", force=args.force
+            "info: Are you sure to remove existing rsa keys?", force=args.force
         ):
             # Remove private key file
             id_rsa_file = os.path.join(ssh_folder, "id_rsa")
@@ -1102,7 +1102,7 @@ def init_catalog(catalog):
     """
     global args
 
-    if utility.confirm("Initialize catalog {0}?".format(catalog), force=args.force):
+    if utility.confirm("info: Initialize catalog {0}?".format(catalog), force=args.force):
         config = read_catalog(catalog)
         for cid in config.sections():
             if not config.get(cid, "path") or not os.path.exists(
@@ -1131,7 +1131,7 @@ def delete_host(catalog, host):
     config = read_catalog(catalog)
     root = os.path.join(os.path.dirname(catalog), host)
     if utility.confirm(
-        "Delete all backups for host {0}?".format(host), force=args.force
+        "info: Delete all backups for host {0}?".format(host), force=args.force
     ):
         for cid in config.sections():
             if config.get(cid, "name") == host:
@@ -1181,7 +1181,7 @@ def delete_backup(catalog, bckid):
     # Check catalog backup id
     bck_id = utility.get_bckid(config, bckid)
     if utility.confirm(
-        "Delete backup {0} from catalog {1}?".format(bckid, catalog), force=args.force
+        "info: Delete backup {0} from catalog {1}?".format(bckid, catalog), force=args.force
     ):
         if bck_id:
             if not bck_id.get("path") or not os.path.exists(bck_id.get("path")):
@@ -2120,7 +2120,7 @@ def main():
                             cmd.append("{0}@{1}:".format(args.user, rhost).__add__(dst))
                         # Add command
                         if utility.confirm(
-                            "Want to do restore path {0} into {1} at {2}?".format(
+                            "info: Want to do restore path {0} into {1} at {2}?".format(
                                 os.path.join(rpath, src), rhost, dst
                             ),
                             force=args.force,
