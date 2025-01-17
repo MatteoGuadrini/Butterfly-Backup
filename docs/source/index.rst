@@ -311,7 +311,8 @@ Download https://cygwin.com/ cygwin and follow this instructions to install the 
    cygrunsrv -S sshd
 
 
-Verify if port 22 is in LISTEN
+.. important::
+    Verify if port 22 is in LISTEN: run `netstat -aon | findstr :22`
 
 If you want to initialize or reset the catalog file, run this:
 
@@ -334,8 +335,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 
    arthur@heartofgold$ bb backup --help
    usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] (--computer HOSTNAME | --list LIST) --destination DESTINATION [--mode {full,incremental,differential,mirror}]
-                  (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...] | --file-data FILEDATA) [--user USER] --type {unix,windows,macos} [--compress]
-                  [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]] [--start-from ID]
+                    (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...] | --file-data FILEDATA) [--user USER] --type {unix,windows,macos} [--compress]
+                    [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]] [--start-from ID]
 
    optional arguments:
    -h, --help            show this help message and exit
@@ -733,8 +734,9 @@ The restore process is the exact opposite of the backup process. It takes the fi
 .. code-block:: console
 
    arthur@heartofgold$ bb restore --help
-   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] --catalog CATALOG (--backup-id ID | --last) [--user USER] --computer HOSTNAME [--type {unix,windows,macos}] [--timeout TIMEOUT] [--mirror] [--skip-error]
-                  [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]] [--files FILES [FILES ...]]
+   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] --catalog CATALOG (--backup-id ID | --last) [--user USER] --computer HOSTNAME [--type {unix,windows,macos}] 
+                     [--timeout TIMEOUT] [--mirror] [--acl] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] 
+                     [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]] [--files FILES [FILES ...]]
 
    options:
    -h, --help            show this help message and exit
@@ -761,6 +763,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
    --timeout TIMEOUT, -T TIMEOUT
                            I/O timeout in seconds
    --mirror, -m            Mirror mode
+   --acl, -a               Preserve ACLs
    --skip-error, -e        Skip error
    --rsync-path RSYNC, -R RSYNC
                            Custom rsync path
@@ -789,6 +792,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
 
    --timeout, -T           Specify number of seconds of I/O timeout.
    --mirror, -m            Mirror mode. If a file or folder not exist in destination, will delete it. Overwrite files.
+   --acl, -a               Preserve ACLs
    --skip-error, -e        Skip error. Quiet mode.
    --rsync-path, -R        Select a custom rsync path.
    --bwlimit, -b           Bandwidth limit in KBPS.
@@ -804,8 +808,8 @@ This command perform a restore on the same machine of the backup:
 .. code-block:: console
 
    arthur@heartofgold$ bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host1 --log
-   Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
-   Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y
+   info: Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
+   info: Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y
    success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc arthur@host1:/restore_2018_08_08__10_58
    success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host1:/Users
 
@@ -818,8 +822,8 @@ Now, select the last available backup on catalog; run this:
 .. code-block:: console
 
    arthur@heartofgold$ bb restore --catalog /mnt/backup --last --computer host1 --log
-   Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
-   Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y
+   info: Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
+   info: Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y
    success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc arthur@host1:/restore_2018_08_08__10_59
    success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host1:/Users
 
@@ -830,10 +834,10 @@ This example, is the same as the previous one, but restore to other machine and 
    arthur@heartofgold$ bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host2 --type Unix --log --verbose
    debug: Build a rsync command
    debug: Command flags are: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log
-   Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
+   info: Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
    debug: Build a rsync command
    debug: Command flags are: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log
-   Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y
+   info: Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y
    info: Start restore on host2
    debug: rsync command: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc/* arthur@host2:/etc
    info: Start restore on host2
