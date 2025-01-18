@@ -5,7 +5,7 @@
 # created by: matteo.guadrini
 # bb.py -- Butterfly-Backup
 #
-#     Copyright (C) 2024 Matteo Guadrini <matteo.guadrini@hotmail.it>
+#     Copyright (C) 2025 Matteo Guadrini <matteo.guadrini@hotmail.it>
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ DESCRIPTION
 SYNOPSIS
     bb [ACTION] [OPTIONS]
 
-    bb [-h] [--verbose] [--log] [--dry-run] [--force] [--version]
+    bb [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version]
               {config,backup,restore,archive,list,export} ...
 
 OPTIONS
@@ -64,15 +64,15 @@ from multiprocessing import Pool
 import utility
 
 # region Global Variables
-VERSION = "1.14.0"
+VERSION = "1.15.0"
 
 
 # endregion
 
 
 def check_rsync(rsync_path=None):
-    """
-    Check if rsync tool is installed
+    """Check if rsync tool is installed
+
     :return: string
     """
     if rsync_path:
@@ -88,8 +88,8 @@ def check_rsync(rsync_path=None):
 
 
 def dry_run(message):
-    """
-    Check if dry run mode
+    """Check if dry run mode
+
     :param message: print message standard output
     :return: boolean
     """
@@ -102,8 +102,8 @@ def dry_run(message):
 
 
 def run_in_parallel(fn, commands, limit):
-    """
-    Run in parallel with limit
+    """Run in parallel with limit
+
     :param fn: function in parallelism
     :param commands: args commands of function
     :param limit: number of parallel process
@@ -202,8 +202,8 @@ def run_in_parallel(fn, commands, limit):
 
 
 def start_process(command):
-    """
-    Start rsync commands
+    """Start rsync commands
+
     :param command: rsync list command
     :return: command
     """
@@ -222,8 +222,8 @@ def start_process(command):
 
 
 def get_std_out():
-    """
-    Return stdout and stderr
+    """Return stdout and stderr
+
     :return: string
     """
     global args
@@ -251,8 +251,8 @@ def get_std_out():
 
 
 def map_dict_folder(os_name):
-    """
-    Mapping folder structure to dictionary
+    """Mapping folder structure to dictionary
+
     :param os_name: Name of operating system
     :return: Dictionary folder structure
     """
@@ -282,8 +282,8 @@ def map_dict_folder(os_name):
 
 
 def compose_command(flags, host):
-    """
-    Compose rsync command for action
+    """Compose rsync command for action
+
     :param flags: Dictionary than contains info for command
     :param host: Hostname of machine
     :return: list
@@ -499,8 +499,8 @@ def compose_command(flags, host):
 
 
 def compose_source():
-    """
-    Compose sources
+    """Compose sources
+
     :return: list
     """
     global args, catalog_path, backup_id
@@ -544,8 +544,8 @@ def compose_source():
 
 
 def compose_restore_src_dst(backup_os, restore_os, restore_path):
-    """
-    Compare dictionary of folder backup and restore
+    """Compare dictionary of folder backup and restore
+
     :param backup_os: backup structure folders
     :param restore_os: restore structure folders
     :param restore_path: path of backup
@@ -579,8 +579,8 @@ def compose_restore_src_dst(backup_os, restore_os, restore_path):
 
 
 def get_restore_os():
-    """
-    Get the operating system value on catalog by id
+    """Get the operating system value on catalog by id
+
     :return: os value (string)
     """
     global args, catalog_file
@@ -590,8 +590,8 @@ def get_restore_os():
 
 
 def compose_destination(computer_name, folder):
-    """
-    Compose folder destination of backup
+    """Compose folder destination of backup
+
     :param computer_name: name of source computer
     :param folder: path of backup
     :return: string
@@ -625,8 +625,8 @@ def compose_destination(computer_name, folder):
 
 
 def get_last_full(catalog):
-    """
-    Get the last full
+    """Get the last full
+
     :param catalog: configparser object
     :return: path (string), os (string)
     """
@@ -673,8 +673,8 @@ def get_last_full(catalog):
 
 
 def get_last_backup(catalog):
-    """
-    Get the last available backup
+    """Get the last available backup
+
     :param catalog: configparser object
     :return: path (string), os (string)
     """
@@ -719,8 +719,8 @@ def get_last_backup(catalog):
 
 
 def count_full(config, name):
-    """
-    Count all full (and Incremental) backup in a catalog
+    """Count all full (and Incremental) backup in a catalog
+
     :param config: configparser object
     :param name: hostname of machine
     :return: count (int)
@@ -737,8 +737,8 @@ def count_full(config, name):
 
 
 def list_backup(config, name):
-    """
-    Count all full in a catalog
+    """Count all full in a catalog
+
     :param config: configparser object
     :param name: hostname of machine
     :return: r_list (list)
@@ -752,8 +752,8 @@ def list_backup(config, name):
 
 
 def read_catalog(catalog):
-    """
-    Read a catalog file
+    """Read a catalog file
+
     :param catalog: catalog file
     :return: catalog file (configparser)
     """
@@ -780,8 +780,8 @@ def read_catalog(catalog):
 
 
 def write_catalog(catalog, section, key, value):
-    """
-    Write catalog file
+    """Write catalog file
+
     :param catalog: path catalog file
     :param section: section of catalog file
     :param key: key of catalog file
@@ -804,8 +804,8 @@ def write_catalog(catalog, section, key, value):
 
 
 def retention_policy(host, catalog, logpath):
-    """
-    Retention policy
+    """Retention policy
+
     :param host: hostname of machine
     :param catalog: catalog file
     :param logpath: path of log file
@@ -884,8 +884,8 @@ def retention_policy(host, catalog, logpath):
 
 
 def archive_policy(catalog, destination):
-    """
-    Archive policy
+    """Archive policy
+
     :param catalog: catalog file
     :param destination: destination pth of archive file
     """
@@ -939,8 +939,8 @@ def archive_policy(catalog, destination):
 
 
 def deploy_configuration(computer, user):
-    """
-    Deploy configuration on remote machine
+    """Deploy configuration on remote machine
+
     (run "ssh-copy-id -i pub_file -f <user>@<computer>")
     :param computer: remote computer than deploy RSA key
     :param user: remote user on computer
@@ -991,9 +991,7 @@ def deploy_configuration(computer, user):
 
 
 def remove_configuration():
-    """
-    Remove a new configuration (remove an exist RSA key pair)
-    """
+    """Remove a new configuration (remove an exist RSA key pair)"""
     global args
 
     # Create home path
@@ -1035,9 +1033,7 @@ def remove_configuration():
 
 
 def new_configuration():
-    """
-    Create a new configuration (create a RSA key pair)
-    """
+    """Create a new configuration (create a RSA key pair)"""
     global args
 
     # Create home path
@@ -1096,13 +1092,15 @@ def check_configuration(ip):
 
 
 def init_catalog(catalog):
-    """
-    Initialize catalog file
+    """Initialize catalog file
+
     :param catalog: catalog file
     """
     global args
 
-    if utility.confirm("info: Initialize catalog {0}?".format(catalog), force=args.force):
+    if utility.confirm(
+        "info: Initialize catalog {0}?".format(catalog), force=args.force
+    ):
         config = read_catalog(catalog)
         for cid in config.sections():
             if not config.get(cid, "path") or not os.path.exists(
@@ -1120,8 +1118,8 @@ def init_catalog(catalog):
 
 
 def delete_host(catalog, host):
-    """
-    :param catalog: catalog file
+    """:param catalog: catalog file
+    
     :param host: hostname or ip address
     """
     global args
@@ -1171,7 +1169,8 @@ def delete_host(catalog, host):
 
 
 def delete_backup(catalog, bckid):
-    """
+    """Delete selected backup by id
+
     :param catalog: catalog file
     :param bckid: backup id
     """
@@ -1181,7 +1180,8 @@ def delete_backup(catalog, bckid):
     # Check catalog backup id
     bck_id = utility.get_bckid(config, bckid)
     if utility.confirm(
-        "info: Delete backup {0} from catalog {1}?".format(bckid, catalog), force=args.force
+        "info: Delete backup {0} from catalog {1}?".format(bckid, catalog),
+        force=args.force,
     ):
         if bck_id:
             if not bck_id.get("path") or not os.path.exists(bck_id.get("path")):
@@ -1213,7 +1213,8 @@ def delete_backup(catalog, bckid):
 
 
 def clean_catalog(catalog):
-    """
+    """Clean catalog by archived/deleted backup
+
     :param catalog: catalog file
     """
     global args
@@ -1277,8 +1278,8 @@ def get_files(bckid, files):
 
 
 def parse_arguments():
-    """
-    Function get arguments than specified in command line
+    """Get arguments than specified in command line
+
     :return: parser
     """
     global VERSION

@@ -1,5 +1,11 @@
 # Release notes
 
+## 1.15.0
+Jan 18, 2025
+* Add **--acl** argument in _restore_ action
+* Add **--link** argument in _export_ action
+* Add info word in normal print output
+
 ## 1.14.0
 Jan 09, 2025
 * Add **--root-dir** argument in _restore_ action

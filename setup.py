@@ -5,7 +5,7 @@
 # created by: matteo.guadrini
 # setup.py -- Butterfly-Backup
 #
-#     Copyright (C) 2024 Matteo Guadrini <matteo.guadrini@hotmail.it>
+#     Copyright (C) 2025 Matteo Guadrini <matteo.guadrini@hotmail.it>
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ with open("README.md") as rme:
 setup(
     name="Butterfly-Backup",
     py_modules=["bb", "utility"],
-    version="1.14.0",
+    version="1.15.0",
     url="https://matteoguadrini.github.io/Butterfly-Backup/",
     project_urls={
         "Documentation": "https://butterfly-backup.readthedocs.io/en/latest/",

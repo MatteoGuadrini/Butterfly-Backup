@@ -19,17 +19,17 @@ its greatest strength is the organization of backups in a catalog, easy to consu
 With Butterfly Backup I can perform single or group backups (Full, Incremental, Differential and Mirror), restore, export, list and archive old backups.
 
 ## How can you do it?
-Naturally through the synergy of rsync and OpenSSH technology and the power of Python..
+Naturally through the synergy of rsync, OpenSSH and the power of Python.
 
 ## Which platforms support?
-Butterfly Backup can backup Linux, BSD, MacOSX and Windows(with cygwin, see [config docs](https://Butterfly-Backup.readthedocs.io/en/latest/))
+Butterfly Backup can backup Linux, BSD, MacOSX and Windows(with [cygwin](https://www.cygwin.com/), see [config docs](https://Butterfly-Backup.readthedocs.io/en/latest/))
 
 ## Real uses
 This list consists of only a few examples; applications can be endless:
 * Backing up periodically (ex. once a month) a folder where I store my photos over the years;
 * Log's backup of one or more servers;
 * Backup of users of one or more machines;
-* Backup system config of much servers;
+* Backup system config of many servers;
 * Create a backup snapshot of the my laptop;
 * Create a central server than backupping client and server;
 * Backup a entire file server, incrementally;

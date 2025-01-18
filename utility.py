@@ -5,7 +5,7 @@
 # created by: matteo.guadrini
 # utility.py -- Butterfly-Backup
 #
-#     Copyright (C) 2024 Matteo Guadrini <matteo.guadrini@hotmail.it>
+#     Copyright (C) 2025 Matteo Guadrini <matteo.guadrini@hotmail.it>
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,11 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+"""This is a Butterfly Backup utility module.
+This module contains all core functions.
+"""
+
 import os
 import traceback
 
