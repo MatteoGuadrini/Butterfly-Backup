@@ -402,7 +402,6 @@ def compose_command(flags, host):
         # Set mirror mode
         if flags.mirror:
             command.append("--delete")
-            command.append("--ignore-times")
         # Set bandwidth limit
         if flags.bwlimit:
             command.append("--bwlimit={0}".format(flags.bwlimit))
