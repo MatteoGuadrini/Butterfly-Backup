@@ -36,13 +36,15 @@ from paramiko.ssh_exception import AuthenticationException
 def get_bckid(catalog, bckid):
     """Get backup id from catalog"""
     # Check if bckid is 8 char
+    bid = ""
     if len(bckid) == 8:
         for ids in catalog.sections():
             if bckid == ids[:8]:
-                return catalog[ids]
+                bid = catalog[ids]
     # Get bckid, if exists
-    if catalog.has_section(bckid):
-        return catalog[bckid]
+    elif catalog.has_section(bckid):
+        bid = catalog[bckid]
+    return bid
 
 
 def report_issue(exc, tb):
