@@ -1308,6 +1308,13 @@ def parse_arguments():
         dest="color",
         action="store_true",
     )
+    parent_parser.add_argument(
+        "--explain-error",
+        "-x",
+        help="Print python traceback",
+        dest="error",
+        action="store_true",
+    )
 
     # Create principal parser
     description = "Butterfly Backup"
@@ -2650,7 +2657,7 @@ def main():
                 )
 
     except Exception as err:
-        utility.report_issue(err, False)
+        utility.report_issue(err, args.error)
 
 
 if __name__ == "__main__":
