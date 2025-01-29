@@ -291,6 +291,7 @@ def compose_command(flags, host):
     global args, catalog_path, backup_id, rpath, hostname
 
     utility.print_verbose(args.verbose, "Build a rsync command", nocolor=args.color)
+    command = ["rsync"]
     # Set rsync binary
     if flags.rsync:
         if os.path.exists(flags.rsync):
@@ -300,9 +301,6 @@ def compose_command(flags, host):
                 "rsync binary {0} not exist! Set default.".format(args.rsync),
                 nocolor=args.color,
             )
-            command = ["rsync"]
-    else:
-        command = ["rsync"]
     catalog = read_catalog(catalog_path)
     if flags.action == "backup":
         # Set mode option
