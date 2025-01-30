@@ -2024,23 +2024,29 @@ def main():
             if args.last:
                 rhost = hostname
                 last_backup = get_last_backup(restore_catalog)
-                rpath = last_backup[0]
-                if os.path.exists(rpath):
-                    if not args.type:
-                        args.type = last_backup[1]
-                    ros = args.type
-                    bos = last_backup[1]
-                    if args.files:
-                        rfolders = get_files(
-                            utility.get_bckid(restore_catalog, last_backup[2]),
-                            args.files,
-                        )
+                if last_backup:
+                    rpath = last_backup[0]
+                    if os.path.exists(rpath):
+                        if not args.type:
+                            args.type = last_backup[1]
+                        ros = args.type
+                        bos = last_backup[1]
+                        if args.files:
+                            rfolders = get_files(
+                                utility.get_bckid(restore_catalog, last_backup[2]),
+                                args.files,
+                            )
+                        else:
+                            rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
                     else:
-                        rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
+                        utility.error(
+                            "Backup folder {0} does not exist!".format(rpath), nocolor=args.color
+                        )
+                        exit(1)
                 else:
                     utility.error(
-                        "Backup folder {0} not exist!".format(rpath), nocolor=args.color
-                    )
+                            "Last backup {0} does not exist!".format(rpath), nocolor=args.color
+                        )
                     exit(1)
             elif args.id:
                 # Check catalog backup id
