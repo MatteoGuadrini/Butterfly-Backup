@@ -125,6 +125,7 @@ Butterfly Backup has, in its core, six main operations:
      --dry-run, -N         Dry run mode
      --force, -O           Force an action without prompt
      --no-color, -w        Remove color into terminal
+     --explain-error, -x   Print python traceback
      --version, -V         Print version
 
    action:
@@ -156,6 +157,7 @@ It also has three flags that can be very useful, especially in case of error.
         --dry-run, -N         Dry run mode, test your command
         --force, -O           Force an action without prompt
         --no-color, -w        Remove color into terminal
+        --explain-error, -x   Print python traceback
         --version, -V         Print version
 
 
