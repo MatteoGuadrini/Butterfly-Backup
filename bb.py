@@ -1116,7 +1116,7 @@ def init_catalog(catalog):
 
 def delete_host(catalog, host):
     """:param catalog: catalog file
-    
+
     :param host: hostname or ip address
     """
     global args
@@ -1752,6 +1752,13 @@ def parse_arguments():
         dest="hostname",
         action="store",
     )
+    group_list.add_argument(
+        "--only-id",
+        "-O",
+        help="List only id",
+        dest="ids",
+        action="store",
+    )
     # export session
     export_action = action.add_parser(
         "export", help="Export options", parents=[parent_parser]
@@ -2040,13 +2047,15 @@ def main():
                             rfolders = [f.path for f in os.scandir(rpath) if f.is_dir()]
                     else:
                         utility.error(
-                            "Backup folder {0} does not exist!".format(rpath), nocolor=args.color
+                            "Backup folder {0} does not exist!".format(rpath),
+                            nocolor=args.color,
                         )
                         exit(1)
                 else:
                     utility.error(
-                            "Last backup {0} does not exist!".format(rpath), nocolor=args.color
-                        )
+                        "Last backup {0} does not exist!".format(rpath),
+                        nocolor=args.color,
+                    )
                     exit(1)
             elif args.id:
                 # Check catalog backup id
