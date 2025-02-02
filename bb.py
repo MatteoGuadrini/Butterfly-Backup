@@ -1754,10 +1754,10 @@ def parse_arguments():
     )
     group_list.add_argument(
         "--only-id",
-        "-O",
+        "-y",
         help="List only id",
         dest="ids",
-        action="store",
+        action="store_true",
     )
     # export session
     export_action = action.add_parser(
@@ -2182,6 +2182,9 @@ def main():
                 # Get session backup id
                 bck_id = utility.get_bckid(list_catalog, args.id)
                 if bck_id:
+                    if args.ids:
+                        print(bck_id.name)
+                        exit(0)
                     endline = " - " if args.oneline else "\n"
                     utility.print_verbose(
                         args.verbose,
@@ -2281,6 +2284,9 @@ def main():
                     bck_id = list_catalog[lid]
                     break
                 if bck_id:
+                    if args.ids:
+                        print(bck_id.name)
+                        exit(0)
                     endline = " - " if args.oneline else "\n"
                     utility.print_verbose(
                         args.verbose,
@@ -2433,6 +2439,9 @@ def main():
                     # Get session backup id
                     bck_id = list_catalog[lid]
                     if "archived" in bck_id:
+                        if args.ids:
+                            print(lid)
+                            continue
                         utility.write_log(
                             log_args["status"],
                             log_args["destination"],
@@ -2457,7 +2466,8 @@ def main():
                         text += "\n"
                         text += "Timestamp: {0}".format(bck_id.get("timestamp", ""))
                         text += "\n\n"
-                utility.pager(text)
+                if not args.ids:
+                    utility.pager(text)
             elif args.cleaned:
                 utility.print_verbose(
                     args.verbose,
@@ -2475,6 +2485,9 @@ def main():
                     # Get session backup id
                     bck_id = list_catalog[lid]
                     if "cleaned" in bck_id:
+                        if args.ids:
+                            print(lid)
+                            continue
                         utility.write_log(
                             log_args["status"],
                             log_args["destination"],
@@ -2499,7 +2512,8 @@ def main():
                         text += "\n"
                         text += "Timestamp: {0}".format(bck_id.get("timestamp", ""))
                         text += "\n\n"
-                utility.pager(text)
+                if not args.ids:
+                    utility.pager(text)
             else:
                 utility.print_verbose(
                     args.verbose, "List all backup in catalog", nocolor=args.color
@@ -2516,6 +2530,9 @@ def main():
                         # Get session backup id
                         bck_id = list_catalog[lid]
                         if bck_id.get("name") == args.hostname:
+                            if args.ids:
+                                print(lid)
+                                continue
                             utility.write_log(
                                 log_args["status"],
                                 log_args["destination"],
@@ -2542,6 +2559,9 @@ def main():
                             text += "\n\n"
                 else:
                     for lid in list_catalog.sections():
+                        if args.ids:
+                            print(lid)
+                            continue
                         # Get session backup id
                         bck_id = list_catalog[lid]
                         utility.write_log(
@@ -2568,7 +2588,8 @@ def main():
                         text += "\n"
                         text += "Timestamp: {0}".format(bck_id.get("timestamp", ""))
                         text += "\n\n"
-                utility.pager(text)
+                if not args.ids:
+                    utility.pager(text)
 
         # Check export session
         if args.action == "export":
