@@ -113,32 +113,31 @@ Butterfly Backup has, in its core, six main operations:
 .. code-block:: console
 
    arthur@heartofgold$ bb --help
-   usage: bb [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version]
-             {config,backup,restore,archive,list,export} ...
+   usage: bb [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--version] {config,backup,restore,archive,list,export} ...
 
    Butterfly Backup
 
-   optional arguments:
-     -h, --help            show this help message and exit
-     --verbose, -v         Enable verbosity
-     --log, -l             Create a log
-     --dry-run, -N         Dry run mode
-     --force, -O           Force an action without prompt
-     --no-color, -w        Remove color into terminal
-     --explain-error, -x   Print python traceback
-     --version, -V         Print version
+   options:
+      -h, --help            show this help message and exit
+      --verbose, -v         Enable verbosity
+      --log, -l             Create logs
+      --dry-run, -N         Dry run mode
+      --force, -O           Force an action without prompt
+      --no-color, -w        Remove color into terminal
+      --explain-error, -x   Print python traceback
+      --version, -V         Print version
 
    action:
-     Valid action
+      Valid action
 
-     {config,backup,restore,archive,list,export}
-                           Available actions
-       config              Configuration options
-       backup              Backup options
-       restore             Restore options
-       archive             Archive options
-       list                List options
-       export              Export options
+      {config,backup,restore,archive,list,export}
+                             Available actions
+         config              Configuration options
+         backup              Backup options
+         restore             Restore options
+         archive             Archive options
+         list                List options
+         export              Export options
 
 Valid action
 
@@ -174,34 +173,33 @@ Let's see how to go about looking at the help:
 .. code-block:: console
 
    arthur@heartofgold$ bb config --help
-   usage: bb config [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] [--new | --remove | --init CATALOG | --delete-host CATALOG HOST | --clean CATALOG | --delete-backup CATALOG ID] [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
+   usage: bb config [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--new | --remove | --init CATALOG | --delete-host CATALOG HOST | --clean CATALOG | --delete-backup CATALOG ID]
+                    [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
 
    options:
-   -h, --help            show this help message and exit
-   --verbose, -v         Enable verbosity
-   --log, -l             Create logs
-   --dry-run, -N         Dry run mode
-   --force, -O           Force an action without prompt
-   --no-color, -w        Remove color into terminal
-   --version, -V         Print version
+      -h, --help            show this help message and exit
+      --verbose, -v         Enable verbosity
+      --log, -l             Create logs
+      --dry-run, -N         Dry run mode
+      --force, -O           Force an action without prompt
+      --no-color, -w        Remove color into terminal
+      --explain-error, -x   Print python traceback
 
    Init configuration:
-   --new, -n             Generate new configuration
-   --remove, -r          Remove exist configuration
-   --init CATALOG, -i CATALOG
-                         Reset CATALOG file. Specify path of backup folder.
-   --delete-host CATALOG HOST, -D CATALOG HOST
-                         Delete all entry for a single HOST in CATALOG.
-   --clean CATALOG, -c CATALOG
-                         Cleans the CATALOG if it is corrupt, setting default values.
-   --delete-backup CATALOG ID, -b CATALOG ID
-                         Delete specific backup ID from CATALOG
+      --new, -n             Generate new configuration
+      --remove, -r          Remove exist configuration
+      --init, -i CATALOG    Reset CATALOG file. Specify path of backup folder.
+      --delete-host, -D CATALOG HOST
+                            Delete all entry for a single HOST in CATALOG.
+      --clean, -c CATALOG   Cleans the CATALOG if it is corrupt, setting default values.
+      --delete-backup, -b CATALOG ID
+                            Delete specific backup ID from CATALOG
 
    Deploy configuration:
-   --deploy DEPLOY_HOST, -d DEPLOY_HOST
-                         Deploy configuration to client: hostname or ip address
-   --user DEPLOY_USER, -u DEPLOY_USER
-                         User of the remote machine
+      --deploy, -d DEPLOY_HOST
+                            Deploy configuration to client: hostname or ip address
+      --user, -u DEPLOY_USER
+                            User of the remote machine
 
 
 Two macro-options are available:
@@ -336,54 +334,53 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 .. code-block:: console
 
    arthur@heartofgold$ bb backup --help
-   usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] (--computer HOSTNAME | --list LIST) --destination DESTINATION [--mode {full,incremental,differential,mirror}]
-                    (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...] | --file-data FILEDATA) [--user USER] --type {unix,windows,macos} [--compress]
-                    [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]] [--start-from ID]
+   usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] (--computer HOSTNAME | --list LIST) --destination DESTINATION [--mode {full,incremental,differential,mirror}]
+                    (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...] | --file-data FILEDATA) [--user USER] --type {unix,windows,macos}
+                    [--compress] [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]]
+                    [--start-from ID]
 
-   optional arguments:
-   -h, --help            show this help message and exit
-   --verbose, -v         Enable verbosity
-   --log, -l             Create logs
-   --dry-run, -N         Dry run mode
-   --force, -O           Force an action without prompt
-   --no-color, -w        Remove color into terminal
-   --version, -V         Print version
+     options:
+      -h, --help            show this help message and exit
+      --verbose, -v         Enable verbosity
+      --log, -l             Create logs
+      --dry-run, -N         Dry run mode
+      --force, -O           Force an action without prompt
+      --no-color, -w        Remove color into terminal
+      --explain-error, -x   Print python traceback
 
    Backup options:
-   --computer HOSTNAME, -c HOSTNAME
-                           Hostname or ip address to backup
-   --list LIST, -L LIST  File list of computers or ip addresses to backup
-   --destination DESTINATION, -d DESTINATION
-                           Destination path
-   --mode {full,incremental,differential,mirror}, -m {full,incremental,differential,mirror}
-                           Backup mode
-   --data {user,config,application,system,log} [{user,config,application,system,log} ...], -D {user,config,application,system,log} [{user,config,application,system,log} ...]
-                           Data of which you want to backup
-   --custom-data CUSTOMDATA [CUSTOMDATA ...], -C CUSTOMDATA [CUSTOMDATA ...]
-                           Custom path of which you want to backup
-   --file-data FILEDATA, -F FILEDATA
-                           File with custom path of which you want to backup
-   --user USER, -u USER  Login name used to log into the remote host (being backed up)
-   --type {unix,windows,macos}, -t {unix,windows,macos}
-                           Type of operating system to backup
-   --compress, -z        Compress data
-   --retention [DAYS [NUMBER ...]], -r [DAYS [NUMBER ...]]
-                           First argument are days of backup retention. Second argument is minimum number of backup retention
-   --parallel PARALLEL, -p PARALLEL
-                           Number of parallel jobs
-   --timeout TIMEOUT, -T TIMEOUT
-                           I/O timeout in seconds
-   --skip-error, -e      Skip error
-   --rsync-path RSYNC, -R RSYNC
-                           Custom rsync path
-   --bwlimit BWLIMIT, -b BWLIMIT
-                           Bandwidth limit in KBPS.
-   --ssh-port PORT, -P PORT
-                           Custom ssh port.
-   --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
-                           Exclude pattern
-   --start-from ID, -s ID
-                           Backup id where start a new backup
+      --computer, -c HOSTNAME
+                            Hostname or ip address to backup
+      --list, -L LIST       File list of computers or ip addresses to backup
+      --destination, -d DESTINATION
+                            Destination path
+      --mode, -m {full,incremental,differential,mirror}
+                            Backup mode
+      --data, -D {user,config,application,system,log} [{user,config,application,system,log} ...]
+                            Data of which you want to backup
+      --custom-data, -C CUSTOMDATA [CUSTOMDATA ...]
+                            Custom path of which you want to backup
+      --file-data, -F FILEDATA
+                            File with custom path of which you want to backup
+      --user, -u USER       Login name used to log into the remote host (being backed up)
+      --type, -t {unix,windows,macos}
+                            Type of operating system to backup
+      --compress, -z        Compress data
+      --retention, -r [DAYS [NUMBER ...]]
+                            First argument are days of backup retention. Second argument is minimum number of backup retention
+      --parallel, -p PARALLEL
+                             Number of parallel jobs
+      --timeout, -T TIMEOUT
+                            I/O timeout in seconds
+      --skip-error, -e      Skip error
+      --rsync-path, -R RSYNC
+                            Custom rsync path
+      --bwlimit, -b BWLIMIT
+                            Bandwidth limit in KBPS.
+      --ssh-port, -P PORT   Custom ssh port.
+      --exclude, -E EXCLUDE [EXCLUDE ...]
+                            Exclude pattern
+      --start-from, -s ID   Backup id where start a new backup
 
 
 
@@ -635,31 +632,30 @@ To query this catalog, the list command exists.
 .. code-block:: console
 
    arthur@heartofgold$ bb list --help
-   usage: bb list [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] --catalog CATALOG
-                  [--backup-id ID | --archived | --cleaned | --last | --detail ID] [--oneline]
-                  [--computer HOSTNAME]
+   usage: bb list [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] --catalog CATALOG [--backup-id ID | --archived | --cleaned | --last | --detail ID] [--oneline] [--computer HOSTNAME]
+                  [--only-id]
 
-   optional arguments:
-     -h, --help            show this help message and exit
-     --verbose, -v         Enable verbosity
-     --log, -l             Create a log
-     --dry-run, -N         Dry run mode
-     --force, -O           Force an action without prompt
-     --no-color, -w        Remove color into terminal
-     --version, -V         Print version
+   options:
+      -h, --help            show this help message and exit
+      --verbose, -v         Enable verbosity
+      --log, -l             Create logs
+      --dry-run, -N         Dry run mode
+      --force, -O           Force an action without prompt
+      --no-color, -w        Remove color into terminal
+      --explain-error, -x   Print python traceback
 
    List options:
-     --catalog CATALOG, -C CATALOG
-                           Folder where is catalog file
-     --backup-id ID, -i ID
-                           Backup-id of backup
-     --archived, -a        List only archived backup
-     --cleaned, -c         List only cleaned backup
-     --last, -L            Only last backup
-     --computer HOSTNAME, -H HOSTNAME
-                           List only match hostname or ip
-     --detail ID, -d ID    List detail of file and folder of specific backup-id
-     --oneline, -o         One line output
+      --catalog, -C CATALOG
+                            Folder where is catalog file
+      --backup-id, -i ID    Backup-id of backup
+      --archived, -a        List only archived backup
+      --cleaned, -c         List only cleaned backup
+      --last, -L            Only last backup
+      --detail, -d ID       List detail of file and folder of specific backup-id
+      --oneline, -o         One line output
+      --computer, -H HOSTNAME
+                            List only match hostname or ip
+      --only-id, -y         List only id
 
 
 * **List options**
@@ -671,6 +667,7 @@ To query this catalog, the list command exists.
    --computer, -H          List only match hostname or ip.
    --detail, -d            List detail of file and folder of specific backup-id.
    --oneline, -o           One line and concise output.
+   --only-id, -y           List only id
 
 First, let's query the catalog:
 
@@ -736,47 +733,45 @@ The restore process is the exact opposite of the backup process. It takes the fi
 .. code-block:: console
 
    arthur@heartofgold$ bb restore --help
-   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] --catalog CATALOG (--backup-id ID | --last) [--user USER] --computer HOSTNAME [--type {unix,windows,macos}] 
-                     [--timeout TIMEOUT] [--mirror] [--acl] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] 
-                     [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]] [--files FILES [FILES ...]]
+   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] --catalog CATALOG (--backup-id ID | --last) [--user USER] --computer HOSTNAME [--root-dir ROOT_DIR]
+                     [--type {unix,windows,macos}] [--timeout TIMEOUT] [--mirror] [--acl] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]]
+                     [--files FILES [FILES ...]]
 
    options:
-   -h, --help            show this help message and exit
-   --verbose, -v         Enable verbosity
-   --log, -l             Create logs
-   --dry-run, -N         Dry run mode
-   --force, -O           Force an action without prompt
-   --no-color, -w        Remove color into terminal
-   --version, -V         Print version
+      -h, --help            show this help message and exit
+      --verbose, -v         Enable verbosity
+      --log, -l             Create logs
+      --dry-run, -N         Dry run mode
+      --force, -O           Force an action without prompt
+      --no-color, -w        Remove color into terminal
+      --explain-error, -x   Print python traceback
 
    Restore options:
-   --catalog CATALOG, -C CATALOG
-                           Folder where is catalog file
-   --backup-id ID, -i ID
-                           Backup-id of backup
-   --last, -L              Last available backup
-   --user USER, -u USER    Login name used to log into the remote host (where you're restoring)
-   --computer HOSTNAME, -c HOSTNAME
-                           Hostname or ip address to perform restore
-   --root-dir, -r ROOT_DIR
-                           Root directory to perform restore
-   --type {unix,windows,macos}, -t {unix,windows,macos}
-                           Type of operating system to perform restore
-   --timeout TIMEOUT, -T TIMEOUT
-                           I/O timeout in seconds
-   --mirror, -m            Mirror mode
-   --acl, -a               Preserve ACLs
-   --skip-error, -e        Skip error
-   --rsync-path RSYNC, -R RSYNC
-                           Custom rsync path
-   --bwlimit BWLIMIT, -b BWLIMIT
-                           Bandwidth limit in KBPS.
-   --ssh-port PORT, -P PORT
-                           Custom ssh port.
-   --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
-                           Exclude pattern
-   --files FILES [FILES ...], -f FILES [FILES ...]
-                           Restore only specified files
+      --catalog, -C CATALOG
+                            Folder where is catalog file
+      --backup-id, -i ID    Backup-id of backup
+      --last, -L            Last available backup of the same host
+      --user, -u USER       Login name used to log into the remote host (where you're restoring)
+      --computer, -c HOSTNAME
+                            Hostname or ip address to perform restore
+      --root-dir, -r ROOT_DIR
+                            Root directory to perform restore
+      --type, -t {unix,windows,macos}
+                            Type of operating system to perform restore
+      --timeout, -T TIMEOUT
+                            I/O timeout in seconds
+      --mirror, -m          Mirror mode
+      --acl, -a             Preserve ACLs
+      --skip-error, -e      Skip error
+      --rsync-path, -R RSYNC
+                            Custom rsync path
+      --bwlimit, -b BWLIMIT
+                            Bandwidth limit in KBPS.
+      --ssh-port, -P PORT   Custom ssh port.
+      --exclude, -E EXCLUDE [EXCLUDE ...]
+                            Exclude pattern
+      --files, -f FILES [FILES ...]
+                            Restore only specified files
 
 
 * **Restore options**
@@ -864,24 +859,23 @@ Archive operations are used to store backups by saving disk space. Backups older
 .. code-block:: console
 
    arthur@heartofgold$ bb archive --help
-   usage: bb archive [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version] --catalog CATALOG
-                     [--days DAYS] --destination DESTINATION
+   usage: bb archive [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] --catalog CATALOG [--days DAYS] --destination DESTINATION
 
-   optional arguments:
-     -h, --help            show this help message and exit
-     --verbose, -v         Enable verbosity
-     --log, -l             Create a log
-     --dry-run, -N         Dry run mode
-     --force, -O           Force an action without prompt
-     --no-color, -w        Remove color into terminal
-     --version, -V         Print version
+   options:
+      -h, --help            show this help message and exit
+      --verbose, -v         Enable verbosity
+      --log, -l             Create logs
+      --dry-run, -N         Dry run mode
+      --force, -O           Force an action without prompt
+      --no-color, -w        Remove color into terminal
+      --explain-error, -x   Print python traceback
 
    Archive options:
-     --catalog CATALOG, -C CATALOG
-                           Folder where is catalog file
-     --days DAYS, -D DAYS  Number of days of archive retention
-     --destination DESTINATION, -d DESTINATION
-                           Archive destination path
+      --catalog, -C CATALOG
+                            Folder where is catalog file
+      --days, -D DAYS       Number of days of archive retention
+      --destination, -d DESTINATION
+                            Archive destination path
 
 
 * **Archive options**
@@ -933,46 +927,40 @@ The export function is used to copy a particular backup to another path.
 .. code-block:: console
 
    arthur@heartofgold$ bb export -h
-   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] --catalog CATALOG
-                    [--backup-id ID | --all] --destination DESTINATION [--mirror] [--cut] [--link PATH]
-                    [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE [EXCLUDE ...]]
-                    [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT]
-                    [--ssh-port PORT]
+   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] --catalog CATALOG [--backup-id ID | --all] --destination DESTINATION [--mirror] [--cut] [--link PATH]
+                    [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE [EXCLUDE ...]] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]
 
-
-   optional arguments:
-     -h, --help            show this help message and exit
-     --verbose, -v         Enable verbosity
-     --log, -l             Create a log
-     --dry-run, -N         Dry run mode
-     --force, -O           Force an action without prompt
-     --no-color, -w        Remove color into terminal
-     --version, -V         Print version
+   options:
+      -h, --help            show this help message and exit
+      --verbose, -v         Enable verbosity
+      --log, -l             Create logs
+      --dry-run, -N         Dry run mode
+      --force, -O           Force an action without prompt
+      --no-color, -w        Remove color into terminal
+      --explain-error, -x   Print python traceback
 
    Export options:
-     --catalog CATALOG, -C CATALOG
-                           Folder where is catalog file
-     --backup-id ID, -i ID
-                           Backup-id of backup
-     --all, -A             All backup
-     --destination DESTINATION, -d DESTINATION
-                           Destination path
-     --mirror, -m          Mirror mode
-     --cut, -c             Cut mode. Delete source
-     --link PATH, -L PATH  Hard link to path
-     --include INCLUDE [INCLUDE ...], -I INCLUDE [INCLUDE ...]
-                           Include pattern
-     --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
-                           Exclude pattern
-     --timeout TIMEOUT, -T TIMEOUT
-                           I/O timeout in seconds
-     --skip-error, -e      Skip error
-     --rsync-path RSYNC, -R RSYNC
-                           Custom rsync path
-     --bwlimit BWLIMIT, -b BWLIMIT
-                           Bandwidth limit in KBPS.
-     --ssh-port PORT, -P PORT
-                           Custom ssh port.
+      --catalog, -C CATALOG
+                            Folder where is catalog file
+      --backup-id, -i ID    Backup-id of backup
+      --all, -A             All backup
+      --destination, -d DESTINATION
+                            Destination path
+      --mirror, -m          Mirror mode
+      --cut, -c             Cut mode. Delete source
+      --link, -L PATH       Hard link to path
+      --include, -I INCLUDE [INCLUDE ...]
+                            Include pattern
+      --exclude, -E EXCLUDE [EXCLUDE ...]
+                            Exclude pattern
+      --timeout, -T TIMEOUT
+                            I/O timeout in seconds
+      --skip-error, -e      Skip error
+      --rsync-path, -R RSYNC
+                            Custom rsync path
+      --bwlimit, -b BWLIMIT
+                            Bandwidth limit in KBPS.
+      --ssh-port, -P PORT   Custom ssh port.
 
 
 
