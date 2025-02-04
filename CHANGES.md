@@ -1,5 +1,11 @@
 # Release notes
 
+## 1.16.0
+Feb 04, 2025
+* Add **--explain-error** argument
+* Add **--only-id** argument into _list_ action
+* Fix _ignore-times_ option into rsync in _restore_ action
+
 ## 1.15.0
 Jan 18, 2025
 * Add **--acl** argument in _restore_ action

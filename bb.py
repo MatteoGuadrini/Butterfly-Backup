@@ -31,8 +31,8 @@ DESCRIPTION
 SYNOPSIS
     bb [ACTION] [OPTIONS]
 
-    bb [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--version]
-              {config,backup,restore,archive,list,export} ...
+    bb [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color]
+       [--explain-error] [--version] {config,backup,restore,archive,list,export} ...
 
 OPTIONS
     action:
@@ -64,7 +64,7 @@ from multiprocessing import Pool
 import utility
 
 # region Global Variables
-VERSION = "1.15.0"
+VERSION = "1.16.0"
 
 
 # endregion
