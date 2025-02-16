@@ -5,14 +5,18 @@ echo "Python3 is installed?"
 
 if [ -n "/bin/python3" ]; then
 	echo "Python3 exists!"
+	python3 -m venv venv
 else
 	exit 1
 fi
 
 # Add execute permission on bb.py
-echo "Add execute permission on bb.py"
+echo "Activate Python venv"
 
-chmod +x bb.py
+. venv/bin/activate
+
+echo "Install Butterfly backup into venv"
+venv/bin/pip install .
 
 # Create enviroment for first backup
 repo=/tmp/bb_repo
@@ -44,7 +48,7 @@ else
 fi
 
 echo "Test backup"
-python3 bb.py backup --computer localhost --destination $repo --custom-data $data --type $os --verbose --log
+venv/bin/bb backup --computer localhost --destination $repo --custom-data $data --type $os --verbose --log
 
 # Test if backup was created
 backup=$repo/localhost
@@ -60,7 +64,7 @@ echo "Test export"
 exp_data="/tmp/bb_exp"
 mkdir $exp_data
 
-python3 bb.py export --catalog $repo --all --destination $exp_data --verbose --log
+venv/bin/bb export --catalog $repo --all --destination $exp_data --verbose --log
 
 # Test if restore was performed
 if [ -f "$exp_data/.catalog.cfg" ]; then
@@ -73,4 +77,3 @@ fi
 # Check catalog
 echo "Check catalog: $ cat $repo/.catalog.cfg"
 cat $repo/.catalog.cfg
-
