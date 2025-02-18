@@ -2686,4 +2686,10 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as err:
+        utility.write_log(
+                    log_args["status"],
+                    log_args["destination"],
+                    "CRITICAL",
+                    "Something wrong: {0}.".format(err),
+                )
         utility.report_issue(err, args.error)

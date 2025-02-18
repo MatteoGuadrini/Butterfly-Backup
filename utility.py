@@ -158,11 +158,11 @@ def write_log(status, log, level, message):
         import logging
 
         # Create logging object
-        f_o_r_m_a_t = logging.Formatter(
+        format_ = logging.Formatter(
             "%(asctime)s %(name)-4s %(levelname)-4s %(message)s"
         )
         handler = logging.FileHandler(log)
-        handler.setFormatter(f_o_r_m_a_t)
+        handler.setFormatter(format_)
         logger = logging.getLogger(getpass.getuser())
         logger.setLevel(logging.INFO)
         logger.addHandler(handler)
