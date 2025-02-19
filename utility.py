@@ -356,6 +356,8 @@ def check_ssh(ip, user, port=22):
     :param user: user for connection
     :param port: ssh port (default is 22)
     """
+    if ip.lower() == "localhost" or ip.lower() == "127.0.0.1":
+        return True
     home = os.path.expanduser("~")
     ssh_folder = os.path.join(home, ".ssh")
     key_filename = os.path.join(ssh_folder, "id_rsa")
