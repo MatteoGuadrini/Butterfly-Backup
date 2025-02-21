@@ -936,30 +936,33 @@ def archive_policy(catalog, destination):
 
 
 def deploy_configuration(computer, user):
-    """Deploy configuration on remote machine
+    """Deploy configuration (public key) on remote machine
 
     (run "ssh-copy-id -i pub_file -f <user>@<computer>")
-    :param computer: remote computer than deploy RSA key
+    :param computer: remote computer to deploy public key to
     :param user: remote user on computer
+    :param keytype: type of key to use ( rsa or ed25519 )
     """
     global args
 
     # Create home path
     home = os.path.expanduser("~")
     ssh_folder = os.path.join(home, ".ssh")
+    keytype = args.keytype
+
     # Remove private key file
-    id_rsa_pub_file = os.path.join(ssh_folder, "id_rsa.pub")
+    id_key_pub_file = os.path.join(ssh_folder, "id_{0}.pub".format(keytype))
     utility.print_verbose(
-        args.verbose, "Public id_rsa is {0}".format(id_rsa_pub_file), nocolor=args.color
+        args.verbose, "Public key file is {0}".format(id_key_pub_file), nocolor=args.color
     )
     if not dry_run("Copying configuration to {0}".format(computer)):
-        if os.path.exists(id_rsa_pub_file):
+        if os.path.exists(id_key_pub_file):
             print(
                 "info: Copying configuration to {0}".format(computer)
                 + "; write the password:"
             )
             return_code = subprocess.call(
-                "ssh-copy-id -i {0} {1}@{2}".format(id_rsa_pub_file, user, computer),
+                "ssh-copy-id -i {0} {1}@{2}".format(id_key_pub_file, user, computer),
                 shell=True,
             )
             utility.print_verbose(
@@ -982,77 +985,80 @@ def deploy_configuration(computer, user):
                 exit(2)
         else:
             utility.warning(
-                "Public key ~/.ssh/id_rsa.pub is not exist", nocolor=args.color
+                "Public key ~/.ssh/id_{0}.pub is not exist".format(keytype), nocolor=args.color
             )
             exit(2)
 
 
 def remove_configuration():
-    """Remove a new configuration (remove an exist RSA key pair)"""
+    """Remove a new configuration (remove an existing public/private key pair)"""
     global args
 
     # Create home path
     home = os.path.expanduser("~")
     ssh_folder = os.path.join(home, ".ssh")
-    if not dry_run("Remove private id_rsa"):
+    keytype = args.keytype
+
+    if not dry_run("Remove private id_{0}".format(keytype)):
         if utility.confirm(
-            "info: Are you sure to remove existing rsa keys?", force=args.force
+            "info: Are you sure to remove existing {0} keys?".format(keytype), force=args.force
         ):
             # Remove private key file
-            id_rsa_file = os.path.join(ssh_folder, "id_rsa")
+            id_key_file = os.path.join(ssh_folder, "id_{0}".format(keytype))
             utility.print_verbose(
                 args.verbose,
-                "Remove private id_rsa {0}".format(id_rsa_file),
+                "Remove private key file {0}".format(id_key_file),
                 nocolor=args.color,
             )
-            if os.path.exists(id_rsa_file):
-                os.remove(id_rsa_file)
+            if os.path.exists(id_key_file):
+                os.remove(id_key_file)
             else:
                 utility.warning(
-                    "Private key ~/.ssh/id_rsa is not exist", nocolor=args.color
+                    "Private key ~/.ssh/id_{0} is not exist".format(keytype), nocolor=args.color
                 )
                 exit(2)
             # Remove public key file
-            id_rsa_pub_file = os.path.join(ssh_folder, "id_rsa.pub")
+            id_key_pub_file = os.path.join(ssh_folder, "id_{0}.pub".format(keytype))
             utility.print_verbose(
                 args.verbose,
-                "Remove public id_rsa {0}".format(id_rsa_pub_file),
+                "Remove public key file {0}".format(id_key_pub_file),
                 nocolor=args.color,
             )
-            if os.path.exists(id_rsa_pub_file):
-                os.remove(id_rsa_pub_file)
+            if os.path.exists(id_key_pub_file):
+                os.remove(id_key_pub_file)
             else:
                 utility.warning(
-                    "Public key ~/.ssh/id_rsa.pub is not exist", nocolor=args.color
+                    "Public key ~/.ssh/id_{0}.pub is not exist".format(keytype), nocolor=args.color
                 )
                 exit(2)
             utility.success("Removed configuration successfully!", nocolor=args.color)
 
 
 def new_configuration():
-    """Create a new configuration (create a RSA key pair)"""
+    """Create a new configuration (create a public/private key pair)"""
     global args
 
     # Create home path
     home = os.path.expanduser("~")
     ssh_folder = os.path.join(home, ".ssh")
-    id_rsa_file = os.path.join(ssh_folder, "id_rsa")
+    keytype = args.keytype
+    id_key_file = os.path.join(ssh_folder, "id_{0}".format(keytype))
     if not dry_run("Generate private/public key pair"):
         # Generate private/public key pair
         utility.print_verbose(
-            args.verbose, "Generate private/public key pair", nocolor=args.color
+            args.verbose, "Generate private/public key pair of type {0}".format(keytype), nocolor=args.color
         )
         return_code = subprocess.call(
             [
                 "ssh-keygen",
                 "-t",
-                "rsa",
+                "{0}".format(keytype),
                 "-b",
                 "4096",
                 "-N",
-                '""',
+                "{0}".format(""),
                 "-f",
-                "{0}".format(id_rsa_file),
+                "{0}".format(id_key_file),
                 "-q",
             ]
         )
@@ -1064,7 +1070,7 @@ def new_configuration():
         # Check if something wrong
         if return_code:
             utility.error(
-                "Creation of {0} error".format(id_rsa_file), nocolor=args.color
+                "Creation of {0} error".format(id_key_file), nocolor=args.color
             )
             exit(2)
         # Sucess!
@@ -1342,6 +1348,17 @@ def parse_arguments():
         "config", help="Configuration options", parents=[parent_parser]
     )
     group_config = config.add_argument_group(title="Init configuration")
+
+    config.add_argument(
+        "--keytype",
+        "-k",
+        help="Kind of public/private key to use or generate",
+        dest="keytype",
+        action="store",
+        choices=['rsa','ed25519'],
+        default="rsa"
+    )
+
     group_config_mutually = group_config.add_mutually_exclusive_group()
     group_config_mutually.add_argument(
         "--new",
