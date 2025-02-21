@@ -1320,6 +1320,16 @@ def parse_arguments():
         action="store_true",
     )
 
+    parent_parser.add_argument(
+        "--keytype",
+        "-k",
+        help="Kind of public/private key to use or generate",
+        dest="keytype",
+        action="store",
+        choices=['rsa','ed25519'],
+        default="rsa"
+    )
+
     # Create principal parser
     description = "Butterfly Backup"
     parser_object = argparse.ArgumentParser(
@@ -1348,16 +1358,6 @@ def parse_arguments():
         "config", help="Configuration options", parents=[parent_parser]
     )
     group_config = config.add_argument_group(title="Init configuration")
-
-    config.add_argument(
-        "--keytype",
-        "-k",
-        help="Kind of public/private key to use or generate",
-        dest="keytype",
-        action="store",
-        choices=['rsa','ed25519'],
-        default="rsa"
-    )
 
     group_config_mutually = group_config.add_mutually_exclusive_group()
     group_config_mutually.add_argument(
