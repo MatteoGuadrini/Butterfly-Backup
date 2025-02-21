@@ -1928,7 +1928,7 @@ def main():
             parser.print_usage()
             exit(1)
         for hostname in hostnames:
-            if not utility.check_ssh(hostname, args.user, port):
+            if not utility.check_ssh(hostname, args.user, args.keytype, port):
                 utility.error(
                     "SSH connection failed on {1}:{0}".format(port, hostname),
                     nocolor=args.color,
@@ -2098,7 +2098,7 @@ def main():
                 )
                 exit(1)
         # Test connection
-        if not utility.check_ssh(rhost, args.user, port):
+        if not utility.check_ssh(rhost, args.user, args.keytype, port):
             utility.error(
                 "SSH connection failed on {1}:{0}".format(port, rhost),
                 nocolor=args.color,
