@@ -83,7 +83,7 @@ __pycache__/
 *.so
 
 # Sphinx builds
-docs/build/*
+docs/build
 
 # Distribution / packaging
 .Python

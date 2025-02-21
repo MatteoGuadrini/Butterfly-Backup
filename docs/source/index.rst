@@ -113,7 +113,7 @@ Butterfly Backup has, in its core, six main operations:
 .. code-block:: console
 
    arthur@heartofgold$ bb --help
-   usage: bb [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--version] {config,backup,restore,archive,list,export} ...
+   usage: bb [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] [--version] {config,backup,restore,archive,list,export} ...
 
    Butterfly Backup
 
@@ -125,8 +125,9 @@ Butterfly Backup has, in its core, six main operations:
       --force, -O           Force an action without prompt
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
+      --keytype {rsa,ed25519}, -k {rsa,ed25519}
+                            Kind of public/private key to use or generate
       --version, -V         Print version
-      --keytype, -k         Kind of private/public key to use (rsa or ed25519)
 
    action:
       Valid action
@@ -158,6 +159,7 @@ It also has three flags that can be very useful, especially in case of error.
         --force, -O           Force an action without prompt
         --no-color, -w        Remove color into terminal
         --explain-error, -x   Print python traceback
+        --keytype, -k         Kind of public/private key to use or generate
         --version, -V         Print version
 
 
@@ -174,7 +176,7 @@ Let's see how to go about looking at the help:
 .. code-block:: console
 
    arthur@heartofgold$ bb config --help
-   usage: bb config [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--new | --remove | --init CATALOG | --delete-host CATALOG HOST | --clean CATALOG | --delete-backup CATALOG ID]
+   usage: bb config [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] [--new | --remove | --init CATALOG | --delete-host CATALOG HOST | --clean CATALOG | --delete-backup CATALOG ID]
                     [--deploy DEPLOY_HOST] [--user DEPLOY_USER]
 
    options:
@@ -185,6 +187,8 @@ Let's see how to go about looking at the help:
       --force, -O           Force an action without prompt
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
+      --keytype {rsa,ed25519}, -k {rsa,ed25519}
+                            Kind of public/private key to use or generate
 
    Init configuration:
       --new, -n             Generate new configuration
@@ -335,7 +339,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 .. code-block:: console
 
    arthur@heartofgold$ bb backup --help
-   usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] (--computer HOSTNAME | --list LIST) --destination DESTINATION [--mode {full,incremental,differential,mirror}]
+   usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] (--computer HOSTNAME | --list LIST) --destination DESTINATION [--mode {full,incremental,differential,mirror}]
                     (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...] | --file-data FILEDATA) [--user USER] --type {unix,windows,macos}
                     [--compress] [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]]
                     [--start-from ID]
@@ -348,6 +352,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
       --force, -O           Force an action without prompt
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
+      --keytype {rsa,ed25519}, -k {rsa,ed25519}
+                            Kind of public/private key to use or generate
 
    Backup options:
       --computer, -c HOSTNAME
@@ -633,7 +639,7 @@ To query this catalog, the list command exists.
 .. code-block:: console
 
    arthur@heartofgold$ bb list --help
-   usage: bb list [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] --catalog CATALOG [--backup-id ID | --archived | --cleaned | --last | --detail ID] [--oneline] [--computer HOSTNAME]
+   usage: bb list [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] --catalog CATALOG [--backup-id ID | --archived | --cleaned | --last | --detail ID] [--oneline] [--computer HOSTNAME]
                   [--only-id]
 
    options:
@@ -644,6 +650,8 @@ To query this catalog, the list command exists.
       --force, -O           Force an action without prompt
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
+      --keytype {rsa,ed25519}, -k {rsa,ed25519}
+                            Kind of public/private key to use or generate
 
    List options:
       --catalog, -C CATALOG
@@ -734,7 +742,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
 .. code-block:: console
 
    arthur@heartofgold$ bb restore --help
-   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] --catalog CATALOG (--backup-id ID | --last) [--user USER] --computer HOSTNAME [--root-dir ROOT_DIR]
+   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] --catalog CATALOG (--backup-id ID | --last) [--user USER] --computer HOSTNAME [--root-dir ROOT_DIR]
                      [--type {unix,windows,macos}] [--timeout TIMEOUT] [--mirror] [--acl] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]]
                      [--files FILES [FILES ...]]
 
@@ -746,6 +754,8 @@ The restore process is the exact opposite of the backup process. It takes the fi
       --force, -O           Force an action without prompt
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
+      --keytype {rsa,ed25519}, -k {rsa,ed25519}
+                            Kind of public/private key to use or generate
 
    Restore options:
       --catalog, -C CATALOG
@@ -860,7 +870,7 @@ Archive operations are used to store backups by saving disk space. Backups older
 .. code-block:: console
 
    arthur@heartofgold$ bb archive --help
-   usage: bb archive [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] --catalog CATALOG [--days DAYS] --destination DESTINATION
+   usage: bb archive [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] --catalog CATALOG [--days DAYS] --destination DESTINATION
 
    options:
       -h, --help            show this help message and exit
@@ -870,6 +880,8 @@ Archive operations are used to store backups by saving disk space. Backups older
       --force, -O           Force an action without prompt
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
+      --keytype {rsa,ed25519}, -k {rsa,ed25519}
+                            Kind of public/private key to use or generate
 
    Archive options:
       --catalog, -C CATALOG
@@ -928,7 +940,7 @@ The export function is used to copy a particular backup to another path.
 .. code-block:: console
 
    arthur@heartofgold$ bb export -h
-   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] --catalog CATALOG [--backup-id ID | --all] --destination DESTINATION [--mirror] [--cut] [--link PATH]
+   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] --catalog CATALOG [--backup-id ID | --all] --destination DESTINATION [--mirror] [--cut] [--link PATH]
                     [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE [EXCLUDE ...]] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]
 
    options:
@@ -939,6 +951,8 @@ The export function is used to copy a particular backup to another path.
       --force, -O           Force an action without prompt
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
+      --keytype {rsa,ed25519}, -k {rsa,ed25519}
+                            Kind of public/private key to use or generate
 
    Export options:
       --catalog, -C CATALOG

@@ -183,6 +183,9 @@ epub_copyright = copyright
 
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ["search.html"]
-
+html_theme_options = {
+    'logo_only': False
+}
+html_logo = "_static/bb_logo.svg"
 
 # -- Extension configuration -------------------------------------------------
