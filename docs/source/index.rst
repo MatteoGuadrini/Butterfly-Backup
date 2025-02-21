@@ -126,6 +126,7 @@ Butterfly Backup has, in its core, six main operations:
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
       --version, -V         Print version
+      --keytype, -k         Kind of private/public key to use (rsa or ed25519)
 
    action:
       Valid action

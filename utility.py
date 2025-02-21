@@ -349,7 +349,7 @@ def check_tool(name):
     return which(name) is not None
 
 
-def check_ssh(ip, user, port=22):
+def check_ssh(ip, user, keytype, port=22):
     """
     Test ssh connection
     :param ip: ip address or hostname of machine
@@ -360,13 +360,13 @@ def check_ssh(ip, user, port=22):
         return True
     home = os.path.expanduser("~")
     ssh_folder = os.path.join(home, ".ssh")
-    key_filename = os.path.join(ssh_folder, "id_rsa")
-    key_rsa = {"key_filename": key_filename} if os.path.exists(key_filename) else None
+    key_filename = os.path.join(ssh_folder, "id_{0}".format(keytype))
+    key = {"key_filename": key_filename} if os.path.exists(key_filename) else None
     conn = Connection(
         ip,
         port=port,
         user=user,
-        connect_kwargs=key_rsa,
+        connect_kwargs=key,
     )
     try:
         conn.open()
