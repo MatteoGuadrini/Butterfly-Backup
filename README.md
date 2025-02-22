@@ -1,4 +1,4 @@
-<img src="docs/source/_static/bb_logo.svg" alt="PSCouchDB" align="right" width="150"/> Butterfly Backup
+<img src="https://butterfly-backup.readthedocs.io/en/latest/_static/bb_logo.svg" alt="Butterfly Backup" align="right" width="150"/> Butterfly Backup
 ======
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7fc47024f17f4dffa3be08a7a5ab31bd)](https://app.codacy.com/app/MatteoGuadrini/Butterfly-Backup?utm_source=github.com&utm_medium=referral&utm_content=MatteoGuadrini/Butterfly-Backup&utm_campaign=Badge_Grade_Dashboard)

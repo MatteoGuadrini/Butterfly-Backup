@@ -429,7 +429,9 @@ def compose_command(flags, host):
                 "rsync log path: {0}".format(log_path),
             )
     elif flags.action == "export":
-        command.append("-ahu --no-perms --no-owner --no-group")
+        command.append("-ahu")
+        if not args.acl:
+            command.append("--no-perms --no-owner --no-group")
         if flags.verbose:
             command.append("-vP")
             # Set quite mode
@@ -1859,6 +1861,9 @@ def parse_arguments():
         dest="port",
         action="store",
         type=int,
+    )
+    group_export.add_argument(
+        "--acl", "-a", help="Preserve ACLs", dest="acl", action="store_true"
     )
     # Return all args
     return parser_object

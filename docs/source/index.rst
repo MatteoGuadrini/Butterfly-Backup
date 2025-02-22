@@ -940,10 +940,11 @@ The export function is used to copy a particular backup to another path.
 .. code-block:: console
 
    arthur@heartofgold$ bb export -h
-   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] --catalog CATALOG [--backup-id ID | --all] --destination DESTINATION [--mirror] [--cut] [--link PATH]
-                    [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE [EXCLUDE ...]] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]
+   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] --catalog CATALOG [--backup-id ID | --all] --destination DESTINATION
+                    [--mirror] [--cut] [--link PATH] [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE [EXCLUDE ...]] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC]
+                    [--bwlimit BWLIMIT] [--ssh-port PORT] [--acl]
 
-   options:
+      options:
       -h, --help            show this help message and exit
       --verbose, -v         Enable verbosity
       --log, -l             Create logs
@@ -954,28 +955,31 @@ The export function is used to copy a particular backup to another path.
       --keytype {rsa,ed25519}, -k {rsa,ed25519}
                             Kind of public/private key to use or generate
 
-   Export options:
-      --catalog, -C CATALOG
+      Export options:
+      --catalog CATALOG, -C CATALOG
                             Folder where is catalog file
-      --backup-id, -i ID    Backup-id of backup
+      --backup-id ID, -i ID
+                            Backup-id of backup
       --all, -A             All backup
-      --destination, -d DESTINATION
+      --destination DESTINATION, -d DESTINATION
                             Destination path
       --mirror, -m          Mirror mode
       --cut, -c             Cut mode. Delete source
-      --link, -L PATH       Hard link to path
-      --include, -I INCLUDE [INCLUDE ...]
+      --link PATH, -L PATH  Hard link to path
+      --include INCLUDE [INCLUDE ...], -I INCLUDE [INCLUDE ...]
                             Include pattern
-      --exclude, -E EXCLUDE [EXCLUDE ...]
+      --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
                             Exclude pattern
-      --timeout, -T TIMEOUT
+      --timeout TIMEOUT, -T TIMEOUT
                             I/O timeout in seconds
       --skip-error, -e      Skip error
-      --rsync-path, -R RSYNC
+      --rsync-path RSYNC, -R RSYNC
                             Custom rsync path
-      --bwlimit, -b BWLIMIT
+      --bwlimit BWLIMIT, -b BWLIMIT
                             Bandwidth limit in KBPS.
-      --ssh-port, -P PORT   Custom ssh port.
+      --ssh-port PORT, -P PORT
+                            Custom ssh port.
+      --acl, -a             Preserve ACLs
 
 
 
@@ -995,6 +999,7 @@ The export function is used to copy a particular backup to another path.
    --rsync-path, -R        Select a custom rsync path.
    --bwlimit, -b           Bandwidth limit in KBPS.
    --ssh-port, -P          Custom ssh port.
+   --acl, -a               Preserve ACLs
 
 Export a backup in other directory:
 
