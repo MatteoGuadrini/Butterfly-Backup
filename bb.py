@@ -32,7 +32,7 @@ SYNOPSIS
     bb [ACTION] [OPTIONS]
 
     bb [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color]
-       [--explain-error] [--version] {config,backup,restore,archive,list,export} ...
+       [--explain-error] [--keytype {rsa,ed25519}] [--version] {config,backup,restore,archive,list,export} ...
 
 OPTIONS
     action:
@@ -108,7 +108,7 @@ def run_in_parallel(fn, commands, limit):
     :param commands: args commands of function
     :param limit: number of parallel process
     """
-    global args, catalog_path
+    global args, catalog_path, logs
 
     # Start a Pool with "limit" processes
     pool = Pool(processes=limit)
@@ -118,7 +118,7 @@ def run_in_parallel(fn, commands, limit):
         # Run the function
         proc = pool.apply_async(func=fn, args=(command,))
         jobs.append(proc)
-        print("info: Start {0} {1}".format(args.action, plog["hostname"]))
+        print("info: Start {0} on {1}".format(args.action, plog["hostname"]))
         utility.print_verbose(
             args.verbose, "rsync command: {0}".format(command), nocolor=args.color
         )
@@ -208,11 +208,7 @@ def start_process(command):
     :return: command
     """
     fd = get_std_out()
-    if fd == "DEVNULL":
-        p = subprocess.call(
-            command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
-        )
-    elif fd == "STDOUT":
+    if fd == "STDOUT":
         p = subprocess.call(command, shell=True)
     else:
         p = subprocess.call(
