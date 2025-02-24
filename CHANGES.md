@@ -1,5 +1,10 @@
 # Release notes
 
+## 1.17.0
+Feb 24, 2025
+* Add **--keytype** argument
+* Add **--acl** argument into _export_ action
+
 ## 1.16.0
 Feb 04, 2025
 * Add **--explain-error** argument
