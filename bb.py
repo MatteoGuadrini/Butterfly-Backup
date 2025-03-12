@@ -951,7 +951,9 @@ def deploy_configuration(computer, user):
     # Remove private key file
     id_key_pub_file = os.path.join(ssh_folder, "id_{0}.pub".format(keytype))
     utility.print_verbose(
-        args.verbose, "Public key file is {0}".format(id_key_pub_file), nocolor=args.color
+        args.verbose,
+        "Public key file is {0}".format(id_key_pub_file),
+        nocolor=args.color,
     )
     if not dry_run("Copying configuration to {0}".format(computer)):
         if os.path.exists(id_key_pub_file):
@@ -983,7 +985,8 @@ def deploy_configuration(computer, user):
                 exit(2)
         else:
             utility.warning(
-                "Public key ~/.ssh/id_{0}.pub is not exist".format(keytype), nocolor=args.color
+                "Public key ~/.ssh/id_{0}.pub is not exist".format(keytype),
+                nocolor=args.color,
             )
             exit(2)
 
@@ -999,7 +1002,8 @@ def remove_configuration():
 
     if not dry_run("Remove private id_{0}".format(keytype)):
         if utility.confirm(
-            "info: Are you sure to remove existing {0} keys?".format(keytype), force=args.force
+            "info: Are you sure to remove existing {0} keys?".format(keytype),
+            force=args.force,
         ):
             # Remove private key file
             id_key_file = os.path.join(ssh_folder, "id_{0}".format(keytype))
@@ -1012,7 +1016,8 @@ def remove_configuration():
                 os.remove(id_key_file)
             else:
                 utility.warning(
-                    "Private key ~/.ssh/id_{0} is not exist".format(keytype), nocolor=args.color
+                    "Private key ~/.ssh/id_{0} is not exist".format(keytype),
+                    nocolor=args.color,
                 )
                 exit(2)
             # Remove public key file
@@ -1026,7 +1031,8 @@ def remove_configuration():
                 os.remove(id_key_pub_file)
             else:
                 utility.warning(
-                    "Public key ~/.ssh/id_{0}.pub is not exist".format(keytype), nocolor=args.color
+                    "Public key ~/.ssh/id_{0}.pub is not exist".format(keytype),
+                    nocolor=args.color,
                 )
                 exit(2)
             utility.success("Removed configuration successfully!", nocolor=args.color)
@@ -1044,7 +1050,9 @@ def new_configuration():
     if not dry_run("Generate private/public key pair"):
         # Generate private/public key pair
         utility.print_verbose(
-            args.verbose, "Generate private/public key pair of type {0}".format(keytype), nocolor=args.color
+            args.verbose,
+            "Generate private/public key pair of type {0}".format(keytype),
+            nocolor=args.color,
         )
         return_code = subprocess.call(
             [
@@ -1281,7 +1289,7 @@ def get_files(bckid, files):
 def parse_arguments():
     """Get arguments than specified in command line
 
-    :return: parser
+    :return: argument
     """
     global VERSION
 
@@ -1324,8 +1332,8 @@ def parse_arguments():
         help="Kind of public/private key to use or generate",
         dest="keytype",
         action="store",
-        choices=['rsa','ed25519'],
-        default="rsa"
+        choices=["rsa", "ed25519"],
+        default="rsa",
     )
 
     # Create principal parser
@@ -1861,8 +1869,20 @@ def parse_arguments():
     group_export.add_argument(
         "--acl", "-a", help="Preserve ACLs", dest="acl", action="store_true"
     )
+
+    args = parser_object.parse_args()
+
+    # Checks of parser
+    if len(args.retention) >= 3:
+        utility.error(
+            'The "--retention or -r" parameter must have max two integers. '
+            "Three or more arguments specified: {}".format(args.retention),
+            nocolor=args.color,
+        )
+        exit(1)
+
     # Return all args
-    return parser_object
+    return args
 
 
 def main():
@@ -1871,8 +1891,7 @@ def main():
     global args, catalog_path, backup_id, rpath, log_args, logs, hostname, catalog_file
 
     # Create arguments object
-    parser = parse_arguments()
-    args = parser.parse_args()
+    args = parse_arguments()
     catalog_file = ".catalog.cfg"
 
     # Check config session
@@ -1895,10 +1914,6 @@ def main():
         elif args.clean:
             catalog_path = os.path.join(args.clean, catalog_file)
             clean_catalog(catalog_path)
-        else:
-            parser.print_usage()
-            utility.error("For config usage, --help or -h", nocolor=args.color)
-            exit(1)
 
     # Check backup session
     if args.action == "backup":
@@ -1925,9 +1940,6 @@ def main():
                     nocolor=args.color,
                 )
                 exit(1)
-        else:
-            parser.print_usage()
-            exit(1)
         for hostname in hostnames:
             if not utility.check_ssh(hostname, args.user, args.keytype, port):
                 utility.error(
@@ -2705,9 +2717,9 @@ if __name__ == "__main__":
         main()
     except Exception as err:
         utility.write_log(
-                    log_args["status"],
-                    log_args["destination"],
-                    "CRITICAL",
-                    "Something wrong: {0}.".format(err),
-                )
+            log_args["status"],
+            log_args["destination"],
+            "CRITICAL",
+            "Something wrong: {0}.".format(err),
+        )
         utility.report_issue(err, args.error)
