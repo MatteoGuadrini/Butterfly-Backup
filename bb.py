@@ -490,6 +490,9 @@ def compose_command(flags, host):
         "Command flags are: {0}".format(" ".join(command)),
         nocolor=args.color,
     )
+    # Common flags
+    if flags.checksum:
+        command.append("--checksum")
     return command
 
 
@@ -809,14 +812,7 @@ def retention_policy(host, catalog, logpath):
 
     config = read_catalog(catalog)
     full_count = count_full(config, host)
-    if len(args.retention) >= 3:
-        utility.error(
-            'The "--retention or -r" parameter must have max two integers. '
-            "Three or more arguments specified: {}".format(args.retention),
-            nocolor=args.color,
-        )
-        exit(2)
-    if args.retention[1]:
+    if len(args.retention) == 2:
         backup_list = list_backup(config, host)[-args.retention[1] :]
     else:
         backup_list = list()
@@ -1581,6 +1577,13 @@ def parse_arguments():
         action="store",
         metavar="ID",
     )
+    group_backup.add_argument(
+        "--checksum",
+        "-S",
+        help="Checks if the files have been changed",
+        dest="checksum",
+        action="store_true",
+    )
     # restore session
     restore = action.add_parser(
         "restore", help="Restore options", parents=[parent_parser]
@@ -1688,6 +1691,13 @@ def parse_arguments():
         dest="files",
         action="store",
         nargs="+",
+    )
+    group_restore.add_argument(
+        "--checksum",
+        "-S",
+        help="Checks if the files have been changed",
+        dest="checksum",
+        action="store_true",
     )
     # archive session
     archive = action.add_parser(
@@ -1868,6 +1878,13 @@ def parse_arguments():
     )
     group_export.add_argument(
         "--acl", "-a", help="Preserve ACLs", dest="acl", action="store_true"
+    )
+    group_export.add_argument(
+        "--checksum",
+        "-S",
+        help="Checks if the files have been changed",
+        dest="checksum",
+        action="store_true",
     )
 
     args = parser_object.parse_args()

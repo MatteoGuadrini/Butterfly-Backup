@@ -342,7 +342,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
    usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] (--computer HOSTNAME | --list LIST) --destination DESTINATION [--mode {full,incremental,differential,mirror}]
                     (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...] | --file-data FILEDATA) [--user USER] --type {unix,windows,macos}
                     [--compress] [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]]
-                    [--start-from ID]
+                    [--start-from ID] [--checksum]
 
      options:
       -h, --help            show this help message and exit
@@ -388,6 +388,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
       --exclude, -E EXCLUDE [EXCLUDE ...]
                             Exclude pattern
       --start-from, -s ID   Backup id where start a new backup
+      --checksum, -S        Checks if the files have been changed
 
 
 
@@ -456,6 +457,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
    --ssh-port, -P          Custom ssh port.
    --exclude, -E           Exclude pattern. Follow rsync "Exclude Pattern Rules"
    --start-from, -s        The new backup is based on another backup, specified by its ID.
+   --checksum, -S          Checks if the files have been changed through MD5 or MD4 algorithmen.
 
 Flowchart of the differences between Differential and Incremental backup::
 
@@ -744,7 +746,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
    arthur@heartofgold$ bb restore --help
    usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] --catalog CATALOG (--backup-id ID | --last) [--user USER] --computer HOSTNAME [--root-dir ROOT_DIR]
                      [--type {unix,windows,macos}] [--timeout TIMEOUT] [--mirror] [--acl] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]]
-                     [--files FILES [FILES ...]]
+                     [--files FILES [FILES ...]] [--checksum]
 
    options:
       -h, --help            show this help message and exit
@@ -783,6 +785,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
                             Exclude pattern
       --files, -f FILES [FILES ...]
                             Restore only specified files
+      --checksum, -S        Checks if the files have been changed
 
 
 * **Restore options**
@@ -807,6 +810,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
    --ssh-port, -P          Custom ssh port.
    --exclude, -E           Exclude pattern. Follow rsync "Exclude Pattern Rules".
    --files, -f             Restore only specified files.
+   --checksum, -S          Checks if the files have been changed through MD5 or MD4 algorithmen.
 
 
 This is a few examples:
@@ -942,7 +946,7 @@ The export function is used to copy a particular backup to another path.
    arthur@heartofgold$ bb export -h
    usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] --catalog CATALOG [--backup-id ID | --all] --destination DESTINATION
                     [--mirror] [--cut] [--link PATH] [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE [EXCLUDE ...]] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC]
-                    [--bwlimit BWLIMIT] [--ssh-port PORT] [--acl]
+                    [--bwlimit BWLIMIT] [--ssh-port PORT] [--acl] [--checksum]
 
       options:
       -h, --help            show this help message and exit
@@ -980,6 +984,7 @@ The export function is used to copy a particular backup to another path.
       --ssh-port PORT, -P PORT
                             Custom ssh port.
       --acl, -a             Preserve ACLs
+      --checksum, -S        Checks if the files have been changed
 
 
 
@@ -1000,6 +1005,7 @@ The export function is used to copy a particular backup to another path.
    --bwlimit, -b           Bandwidth limit in KBPS.
    --ssh-port, -P          Custom ssh port.
    --acl, -a               Preserve ACLs
+   --checksum, -S          Checks if the files have been changed through MD5 or MD4 algorithmen.
 
 Export a backup in other directory:
 
