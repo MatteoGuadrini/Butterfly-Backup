@@ -1890,13 +1890,11 @@ def parse_arguments():
     args = parser_object.parse_args()
 
     # Checks of parser
-    if len(args.retention) >= 3:
-        utility.error(
+    if args.retention and len(args.retention) >= 3:
+        parser_object.error(
             'The "--retention or -r" parameter must have max two integers. '
             "Three or more arguments specified: {}".format(args.retention),
-            nocolor=args.color,
         )
-        exit(1)
 
     # Return all args
     return args
