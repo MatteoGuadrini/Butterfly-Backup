@@ -33,22 +33,22 @@ touch $data/file.txt $data/file.docx $data/file.xlsx
 
 # Start first full backup
 echo "Start full backup"
-echo "Select operating system [Unix, MacOS, Windows]: "
+echo "Select operating system [unix, macos, windows]: "
 read os
 
-if [ "$os" = "Unix" ]; then
-	os="Unix"
-elif [ "$os" = "MacOS" ]; then
-	os="MacOS"
-elif [ "$os" = "Windows" ]; then
-	os="Windows"
+if [ "$os" = "unix" ]; then
+	os="unix"
+elif [ "$os" = "macos" ]; then
+	os="macos"
+elif [ "$os" = "windows" ]; then
+	os="windows"
 else
-	echo "ERROR: available only Unix, MacOS, Windows"
+	echo "ERROR: available only unix, macos, windows"
 	exit 2
 fi
 
 echo "Test backup"
-venv/bin/bb backup --computer localhost --destination $repo --custom-data $data --type $os --verbose --log
+venv/bin/bb backup --computer localhost --destination $repo --custom-data $data --type $os --verbose --log --retention 1 1
 
 # Test if backup was created
 backup=$repo/localhost
