@@ -493,6 +493,8 @@ def compose_command(flags, host):
     # Common flags
     if flags.checksum:
         command.append("--checksum")
+    if flags.links:
+        command.append("--links")
     return command
 
 
@@ -1584,6 +1586,13 @@ def parse_arguments():
         dest="checksum",
         action="store_true",
     )
+    group_backup.add_argument(
+        "--links",
+        "-K",
+        help="Preserve symbolic links",
+        dest="links",
+        action="store_true",
+    )
     # restore session
     restore = action.add_parser(
         "restore", help="Restore options", parents=[parent_parser]
@@ -1697,6 +1706,13 @@ def parse_arguments():
         "-S",
         help="Checks if the files have been changed",
         dest="checksum",
+        action="store_true",
+    )
+    group_restore.add_argument(
+        "--links",
+        "-K",
+        help="Preserve symbolic links",
+        dest="links",
         action="store_true",
     )
     # archive session
@@ -1884,6 +1900,13 @@ def parse_arguments():
         "-S",
         help="Checks if the files have been changed",
         dest="checksum",
+        action="store_true",
+    )
+    group_export.add_argument(
+        "--links",
+        "-K",
+        help="Preserve symbolic links",
+        dest="links",
         action="store_true",
     )
 
@@ -2731,10 +2754,11 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as err:
-        utility.write_log(
-            log_args["status"],
-            log_args["destination"],
-            "CRITICAL",
-            "Something wrong: {0}.".format(err),
-        )
+        if "log_args" in globals():
+            utility.write_log(
+                log_args["status"],
+                log_args["destination"],
+                "CRITICAL",
+                "Something wrong: {0}.".format(err),
+            )
         utility.report_issue(err, args.error)
