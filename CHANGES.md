@@ -1,5 +1,10 @@
 # Release notes
 
+## 1.18.0
+Mar 09, 2025
+* Add **--links** argument into _export_, _backup_ and _restore_ actions
+* Fix check of retention arguments
+
 ## 1.17.0
 Feb 24, 2025
 * Add **--keytype** argument
