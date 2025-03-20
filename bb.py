@@ -1285,7 +1285,7 @@ def get_files(bckid, files):
 
 
 def parse_arguments():
-    """Get arguments than specified in command line
+    """Get arguments from command line
 
     :return: argument
     """
@@ -1332,6 +1332,96 @@ def parse_arguments():
         action="store",
         choices=["rsa", "ed25519"],
         default="rsa",
+    )
+
+    # Rsync parser
+    rsync_parser = argparse.ArgumentParser(
+        add_help=False,
+        description="Rsync options",
+    )
+    rsync_group = rsync_parser.add_argument_group(title="Rsync options")
+    rsync_group.add_argument(
+        "--compress", "-z", help="Compress data", dest="compress", action="store_true"
+    )
+    rsync_group.add_argument(
+        "--timeout",
+        "-T",
+        help="I/O timeout in seconds",
+        dest="timeout",
+        action="store",
+        type=int,
+    )
+    rsync_group.add_argument(
+        "--skip-error", "-e", help="Skip error", dest="skip_err", action="store_true"
+    )
+    rsync_group.add_argument(
+        "--rsync-path", "-R", help="Custom rsync path", dest="rsync", action="store"
+    )
+    rsync_group.add_argument(
+        "--bwlimit",
+        "-b",
+        help="Bandwidth limit in KBPS.",
+        dest="bwlimit",
+        action="store",
+        type=int,
+    )
+    rsync_group.add_argument(
+        "--ssh-port",
+        "-P",
+        help="Custom ssh port.",
+        dest="port",
+        action="store",
+        type=int,
+    )
+    pattern_rsync_mutually = rsync_group.add_mutually_exclusive_group()
+    pattern_rsync_mutually.add_argument(
+        "--include",
+        "-I",
+        help="Include pattern",
+        dest="include",
+        action="store",
+        nargs="+",
+    )
+    pattern_rsync_mutually.add_argument(
+        "--exclude",
+        "-E",
+        help="Exclude pattern",
+        dest="exclude",
+        action="store",
+        nargs="+",
+    )
+    rsync_group.add_argument(
+        "--checksum",
+        "-S",
+        help="Checks if the files have been changed",
+        dest="checksum",
+        action="store_true",
+    )
+    rsync_group.add_argument(
+        "--links",
+        "-K",
+        help="Preserve symbolic links",
+        dest="links",
+        action="store_true",
+    )
+    rsync_group.add_argument(
+        "--acl", "-a", help="Preserve ACLs", dest="acl", action="store_true"
+    )
+    rsync_group.add_argument(
+        "--files",
+        "-f",
+        help="Consider only specified files",
+        dest="files",
+        action="store",
+        nargs="+",
+    )
+    rsync_group.add_argument(
+        "--user",
+        "-u",
+        help="Login name used to log into the remote host",
+        dest="user",
+        action="store",
+        default=getpass.getuser(),
     )
 
     # Create principal parser
@@ -1429,7 +1519,9 @@ def parse_arguments():
         default=getpass.getuser(),
     )
     # backup session
-    backup = action.add_parser("backup", help="Backup options", parents=[parent_parser])
+    backup = action.add_parser(
+        "backup", help="Backup options", parents=[parent_parser, rsync_parser]
+    )
     group_backup = backup.add_argument_group(title="Backup options")
     single_or_list_group = group_backup.add_mutually_exclusive_group(required=True)
     single_or_list_group.add_argument(
@@ -1449,7 +1541,7 @@ def parse_arguments():
     group_backup.add_argument(
         "--destination",
         "-d",
-        help="Destination path",
+        help="Destination path (catalog)",
         dest="destination",
         action="store",
         required=True,
@@ -1492,14 +1584,6 @@ def parse_arguments():
         type=argparse.FileType(),
     )
     group_backup.add_argument(
-        "--user",
-        "-u",
-        help="Login name used to log into the remote host (being backed up)",
-        dest="user",
-        action="store",
-        default=getpass.getuser(),
-    )
-    group_backup.add_argument(
         "--type",
         "-t",
         help="Type of operating system to backup",
@@ -1508,9 +1592,6 @@ def parse_arguments():
         choices=["unix", "windows", "macos"],
         required=True,
         type=str.lower,
-    )
-    group_backup.add_argument(
-        "--compress", "-z", help="Compress data", dest="compress", action="store_true"
     )
     group_backup.add_argument(
         "--retention",
@@ -1527,49 +1608,11 @@ def parse_arguments():
     group_backup.add_argument(
         "--parallel",
         "-p",
-        help="Number of parallel jobs",
+        help="Number of parallel backups",
         dest="parallel",
         action="store",
         type=int,
         default=5,
-    )
-    group_backup.add_argument(
-        "--timeout",
-        "-T",
-        help="I/O timeout in seconds",
-        dest="timeout",
-        action="store",
-        type=int,
-    )
-    group_backup.add_argument(
-        "--skip-error", "-e", help="Skip error", dest="skip_err", action="store_true"
-    )
-    group_backup.add_argument(
-        "--rsync-path", "-R", help="Custom rsync path", dest="rsync", action="store"
-    )
-    group_backup.add_argument(
-        "--bwlimit",
-        "-b",
-        help="Bandwidth limit in KBPS.",
-        dest="bwlimit",
-        action="store",
-        type=int,
-    )
-    group_backup.add_argument(
-        "--ssh-port",
-        "-P",
-        help="Custom ssh port.",
-        dest="port",
-        action="store",
-        type=int,
-    )
-    group_backup.add_argument(
-        "--exclude",
-        "-E",
-        help="Exclude pattern",
-        dest="exclude",
-        action="store",
-        nargs="+",
     )
     group_backup.add_argument(
         "--start-from",
@@ -1579,29 +1622,15 @@ def parse_arguments():
         action="store",
         metavar="ID",
     )
-    group_backup.add_argument(
-        "--checksum",
-        "-S",
-        help="Checks if the files have been changed",
-        dest="checksum",
-        action="store_true",
-    )
-    group_backup.add_argument(
-        "--links",
-        "-K",
-        help="Preserve symbolic links",
-        dest="links",
-        action="store_true",
-    )
     # restore session
     restore = action.add_parser(
-        "restore", help="Restore options", parents=[parent_parser]
+        "restore", help="Restore options", parents=[parent_parser, rsync_parser]
     )
     group_restore = restore.add_argument_group(title="Restore options")
     group_restore.add_argument(
         "--catalog",
         "-C",
-        help="Folder where is catalog file",
+        help="Catalog path",
         dest="catalog",
         action="store",
         required=True,
@@ -1616,14 +1645,6 @@ def parse_arguments():
         help="Last available backup of the same host",
         dest="last",
         action="store_true",
-    )
-    group_restore.add_argument(
-        "--user",
-        "-u",
-        help="Login name used to log into the remote host (where you're restoring)",
-        dest="user",
-        action="store",
-        default=getpass.getuser(),
     )
     group_restore.add_argument(
         "--computer",
@@ -1650,70 +1671,7 @@ def parse_arguments():
         type=str.lower,
     )
     group_restore.add_argument(
-        "--timeout",
-        "-T",
-        help="I/O timeout in seconds",
-        dest="timeout",
-        action="store",
-        type=int,
-    )
-    group_restore.add_argument(
         "--mirror", "-m", help="Mirror mode", dest="mirror", action="store_true"
-    )
-    group_restore.add_argument(
-        "--acl", "-a", help="Preserve ACLs", dest="acl", action="store_true"
-    )
-    group_restore.add_argument(
-        "--skip-error", "-e", help="Skip error", dest="skip_err", action="store_true"
-    )
-    group_restore.add_argument(
-        "--rsync-path", "-R", help="Custom rsync path", dest="rsync", action="store"
-    )
-    group_restore.add_argument(
-        "--bwlimit",
-        "-b",
-        help="Bandwidth limit in KBPS.",
-        dest="bwlimit",
-        action="store",
-        type=int,
-    )
-    group_restore.add_argument(
-        "--ssh-port",
-        "-P",
-        help="Custom ssh port.",
-        dest="port",
-        action="store",
-        type=int,
-    )
-    group_restore.add_argument(
-        "--exclude",
-        "-E",
-        help="Exclude pattern",
-        dest="exclude",
-        action="store",
-        nargs="+",
-    )
-    group_restore.add_argument(
-        "--files",
-        "-f",
-        help="Restore only specified files",
-        dest="files",
-        action="store",
-        nargs="+",
-    )
-    group_restore.add_argument(
-        "--checksum",
-        "-S",
-        help="Checks if the files have been changed",
-        dest="checksum",
-        action="store_true",
-    )
-    group_restore.add_argument(
-        "--links",
-        "-K",
-        help="Preserve symbolic links",
-        dest="links",
-        action="store_true",
     )
     # archive session
     archive = action.add_parser(
@@ -1723,7 +1681,7 @@ def parse_arguments():
     group_archive.add_argument(
         "--catalog",
         "-C",
-        help="Folder where is catalog file",
+        help="Catalog path",
         dest="catalog",
         action="store",
         required=True,
@@ -1753,7 +1711,7 @@ def parse_arguments():
     group_list.add_argument(
         "--catalog",
         "-C",
-        help="Folder where is catalog file",
+        help="Catalog path",
         dest="catalog",
         action="store",
         required=True,
@@ -1810,13 +1768,13 @@ def parse_arguments():
     )
     # export session
     export_action = action.add_parser(
-        "export", help="Export options", parents=[parent_parser]
+        "export", help="Export options", parents=[parent_parser, rsync_parser]
     )
     group_export = export_action.add_argument_group(title="Export options")
     group_export.add_argument(
         "--catalog",
         "-C",
-        help="Folder where is catalog file",
+        help="Catalog path",
         dest="catalog",
         action="store",
         required=True,
@@ -1843,71 +1801,11 @@ def parse_arguments():
         "--cut", "-c", help="Cut mode. Delete source", dest="cut", action="store_true"
     )
     group_export.add_argument(
-        "--link", "-L", help="Hard link to path", dest="link", metavar="PATH"
-    )
-    group_export_mutually = group_export.add_mutually_exclusive_group()
-    group_export_mutually.add_argument(
-        "--include",
-        "-I",
-        help="Include pattern",
-        dest="include",
-        action="store",
-        nargs="+",
-    )
-    group_export_mutually.add_argument(
-        "--exclude",
-        "-E",
-        help="Exclude pattern",
-        dest="exclude",
-        action="store",
-        nargs="+",
-    )
-    group_export.add_argument(
-        "--timeout",
-        "-T",
-        help="I/O timeout in seconds",
-        dest="timeout",
-        action="store",
-        type=int,
-    )
-    group_export.add_argument(
-        "--skip-error", "-e", help="Skip error", dest="skip_err", action="store_true"
-    )
-    group_export.add_argument(
-        "--rsync-path", "-R", help="Custom rsync path", dest="rsync", action="store"
-    )
-    group_export.add_argument(
-        "--bwlimit",
-        "-b",
-        help="Bandwidth limit in KBPS.",
-        dest="bwlimit",
-        action="store",
-        type=int,
-    )
-    group_export.add_argument(
-        "--ssh-port",
-        "-P",
-        help="Custom ssh port.",
-        dest="port",
-        action="store",
-        type=int,
-    )
-    group_export.add_argument(
-        "--acl", "-a", help="Preserve ACLs", dest="acl", action="store_true"
-    )
-    group_export.add_argument(
-        "--checksum",
-        "-S",
-        help="Checks if the files have been changed",
-        dest="checksum",
-        action="store_true",
-    )
-    group_export.add_argument(
-        "--links",
-        "-K",
-        help="Preserve symbolic links",
-        dest="links",
-        action="store_true",
+        "--link-backup",
+        "-L",
+        help="Hard link to other backup",
+        dest="link",
+        metavar="PATH",
     )
 
     args = parser_object.parse_args()
