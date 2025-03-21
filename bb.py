@@ -302,35 +302,30 @@ def compose_command(flags, host):
         # Set mode option
         if flags.mode == "full":
             command.append("-ah")
-            command.append("--no-links")
             # Write catalog file
             write_catalog(catalog_path, backup_id, "type", "full")
         elif flags.mode == "incremental":
             last_bck = get_last_backup(catalog)
             if last_bck:
                 command.append("-ahu")
-                command.append("--no-links")
                 if not flags.sfrom:
                     command.append("--link-dest={0}".format(last_bck[0]))
                 # Write catalog file
                 write_catalog(catalog_path, backup_id, "type", "incremental")
             else:
                 command.append("-ah")
-                command.append("--no-links")
                 # Write catalog file
                 write_catalog(catalog_path, backup_id, "type", "full")
         elif flags.mode == "differential":
             last_full = get_last_full(catalog)
             if last_full:
                 command.append("-ahu")
-                command.append("--no-links")
                 if not flags.sfrom:
                     command.append("--link-dest={0}".format(last_full[0]))
                 # Write catalog file
                 write_catalog(catalog_path, backup_id, "type", "differential")
             else:
                 command.append("-ah")
-                command.append("--no-links")
                 # Write catalog file
                 write_catalog(catalog_path, backup_id, "type", "full")
         elif flags.mode == "mirror":
@@ -338,25 +333,7 @@ def compose_command(flags, host):
             command.append("--delete")
             # Write catalog file
             write_catalog(catalog_path, backup_id, "type", "mirror")
-        # Set verbosity
-        if flags.verbose:
-            command.append("-vP")
-            command.append("--stats")
-        # Set quite mode
-        if flags.skip_err:
-            command.append("--quiet")
-        # Set compress mode
-        if flags.compress:
-            command.append("-z")
-        # Set bandwidth limit
-        if flags.bwlimit:
-            command.append("--bwlimit={0}".format(flags.bwlimit))
-        # Set ssh custom port
-        if flags.port:
-            command.append('--rsh "ssh -p {0}"'.format(flags.port))
-        # Set I/O timeout
-        if flags.timeout:
-            command.append("--timeout={0}".format(flags.timeout))
+        command.append("--no-links")
         # Set dry-run mode
         if flags.dry_run:
             command.append("--dry-run")
@@ -426,41 +403,12 @@ def compose_command(flags, host):
             )
     elif flags.action == "export":
         command.append("-ahu")
-        if not args.acl:
-            command.append("--no-perms --no-owner --no-group")
-        if flags.verbose:
-            command.append("-vP")
-            # Set quite mode
-        if flags.skip_err:
-            command.append("--quiet")
-        # Set I/O timeout
-        if flags.timeout:
-            command.append("--timeout={0}".format(flags.timeout))
         # Set mirror mode
         if flags.mirror:
             command.append("--delete")
-            command.append("--ignore-times")
         # Set cut mode
         if flags.cut:
             command.append("--remove-source-files")
-        # Set includes
-        if flags.include:
-            for include in flags.include:
-                command.append("--include={0}".format(include))
-            command.append('--exclude="*"')
-        # Set excludes
-        if flags.exclude:
-            for exclude in flags.exclude:
-                command.append("--exclude={0}".format(exclude))
-        # Set timeout
-        if flags.timeout:
-            command.append("--timeout={0}".format(flags.timeout))
-        # Set bandwidth limit
-        if flags.bwlimit:
-            command.append("--bwlimit={0}".format(flags.bwlimit))
-        # Set ssh custom port
-        if flags.port:
-            command.append('--rsh "ssh -p {0}"'.format(flags.port))
         # No copy symbolic link
         if flags.all:
             command.append("--safe-links")
@@ -490,11 +438,41 @@ def compose_command(flags, host):
         "Command flags are: {0}".format(" ".join(command)),
         nocolor=args.color,
     )
-    # Common flags
+    # Common rsync flags
+    if not args.acl:
+        command.append("--no-perms --no-owner --no-group")
+    # Set verbosity
+    if flags.verbose:
+        command.append("-vP")
+        command.append("--stats")
+    # Set quite mode
+    if flags.skip_err:
+        command.append("--quiet")
+    # Set compress mode
+    if flags.compress:
+        command.append("-z")
+    # Set bandwidth limit
+    if flags.bwlimit:
+        command.append("--bwlimit={0}".format(flags.bwlimit))
+    # Set ssh custom port
+    if flags.port:
+        command.append('--rsh "ssh -p {0}"'.format(flags.port))
+    # Set I/O timeout
+    if flags.timeout:
+        command.append("--timeout={0}".format(flags.timeout))
     if flags.checksum:
         command.append("--checksum")
     if flags.links:
         command.append("--links")
+    # Set includes
+    if flags.include:
+        for include in flags.include:
+            command.append("--include={0}".format(include))
+            command.append('--exclude="*"')
+    # Set excludes
+    elif flags.exclude:
+        for exclude in flags.exclude:
+            command.append("--exclude={0}".format(exclude))
     return command
 
 
@@ -1803,7 +1781,7 @@ def parse_arguments():
     group_export.add_argument(
         "--link-backup",
         "-L",
-        help="Hard link to other backup",
+        help="Hard link to other backup folder",
         dest="link",
         metavar="PATH",
     )
