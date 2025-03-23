@@ -1394,6 +1394,15 @@ def parse_arguments():
         nargs="+",
     )
     rsync_group.add_argument(
+        "--retry",
+        "-U",
+        help="Number of retries action",
+        dest="retry",
+        action="store",
+        metavar="NUM",
+        default=0,
+    )
+    rsync_group.add_argument(
         "--user",
         "-u",
         help="Login name used to log into the remote host",
