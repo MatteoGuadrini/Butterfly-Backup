@@ -113,6 +113,7 @@ def run_in_parallel(fn, commands, limit):
     # Start a Pool with "limit" processes
     pool = Pool(processes=limit)
     jobs = []
+    necessaries_retries = []
 
     for command, plog in zip(commands, logs):
         # Run the function
@@ -177,6 +178,8 @@ def run_in_parallel(fn, commands, limit):
                     retention_policy(
                         plog["hostname"], catalog_path, plog["destination"]
                     )
+            # Retry
+            necessaries_retries.append(command)
 
         else:
             utility.success("Command {0}".format(command), nocolor=args.color)
@@ -199,6 +202,8 @@ def run_in_parallel(fn, commands, limit):
     # Safely terminate the pool
     pool.close()
     pool.join()
+
+    return necessaries_retries
 
 
 def start_process(command):
@@ -1400,6 +1405,7 @@ def parse_arguments():
         dest="retry",
         action="store",
         metavar="NUM",
+        type=int,
         default=0,
     )
     rsync_group.add_argument(
@@ -1954,7 +1960,27 @@ def main():
                 bck_dst, os.path.join(args.destination, hostname, "last_backup")
             )
         # Start backup
-        run_in_parallel(start_process, cmds, args.parallel)
+        bad_results = run_in_parallel(start_process, cmds, args.parallel)
+        # Retry
+        if args.retry and bad_results:
+            for _ in range(args.retry):
+                utility.warning(
+                    "Backup exits with non-zero status; retry backup for {} times".format(
+                        args.retry
+                    )
+                )
+                utility.write_log(
+                    log_args["status"],
+                    log_args["destination"],
+                    "WARNING",
+                    "Backup exits with non-zero status; retry backup for {} times".format(
+                        args.retry
+                    ),
+                )
+                bad_results = run_in_parallel(start_process, bad_results, args.parallel)
+                if not bad_results:
+                    break
+                args.retry = args.retry - 1
 
     # Check restore session
     if args.action == "restore":
@@ -2092,7 +2118,27 @@ def main():
                     ):
                         cmds.append(" ".join(cmd))
             # Start restore
-            run_in_parallel(start_process, cmds, 1)
+            bad_results = run_in_parallel(start_process, cmds, 1)
+            # Retry
+            if args.retry and bad_results:
+                for _ in range(args.retry):
+                    utility.warning(
+                        "Backup exits with non-zero status; retry restore for {} times".format(
+                            args.retry
+                        )
+                    )
+                    utility.write_log(
+                        log_args["status"],
+                        log_args["destination"],
+                        "WARNING",
+                        "Backup exits with non-zero status; retry restore for {} times".format(
+                            args.retry
+                        ),
+                    )
+                    bad_results = run_in_parallel(start_process, bad_results, 1)
+                    if not bad_results:
+                        break
+                    args.retry = args.retry - 1
         else:
             utility.warning(
                 "Restore files or folders aren't available on backup id {0}".format(
@@ -2625,9 +2671,29 @@ def main():
                     )
         # Start export
         cmds.append(" ".join(cmd))
-        run_in_parallel(start_process, cmds, 1)
+        bad_results = run_in_parallel(start_process, cmds, 1)
+        # Retry
+        if args.retry and bad_results:
+            for _ in range(args.retry):
+                utility.warning(
+                    "Backup exits with non-zero status; retry export for {} times".format(
+                        args.retry
+                    )
+                )
+                utility.write_log(
+                    log_args["status"],
+                    log_args["destination"],
+                    "WARNING",
+                    "Backup exits with non-zero status; retry export for {} times".format(
+                        args.retry
+                    ),
+                )
+                bad_results = run_in_parallel(start_process, bad_results, 1)
+                if not bad_results:
+                    break
+                args.retry = args.retry - 1
+        # Migrate catalog to new file system
         if os.path.exists(os.path.join(args.destination, catalog_file)):
-            # Migrate catalog to new file system
             utility.find_replace(
                 os.path.join(args.destination, catalog_file),
                 args.catalog.rstrip("/"),
