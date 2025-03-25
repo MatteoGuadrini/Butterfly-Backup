@@ -1404,6 +1404,16 @@ def parse_arguments():
         help="Number of retries action",
         dest="retry",
         action="store",
+        metavar="NUMBER",
+        type=int,
+        default=0,
+    )
+    rsync_group.add_argument(
+        "--wait",
+        "-W",
+        help="Wait seconds to start an action",
+        dest="wait",
+        action="store",
         metavar="NUM",
         type=int,
         default=0,
@@ -1871,7 +1881,8 @@ def main():
                 )
                 exit(1)
         for hostname in hostnames:
-            if not utility.check_ssh(hostname, args.user, args.keytype, port):
+            ssh_check = utility.check_ssh(hostname, args.user, args.keytype, port)
+            if not ssh_check:
                 utility.error(
                     "SSH connection failed on {1}:{0}".format(port, hostname),
                     nocolor=args.color,
@@ -1960,27 +1971,36 @@ def main():
                 bck_dst, os.path.join(args.destination, hostname, "last_backup")
             )
         # Start backup
-        bad_results = run_in_parallel(start_process, cmds, args.parallel)
-        # Retry
-        if args.retry and bad_results:
-            for _ in range(args.retry):
-                utility.warning(
-                    "Backup exits with non-zero status; retry backup for {} times".format(
-                        args.retry
+        if ssh_check:
+            if args.wait:
+                print("info: wait {} second(s)".format(args.wait))
+                time.sleep(args.wait)
+            bad_results = run_in_parallel(start_process, cmds, args.parallel)
+            # Retry
+            if args.retry and bad_results:
+                for _ in range(args.retry):
+                    utility.warning(
+                        "Backup exits with non-zero status; retry backup for {} times".format(
+                            args.retry
+                        )
                     )
-                )
-                utility.write_log(
-                    log_args["status"],
-                    log_args["destination"],
-                    "WARNING",
-                    "Backup exits with non-zero status; retry backup for {} times".format(
-                        args.retry
-                    ),
-                )
-                bad_results = run_in_parallel(start_process, bad_results, args.parallel)
-                if not bad_results:
-                    break
-                args.retry = args.retry - 1
+                    utility.write_log(
+                        log_args["status"],
+                        log_args["destination"],
+                        "WARNING",
+                        "Backup exits with non-zero status; retry backup for {} times".format(
+                            args.retry
+                        ),
+                    )
+                    if args.wait:
+                        print("info: wait {} second(s)".format(args.wait))
+                        time.sleep(args.wait)
+                    bad_results = run_in_parallel(
+                        start_process, bad_results, args.parallel
+                    )
+                    if not bad_results:
+                        break
+                    args.retry -= 1
 
     # Check restore session
     if args.action == "restore":
@@ -2061,7 +2081,8 @@ def main():
                 )
                 exit(1)
         # Test connection
-        if not utility.check_ssh(rhost, args.user, args.keytype, port):
+        ssh_check = utility.check_ssh(rhost, args.user, args.keytype, port)
+        if not ssh_check:
             utility.error(
                 "SSH connection failed on {1}:{0}".format(port, rhost),
                 nocolor=args.color,
@@ -2118,6 +2139,9 @@ def main():
                     ):
                         cmds.append(" ".join(cmd))
             # Start restore
+            if args.wait:
+                print("info: wait {} second(s)".format(args.wait))
+                time.sleep(args.wait)
             bad_results = run_in_parallel(start_process, cmds, 1)
             # Retry
             if args.retry and bad_results:
@@ -2135,10 +2159,13 @@ def main():
                             args.retry
                         ),
                     )
+                    if args.wait:
+                        print("info: wait {} second(s)".format(args.wait))
+                        time.sleep(args.wait)
                     bad_results = run_in_parallel(start_process, bad_results, 1)
                     if not bad_results:
                         break
-                    args.retry = args.retry - 1
+                    args.retry -= 1
         else:
             utility.warning(
                 "Restore files or folders aren't available on backup id {0}".format(
@@ -2670,6 +2697,9 @@ def main():
                         "True",
                     )
         # Start export
+        if args.wait:
+            print("info: wait {} second(s)".format(args.wait))
+            time.sleep(args.wait)
         cmds.append(" ".join(cmd))
         bad_results = run_in_parallel(start_process, cmds, 1)
         # Retry
@@ -2688,10 +2718,13 @@ def main():
                         args.retry
                     ),
                 )
+                if args.wait:
+                    print("info: wait {} second(s)".format(args.wait))
+                    time.sleep(args.wait)
                 bad_results = run_in_parallel(start_process, bad_results, 1)
                 if not bad_results:
                     break
-                args.retry = args.retry - 1
+                args.retry -= 1
         # Migrate catalog to new file system
         if os.path.exists(os.path.join(args.destination, catalog_file)):
             utility.find_replace(
