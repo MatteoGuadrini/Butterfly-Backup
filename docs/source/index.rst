@@ -11,9 +11,8 @@ Welcome to Butterfly Backup's documentation!
    :caption: Contents:
 
 
-##################
 Indices and tables
-##################
+==================
 
 * :ref:`requirements`
 * :ref:`core`
@@ -28,9 +27,9 @@ Indices and tables
 
 .. _requirements:
 
-############
+
 Requirements
-############
+============
 
 Butterfly Backup is a *simple* wrapper of rsync written in python; this means the first requirements is python3.8 or higher.
 The other requirement is a **openssh** and **rsync** (version 2.5 or higher).
@@ -58,16 +57,16 @@ Install Butterfly Backup is very simple; run this:
    arthur@heartofgold$ git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
    arthur@heartofgold$ cd Butterfly-Backup
    arthur@heartofgold$ sudo python3 setup.py install -f # -f is for upgrade
+   arthur@heartofgold$ sudo pip install . --upgrade
    arthur@heartofgold$ bb --help
-   arthur@heartofgold$ man bb
 
 The upgrade is also simple; type the same commands.
 
 .. _core:
 
-############
+
 Core concept
-############
+============
 
 Butterfly Backup it is a server to client tool. It must be installed on a server (for example a workstation PC),
 from where it will contact the clients on which it will perform the backup. Also for the restore the concept is the same;
@@ -125,8 +124,8 @@ Butterfly Backup has, in its core, six main operations:
       --force, -O           Force an action without prompt
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
-      --keytype {rsa,ed25519}, -k {rsa,ed25519}
-                            Kind of public/private key to use or generate
+      --keytype, -k {rsa,ed25519}
+                           Kind of public/private key to use or generate
       --version, -V         Print version
 
    action:
@@ -150,7 +149,7 @@ Valid action
 * **list**: query the catalog.
 * **export**: export a single backup to other path.
 
-It also has three flags that can be very useful, especially in case of error.
+It also has some flags that can be very useful, especially in case of error.
 
         -h, --help            show help message and exit
         --verbose, -v         Enable verbosity
@@ -165,9 +164,9 @@ It also has three flags that can be very useful, especially in case of error.
 
 .. _config:
 
-######
+
 Config
-######
+======
 
 Configuration mode is very simple; If you're already familiar with the exchange keys and OpenSSH, you probably won't need it.
 If you don't want to discuss the merits of exchange keys and start, then go ahead. First, you must create a configuration (rsa keys).
@@ -187,7 +186,7 @@ Let's see how to go about looking at the help:
       --force, -O           Force an action without prompt
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
-      --keytype {rsa,ed25519}, -k {rsa,ed25519}
+      --keytype, -k {rsa,ed25519}
                             Kind of public/private key to use or generate
 
    Init configuration:
@@ -200,7 +199,7 @@ Let's see how to go about looking at the help:
       --delete-backup, -b CATALOG ID
                             Delete specific backup ID from CATALOG
 
-   Deploy configuration:
+      Deploy configuration:
       --deploy, -d DEPLOY_HOST
                             Deploy configuration to client: hostname or ip address
       --user, -u DEPLOY_USER
@@ -234,7 +233,7 @@ In this case, the RSA key already exists. Now try delete and create a new keys:
 .. code-block:: console
 
    arthur@heartofgold$ bb config --remove
-   Are you sure to remove existing rsa keys? To continue [Y/N]? y
+   info: Are you sure to remove existing rsa keys? To continue [Y/N]? y
    success: Removed configuration successfully!
    arthur@heartofgold$ bb config --new
    success: New configuration successfully created!
@@ -245,7 +244,7 @@ want to backup.
 .. code-block:: console
 
    arthur@heartofgold$ bb config --deploy host1
-   Copying configuration to host1; write the password:
+   info: Copying configuration to host1; write the password:
    /usr/bin/ssh-copy-id: debug: Source of key(s) to be installed: "/home/arthur/.ssh/id_rsa.pub"
    /usr/bin/ssh-copy-id: debug: attempting to log in with the new key(s), to filter out any that are already installed
    /usr/bin/ssh-copy-id: debug: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
@@ -264,7 +263,7 @@ If you want to use a different user (e.g.: root), run this:
 .. code-block:: console
 
    arthur@heartofgold$ bb config --deploy host1 --user root
-   Copying configuration to host1; write the password:
+   info: Copying configuration to host1; write the password:
    /usr/bin/ssh-copy-id: debug: Source of key(s) to be installed: "/home/arthur/.ssh/id_rsa.pub"
    /usr/bin/ssh-copy-id: debug: attempting to log in with the new key(s), to filter out any that are already installed
    /usr/bin/ssh-copy-id: debug: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
@@ -330,21 +329,21 @@ If you want to initialize or reset the catalog file, run this:
 
 .. _backup:
 
-######
+
 Backup
-######
+======
 
 There are two backup modes: single and bulk. Let's see how to go about looking at the help:
 
 .. code-block:: console
 
    arthur@heartofgold$ bb backup --help
-   usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] (--computer HOSTNAME | --list LIST) --destination DESTINATION [--mode {full,incremental,differential,mirror}]
-                    (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...] | --file-data FILEDATA) [--user USER] --type {unix,windows,macos}
-                    [--compress] [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]]
-                    [--start-from ID] [--checksum] [--links]
+   usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] [--compress] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]
+                    [--include PATTERN [PATTERN ...] | --exclude PATTERN [PATTERN ...]] [--checksum] [--links] [--acl] [--files FILES [FILES ...]] [--retry NUMBER] [--wait NUMBER] [--user USER] (--computer HOSTNAME | --list LIST)
+                    --destination DESTINATION [--mode {full,incremental,differential,mirror}] (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...] |
+                    --file-data FILEDATA) --type {unix,windows,macos} [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--start-from ID]
 
-     options:
+   options:
       -h, --help            show this help message and exit
       --verbose, -v         Enable verbosity
       --log, -l             Create logs
@@ -352,31 +351,11 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
       --force, -O           Force an action without prompt
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
-      --keytype {rsa,ed25519}, -k {rsa,ed25519}
+      --keytype, -k {rsa,ed25519}
                             Kind of public/private key to use or generate
 
-   Backup options:
-      --computer, -c HOSTNAME
-                            Hostname or ip address to backup
-      --list, -L LIST       File list of computers or ip addresses to backup
-      --destination, -d DESTINATION
-                            Destination path
-      --mode, -m {full,incremental,differential,mirror}
-                            Backup mode
-      --data, -D {user,config,application,system,log} [{user,config,application,system,log} ...]
-                            Data of which you want to backup
-      --custom-data, -C CUSTOMDATA [CUSTOMDATA ...]
-                            Custom path of which you want to backup
-      --file-data, -F FILEDATA
-                            File with custom path of which you want to backup
-      --user, -u USER       Login name used to log into the remote host (being backed up)
-      --type, -t {unix,windows,macos}
-                            Type of operating system to backup
+   Rsync options:
       --compress, -z        Compress data
-      --retention, -r [DAYS [NUMBER ...]]
-                            First argument are days of backup retention. Second argument is minimum number of backup retention
-      --parallel, -p PARALLEL
-                             Number of parallel jobs
       --timeout, -T TIMEOUT
                             I/O timeout in seconds
       --skip-error, -e      Skip error
@@ -385,10 +364,40 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
       --bwlimit, -b BWLIMIT
                             Bandwidth limit in KBPS.
       --ssh-port, -P PORT   Custom ssh port.
-      --exclude, -E EXCLUDE [EXCLUDE ...]
+      --include, -I PATTERN [PATTERN ...]
+                            Include pattern
+      --exclude, -E PATTERN [PATTERN ...]
                             Exclude pattern
-      --start-from, -s ID   Backup id where start a new backup
       --checksum, -S        Checks if the files have been changed
+      --links, -K           Preserve symbolic links
+      --acl, -a             Preserve ACLs
+      --files, -f FILES [FILES ...]
+                            Consider only specified files
+      --retry, -U NUMBER    Number of retries action
+      --wait, -W NUMBER     Wait seconds to start an action
+      --user, -u USER       Login name used to log into the remote host
+
+   Backup options:
+      --computer, -c HOSTNAME
+                            Hostname or ip address to backup
+      --list, -L LIST       File list of computers or ip addresses to backup
+      --destination, -d DESTINATION
+                            Destination path (catalog)
+      --mode, -m {full,incremental,differential,mirror}
+                            Backup mode
+      --data, -D {user,config,application,system,log} [{user,config,application,system,log} ...]
+                            Data of which you want to backup
+      --custom-data, -C CUSTOMDATA [CUSTOMDATA ...]
+                            Custom path of which you want to backup
+      --file-data, -F FILEDATA
+                            File with custom path of which you want to backup
+      --type, -t {unix,windows,macos}
+                            Type of operating system to backup
+      --retention, -r [DAYS [NUMBER ...]]
+                            First argument are days of backup retention. Second argument is minimum number of backup retention
+      --parallel, -p PARALLEL
+                            Number of parallel backups
+      --start-from, -s ID   Backup id where start a new backup
 
 
 
@@ -455,10 +464,13 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
    --rsync-path, -R        Select a custom rsync path.
    --bwlimit, -b           Bandwidth limit in KBPS.
    --ssh-port, -P          Custom ssh port.
+   --include, -I           Include pattern. Follow rsync "Include Pattern Rules"
    --exclude, -E           Exclude pattern. Follow rsync "Exclude Pattern Rules"
    --start-from, -s        The new backup is based on another backup, specified by its ID.
    --checksum, -S          Checks if the files have been changed through MD5 or MD4 algorithmen.
    --links, -K             Preserve symbolic links.
+   --retry, -U             Number of retries action.
+   --wait, -W              Wait seconds to start an action.
 
 Flowchart of the differences between Differential and Incremental backup::
 
@@ -632,9 +644,9 @@ Here we find the same example above but specifying a retention at 2 (days) and 5
 
 .. _list:
 
-####
+
 List
-####
+====
 
 When we run backup commands, a catalog is created. This serves both for future backups and all the restores that are made through Butterfly Backup.
 To query this catalog, the list command exists.
@@ -653,12 +665,12 @@ To query this catalog, the list command exists.
       --force, -O           Force an action without prompt
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
-      --keytype {rsa,ed25519}, -k {rsa,ed25519}
+      --keytype, -k {rsa,ed25519}
                             Kind of public/private key to use or generate
 
    List options:
       --catalog, -C CATALOG
-                            Folder where is catalog file
+                            Catalog path
       --backup-id, -i ID    Backup-id of backup
       --archived, -a        List only archived backup
       --cleaned, -c         List only cleaned backup
@@ -668,7 +680,6 @@ To query this catalog, the list command exists.
       --computer, -H HOSTNAME
                             List only match hostname or ip
       --only-id, -y         List only id
-
 
 * **List options**
    --catalog, -C           Select the backups folder (root).
@@ -701,7 +712,7 @@ First, let's query the catalog:
    Hostname or ip: host1
    Timestamp: 2018-08-08 10:58:59
 
-Press ``q`` for exit. Then we select a backup-id:
+Press ``q`` for exit. Then we select a backup-id (or first eight character):
 
 .. code-block:: console
 
@@ -736,18 +747,18 @@ Now that we have identified a backup, let's proceed with the restore
 
 .. _restore:
 
-#######
+
 Restore
-#######
+=======
 
 The restore process is the exact opposite of the backup process. It takes the files from a specific backup and push it to the destination computer.
 
 .. code-block:: console
 
    arthur@heartofgold$ bb restore --help
-   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] --catalog CATALOG (--backup-id ID | --last) [--user USER] --computer HOSTNAME [--root-dir ROOT_DIR]
-                     [--type {unix,windows,macos}] [--timeout TIMEOUT] [--mirror] [--acl] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT] [--exclude EXCLUDE [EXCLUDE ...]]
-                     [--files FILES [FILES ...]] [--checksum] [--links]
+   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] [--compress] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]
+                     [--include PATTERN [PATTERN ...] | --exclude PATTERN [PATTERN ...]] [--checksum] [--links] [--acl] [--files FILES [FILES ...]] [--retry NUMBER] [--wait NUMBER] [--user USER] --catalog CATALOG (--backup-id ID | --last)
+                     --computer HOSTNAME [--root-dir ROOT_DIR] [--type {unix,windows,macos}] [--mirror]
 
    options:
       -h, --help            show this help message and exit
@@ -757,37 +768,44 @@ The restore process is the exact opposite of the backup process. It takes the fi
       --force, -O           Force an action without prompt
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
-      --keytype {rsa,ed25519}, -k {rsa,ed25519}
+      --keytype, -k {rsa,ed25519}
                             Kind of public/private key to use or generate
 
-   Restore options:
-      --catalog, -C CATALOG
-                            Folder where is catalog file
-      --backup-id, -i ID    Backup-id of backup
-      --last, -L            Last available backup of the same host
-      --user, -u USER       Login name used to log into the remote host (where you're restoring)
-      --computer, -c HOSTNAME
-                            Hostname or ip address to perform restore
-      --root-dir, -r ROOT_DIR
-                            Root directory to perform restore
-      --type, -t {unix,windows,macos}
-                            Type of operating system to perform restore
+   Rsync options:
+      --compress, -z        Compress data
       --timeout, -T TIMEOUT
                             I/O timeout in seconds
-      --mirror, -m          Mirror mode
-      --acl, -a             Preserve ACLs
       --skip-error, -e      Skip error
       --rsync-path, -R RSYNC
                             Custom rsync path
       --bwlimit, -b BWLIMIT
                             Bandwidth limit in KBPS.
       --ssh-port, -P PORT   Custom ssh port.
-      --exclude, -E EXCLUDE [EXCLUDE ...]
+      --include, -I PATTERN [PATTERN ...]
+                            Include pattern
+      --exclude, -E PATTERN [PATTERN ...]
                             Exclude pattern
-      --files, -f FILES [FILES ...]
-                            Restore only specified files
       --checksum, -S        Checks if the files have been changed
       --links, -K           Preserve symbolic links
+      --acl, -a             Preserve ACLs
+      --files, -f FILES [FILES ...]
+                            Consider only specified files
+      --retry, -U NUMBER    Number of retries action
+      --wait, -W NUMBER     Wait seconds to start an action
+      --user, -u USER       Login name used to log into the remote host
+
+   Restore options:
+      --catalog, -C CATALOG
+                            Catalog path
+      --backup-id, -i ID    Backup-id of backup
+      --last, -L            Last available backup of the same host
+      --computer, -c HOSTNAME
+                            Hostname or ip address to perform restore
+      --root-dir, -r ROOT_DIR
+                            Root directory to perform restore
+      --type, -t {unix,windows,macos}
+                            Type of operating system to perform restore
+      --mirror, -m          Mirror mode
 
 
 * **Restore options**
@@ -810,10 +828,13 @@ The restore process is the exact opposite of the backup process. It takes the fi
    --rsync-path, -R        Select a custom rsync path.
    --bwlimit, -b           Bandwidth limit in KBPS.
    --ssh-port, -P          Custom ssh port.
-   --exclude, -E           Exclude pattern. Follow rsync "Exclude Pattern Rules".
+   --include, -I           Include pattern. Follow rsync "Include Pattern Rules"
+   --exclude, -E           Exclude pattern. Follow rsync "Exclude Pattern Rules"
    --files, -f             Restore only specified files.
    --checksum, -S          Checks if the files have been changed through MD5 or MD4 algorithmen.
    --links, -K             Preserve symbolic links.
+   --retry, -U             Number of retries action.
+   --wait, -W              Wait seconds to start an action.
 
 
 This is a few examples:
@@ -868,9 +889,9 @@ This example, is the same as the previous one, but restore to other machine and 
 
 .. _archive:
 
-#######
+
 Archive
-#######
+=======
 
 Archive operations are used to store backups by saving disk space. Backups older than n days are compressed into a zip file.
 
@@ -887,12 +908,12 @@ Archive operations are used to store backups by saving disk space. Backups older
       --force, -O           Force an action without prompt
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
-      --keytype {rsa,ed25519}, -k {rsa,ed25519}
+      --keytype, -k {rsa,ed25519}
                             Kind of public/private key to use or generate
 
    Archive options:
       --catalog, -C CATALOG
-                            Folder where is catalog file
+                            Catalog path
       --days, -D DAYS       Number of days of archive retention
       --destination, -d DESTINATION
                             Archive destination path
@@ -938,20 +959,20 @@ Lastly, let's look in the catalog and see that the backup was actually archived:
 
 .. _export:
 
-######
+
 Export
-######
+======
 
 The export function is used to copy a particular backup to another path.
 
 .. code-block:: console
 
    arthur@heartofgold$ bb export -h
-   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] --catalog CATALOG [--backup-id ID | --all] --destination DESTINATION
-                    [--mirror] [--cut] [--link PATH] [--include INCLUDE [INCLUDE ...] | --exclude EXCLUDE [EXCLUDE ...]] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC]
-                    [--bwlimit BWLIMIT] [--ssh-port PORT] [--acl] [--checksum] [--links]
+   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] [--compress] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]
+                    [--include PATTERN [PATTERN ...] | --exclude PATTERN [PATTERN ...]] [--checksum] [--links] [--acl] [--files FILES [FILES ...]] [--retry NUMBER] [--wait NUMBER] [--user USER] --catalog CATALOG [--backup-id ID | --all]
+                    --destination DESTINATION [--mirror] [--cut] [--link-backup PATH]
 
-      options:
+   options:
       -h, --help            show this help message and exit
       --verbose, -v         Enable verbosity
       --log, -l             Create logs
@@ -959,36 +980,43 @@ The export function is used to copy a particular backup to another path.
       --force, -O           Force an action without prompt
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
-      --keytype {rsa,ed25519}, -k {rsa,ed25519}
+      --keytype, -k {rsa,ed25519}
                             Kind of public/private key to use or generate
 
-      Export options:
-      --catalog CATALOG, -C CATALOG
-                            Folder where is catalog file
-      --backup-id ID, -i ID
-                            Backup-id of backup
+   Rsync options:
+      --compress, -z        Compress data
+      --timeout, -T TIMEOUT
+                            I/O timeout in seconds
+      --skip-error, -e      Skip error
+      --rsync-path, -R RSYNC
+                            Custom rsync path
+      --bwlimit, -b BWLIMIT
+                            Bandwidth limit in KBPS.
+      --ssh-port, -P PORT   Custom ssh port.
+      --include, -I PATTERN [PATTERN ...]
+                            Include pattern
+      --exclude, -E PATTERN [PATTERN ...]
+                            Exclude pattern
+      --checksum, -S        Checks if the files have been changed
+      --links, -K           Preserve symbolic links
+      --acl, -a             Preserve ACLs
+      --files, -f FILES [FILES ...]
+                            Consider only specified files
+      --retry, -U NUMBER    Number of retries action
+      --wait, -W NUMBER     Wait seconds to start an action
+      --user, -u USER       Login name used to log into the remote host
+
+   Export options:
+      --catalog, -C CATALOG
+                            Catalog path
+      --backup-id, -i ID    Backup-id of backup
       --all, -A             All backup
-      --destination DESTINATION, -d DESTINATION
+      --destination, -d DESTINATION
                             Destination path
       --mirror, -m          Mirror mode
       --cut, -c             Cut mode. Delete source
-      --link PATH, -L PATH  Hard link to path
-      --include INCLUDE [INCLUDE ...], -I INCLUDE [INCLUDE ...]
-                            Include pattern
-      --exclude EXCLUDE [EXCLUDE ...], -E EXCLUDE [EXCLUDE ...]
-                            Exclude pattern
-      --timeout TIMEOUT, -T TIMEOUT
-                            I/O timeout in seconds
-      --skip-error, -e      Skip error
-      --rsync-path RSYNC, -R RSYNC
-                            Custom rsync path
-      --bwlimit BWLIMIT, -b BWLIMIT
-                            Bandwidth limit in KBPS.
-      --ssh-port PORT, -P PORT
-                            Custom ssh port.
-      --acl, -a             Preserve ACLs
-      --checksum, -S        Checks if the files have been changed
-      --links, -K           Preserve symbolic links
+      --link-backup, -L PATH
+                            Hard link to other backup folder
 
 
 * **Export options**
@@ -1010,6 +1038,8 @@ The export function is used to copy a particular backup to another path.
    --acl, -a               Preserve ACLs
    --checksum, -S          Checks if the files have been changed through MD5 or MD4 algorithmen.
    --links, -K             Preserve symbolic links.
+   --retry, -U             Number of retries action.
+   --wait, -W              Wait seconds to start an action.
 
 Export a backup in other directory:
 
@@ -1050,9 +1080,9 @@ Export a backup with exclude pdf files:
 
 .. _donations:
 
-#########
+
 Donations
-#########
+=========
 
 Donating is important.
 If you do not want to do it to me, do it to some companies that do not speculate.
