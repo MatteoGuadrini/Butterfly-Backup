@@ -1,5 +1,5 @@
 .. Butterfly Backup documentation master file, created by
-   sphinx-quickstart on Tue Aug  7 13:12:43 2018.
+   sphinx-quickstart on Tue Aug  7 13:12:43 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -199,7 +199,7 @@ Let's see how to go about looking at the help:
       --delete-backup, -b CATALOG ID
                             Delete specific backup ID from CATALOG
 
-      Deploy configuration:
+   Deploy configuration:
       --deploy, -d DEPLOY_HOST
                             Deploy configuration to client: hostname or ip address
       --user, -u DEPLOY_USER
@@ -316,7 +316,7 @@ Download https://cygwin.com/ cygwin and follow this instructions to install the 
 
 
 .. important::
-    Verify if port 22 is in LISTEN: run `netstat -aon | findstr :22`
+    Verify if port 22 is in LISTEN: run ``netstat -aon | findstr :22``
 
 If you want to initialize or reset the catalog file, run this:
 
@@ -338,10 +338,10 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 .. code-block:: console
 
    arthur@heartofgold$ bb backup --help
-   usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] [--compress] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]
-                    [--include PATTERN [PATTERN ...] | --exclude PATTERN [PATTERN ...]] [--checksum] [--links] [--acl] [--files FILES [FILES ...]] [--retry NUMBER] [--wait NUMBER] [--user USER] (--computer HOSTNAME | --list LIST)
-                    --destination DESTINATION [--mode {full,incremental,differential,mirror}] (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data CUSTOMDATA [CUSTOMDATA ...] |
-                    --file-data FILEDATA) --type {unix,windows,macos} [--retention [DAYS [NUMBER ...]]] [--parallel PARALLEL] [--start-from ID]
+   usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] [--compress] [--timeout TIMEOUT] [--skip-error] [--rsync-path PATH] [--bwlimit BWLIMIT] [--ssh-port PORT]
+                    [--include PATTERN [PATTERN ...] | --exclude PATTERN [PATTERN ...]] [--checksum] [--links] [--acl] [--files FILES [FILES ...]] [--retry NUMBER] [--wait SECONDS] [--user USER] (--computer HOSTNAME | --list LIST)
+                    --destination CATALOG [--mode {full,incremental,differential,mirror}] (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data PATHS [PATHS ...] | --file-data FILEDATA)
+                    --type {unix,windows,macos} [--retention [DAYS [NUMBER] ...]] [--parallel NUMBER] [--start-from ID]
 
    options:
       -h, --help            show this help message and exit
@@ -356,10 +356,10 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 
    Rsync options:
       --compress, -z        Compress data
-      --timeout, -T TIMEOUT
+      --timeout, -T SECONDS
                             I/O timeout in seconds
       --skip-error, -e      Skip error
-      --rsync-path, -R RSYNC
+      --rsync-path, -R PATH
                             Custom rsync path
       --bwlimit, -b BWLIMIT
                             Bandwidth limit in KBPS.
@@ -374,46 +374,45 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
       --files, -f FILES [FILES ...]
                             Consider only specified files
       --retry, -U NUMBER    Number of retries action
-      --wait, -W NUMBER     Wait seconds to start an action
+      --wait, -W SECONDS    Wait seconds to start an action
       --user, -u USER       Login name used to log into the remote host
 
    Backup options:
       --computer, -c HOSTNAME
                             Hostname or ip address to backup
       --list, -L LIST       File list of computers or ip addresses to backup
-      --destination, -d DESTINATION
+      --destination, -d CATALOG
                             Destination path (catalog)
       --mode, -m {full,incremental,differential,mirror}
                             Backup mode
       --data, -D {user,config,application,system,log} [{user,config,application,system,log} ...]
                             Data of which you want to backup
-      --custom-data, -C CUSTOMDATA [CUSTOMDATA ...]
+      --custom-data, -C PATHS [PATHS ...]
                             Custom path of which you want to backup
       --file-data, -F FILEDATA
                             File with custom path of which you want to backup
       --type, -t {unix,windows,macos}
                             Type of operating system to backup
-      --retention, -r [DAYS [NUMBER ...]]
+      --retention, -r [DAYS [NUMBER] ...]
                             First argument are days of backup retention. Second argument is minimum number of backup retention
-      --parallel, -p PARALLEL
+      --parallel, -p NUMBER
                             Number of parallel backups
       --start-from, -s ID   Backup id where start a new backup
-
 
 
 * **Backup options**
    --computer, -c          Select the ip or hostname where to perform backup.
    --list, -l              Select the file list of the ip or hostnames, where to perform backups.
 
-                           [File_list.txt]
+                           .. code-block::
 
-                           host1
+                              [File_list.txt]
 
-                           192.168.0.1
+                              host1
+                              192.168.0.1
+                              host2
+                              ...
 
-                           host2
-
-                           ...
    --destination, -d       Select the destination folder (root).
    --mode, -m              Select how rsync perform backup:
 
@@ -423,7 +422,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
          Incremental backup is based on the latest backup (the same files are linked with hard link).
          A Full backup is executed if this mode fails to find one.
     * **differential**:
-         Incremental backup is based on the latest Full backup (the same files are linked with hard link).
+         Differential backup is based on the latest Full backup (the same files are linked with hard link).
          A Full backup is executed if this mode fails to find one.
     * **mirror**:
          Complete mirror backup. If a file in the source no longer exists, BB deletes it from the destination.
@@ -438,15 +437,14 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
    --custom-data           Select the absolute paths to put under backup.
    --file-data             Select a file with the absolute paths to put under backup.
 
-                           [File_list.txt]
+                           .. code-block::
 
-                           /path1
+                              [File_list.txt]
 
-                           /path2/with spaces/
-
-                           "/path3/with quotes"
-
-                           ...
+                              /path1
+                              /path2/with spaces/
+                              "/path3/with quotes"
+                              ...
    --user, -u              Login name used to log into the remote host (being backed up)
    --type, -t              Type of operating system to put under backup:
 
@@ -506,7 +504,7 @@ This is a few examples:
    # host1 SSH-2.0-OpenSSH_7.5
    # host1 SSH-2.0-OpenSSH_7.5
    info: Start backup on host1
-   success: Command rsync -ah --no-links arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_28
+   success: Command rsync -ah --no-links arthur@host1:/Users :/private/etc /mnt/backup/host1/2024_08_08__10_28
 
 .. important::
 
@@ -517,19 +515,19 @@ This is a few examples:
    arthur@heartofgold$ bb backup --computer host1 --destination /mnt/backup --mode Full --data User Config --type MacOS --user root
    root@host1's password:
    info: Start backup on host1
-   success: Command rsync -ah --no-links root@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_30
+   success: Command rsync -ah --no-links root@host1:/Users :/private/etc /mnt/backup/host1/2024_08_08__10_30
 
 .. code-block:: console
 
    arthur@heartofgold$ bb backup --computer host1 --destination /mnt/backup --data User Config --type MacOS --verbose --log
    debug: Build a rsync command
-   debug: Last full is 2018-08-08 10:30:32
-   debug: Command flags are: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_28 -vP
+   debug: Last full is 2024-08-08 10:30:32
+   debug: Command flags are: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2024_08_08__10_28 -vP
    debug: Create a folder structure for MacOS os
    debug: Include this criteria: :/Users :/private/etc
-   debug: Destination is /mnt/backup/host1/2018_08_08__10_42
+   debug: Destination is /mnt/backup/host1/2024_08_08__10_42
    info: Start backup on host1
-   debug: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_42
+   debug: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2024_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2024_08_08__10_42
    receiving file list ...
    39323 files to consider
    Users/
@@ -537,7 +535,7 @@ This is a few examples:
    ...
    sent 18.91K bytes  received 1.59M bytes  25.74K bytes/sec
    total size is 6.67G  speedup is 4143.59
-   success: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_42
+   success: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2024_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2024_08_08__10_42
 
 
 .. note::
@@ -561,7 +559,7 @@ This is a few examples:
    error: SSH connection failed on host2:22
    error: SSH connection failed on host3:22
    info: Start backup on host1
-   success: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_50
+   success: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2024_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2024_08_08__10_50
 
 
 .. important::
@@ -580,7 +578,7 @@ This means that maximum two backup jobs will run at the same time. When a first 
    error: SSH connection failed on host2:22
    error: SSH connection failed on host3:22
    info: Start backup on host1
-   success: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
+   success: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2024_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2024_08_08__10_58
 
 This is the same example but specifying a retention at 3 (days). This means that in doing so we want to keep only 3 days backups.
 
@@ -588,25 +586,25 @@ This is the same example but specifying a retention at 3 (days). This means that
 
    arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel 2 --retention 3 --log --verbose
    debug: Build a rsync command
-   debug: Last full is 2018-08-08 10:30:32
-   debug: Command flags are: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 -vP
+   debug: Last full is 2024-08-08 10:30:32
+   debug: Command flags are: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2024_08_08__10_30 -vP
    debug: Create a folder structure for MacOS os
    debug: Include this criteria: :/Users :/private/etc
-   debug: Destination is /mnt/backup/host1/2018_08_08__10_30
+   debug: Destination is /mnt/backup/host1/2024_08_08__10_30
    info: Start backup on host1
    error: SSH connection failed on host2:22
    error: SSH connection failed on host3:22
-   debug: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
+   debug: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2024_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2024_08_08__10_58
    receiving file list ...
    39323 files to consider
    Users/
    ...
    ...
-   success: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
-   debug: Check cleanup this backup aba860b0-9944-11e8-a93f-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_28
-   success: Cleanup /mnt/backup/host1/2018_08_08__10_28 successfully.
-   debug: Check cleanup this backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30
-   debug: No cleanup backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30
+   success: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2024_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2024_08_08__10_58
+   debug: Check cleanup this backup aba860b0-9944-11e8-a93f-005056a664e0. Folder /mnt/backup/host1/2024_08_08__10_28
+   success: Cleanup /mnt/backup/host1/2024_08_08__10_28 successfully.
+   debug: Check cleanup this backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2024_08_08__10_30
+   debug: No cleanup backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2024_08_08__10_30
 
 
 Here we find the same example above but specifying a retention at 2 (days) and 5 backup copies. This means that at least 5 backup copies will be kept, even if they are older than two days.
@@ -615,25 +613,25 @@ Here we find the same example above but specifying a retention at 2 (days) and 5
 
    arthur@heartofgold$ bb backup --list /home/arthur/pclist.txt --destination /mnt/backup --data User Config --type MacOS --parallel 2 --retention 3 5 --log --verbose
    debug: Build a rsync command
-   debug: Last full is 2018-08-08 10:30:32
-   debug: Command flags are: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 -vP
+   debug: Last full is 2024-08-08 10:30:32
+   debug: Command flags are: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2024_08_08__10_30 -vP
    debug: Create a folder structure for MacOS os
    debug: Include this criteria: :/Users :/private/etc
-   debug: Destination is /mnt/backup/host1/2018_08_08__10_30
+   debug: Destination is /mnt/backup/host1/2024_08_08__10_30
    info: Start backup on host1
    error: SSH connection failed on host2:22
    error: SSH connection failed on host3:22
-   debug: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
+   debug: rsync command: rsync -ahu --no-links --link-dest=/mnt/backup/host1/2024_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2024_08_08__10_58
    receiving file list ...
    39323 files to consider
    Users/
    ...
    ...
-   success: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2018_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2018_08_08__10_58
-   debug: Check cleanup this backup aba860b0-9944-11e8-a93f-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_28
-   success: Cleanup /mnt/backup/host1/2018_08_08__10_28 successfully.
-   debug: Check cleanup this backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30
-   debug: No cleanup backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2018_08_08__10_30
+   success: Command rsync -ahu --no-links --link-dest=/mnt/backup/host1/2024_08_08__10_30 arthur@host1:/Users :/private/etc /mnt/backup/host1/2024_08_08__10_58
+   debug: Check cleanup this backup aba860b0-9944-11e8-a93f-005056a664e0. Folder /mnt/backup/host1/2024_08_08__10_28
+   success: Cleanup /mnt/backup/host1/2024_08_08__10_28 successfully.
+   debug: Check cleanup this backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2024_08_08__10_30
+   debug: No cleanup backup cc6e2744-9944-11e8-b82a-005056a664e0. Folder /mnt/backup/host1/2024_08_08__10_30
 
 
 
@@ -702,15 +700,15 @@ First, let's query the catalog:
 
    Backup id: aba860b0-9944-11e8-a93f-005056a664e0
    Hostname or ip: host1
-   Timestamp: 2018-08-08 10:28:12
+   Timestamp: 2024-08-08 10:28:12
 
    Backup id: cc6e2744-9944-11e8-b82a-005056a664e0
    Hostname or ip: host1
-   Timestamp: 2018-08-08 10:30:59
+   Timestamp: 2024-08-08 10:30:59
 
    Backup id: dd6de2f2-9a1e-11e8-82b0-005056a664e0
    Hostname or ip: host1
-   Timestamp: 2018-08-08 10:58:59
+   Timestamp: 2024-08-08 10:58:59
 
 Press ``q`` for exit. Then we select a backup-id (or first eight character):
 
@@ -720,12 +718,12 @@ Press ``q`` for exit. Then we select a backup-id (or first eight character):
    Backup id: dd6de2f2-9a1e-11e8-82b0-005056a664e0
    Hostname or ip: host1
    Type: Incremental
-   Timestamp: 2018-08-08 10:58:59
-   Start: 2018-08-08 10:58:59
-   Finish: 2018-08-08 11:02:49
+   Timestamp: 2024-08-08 10:58:59
+   Start: 2024-08-08 10:58:59
+   Finish: 2024-08-08 11:02:49
    OS: MacOS
    ExitCode: 0
-   Path: /mnt/backup/host1/2018_08_08__10_58
+   Path: /mnt/backup/host1/2024_08_08__10_58
    List: backup.log
    etc
    Users
@@ -756,9 +754,9 @@ The restore process is the exact opposite of the backup process. It takes the fi
 .. code-block:: console
 
    arthur@heartofgold$ bb restore --help
-   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] [--compress] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]
-                     [--include PATTERN [PATTERN ...] | --exclude PATTERN [PATTERN ...]] [--checksum] [--links] [--acl] [--files FILES [FILES ...]] [--retry NUMBER] [--wait NUMBER] [--user USER] --catalog CATALOG (--backup-id ID | --last)
-                     --computer HOSTNAME [--root-dir ROOT_DIR] [--type {unix,windows,macos}] [--mirror]
+   usage: bb restore [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] [--compress] [--timeout SECONDS] [--skip-error] [--rsync-path PATH] [--bwlimit BWLIMIT] [--ssh-port PORT]
+                     [--include PATTERN [PATTERN ...] | --exclude PATTERN [PATTERN ...]] [--checksum] [--links] [--acl] [--files FILES [FILES ...]] [--retry NUMBER] [--wait SECONDS] [--user USER] --catalog CATALOG (--backup-id ID | --last)
+                     --computer HOSTNAME [--root-dir PATH] [--type {unix,windows,macos}] [--mirror]
 
    options:
       -h, --help            show this help message and exit
@@ -773,10 +771,10 @@ The restore process is the exact opposite of the backup process. It takes the fi
 
    Rsync options:
       --compress, -z        Compress data
-      --timeout, -T TIMEOUT
+      --timeout, -T SECONDS
                             I/O timeout in seconds
       --skip-error, -e      Skip error
-      --rsync-path, -R RSYNC
+      --rsync-path, -R PATH
                             Custom rsync path
       --bwlimit, -b BWLIMIT
                             Bandwidth limit in KBPS.
@@ -791,7 +789,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
       --files, -f FILES [FILES ...]
                             Consider only specified files
       --retry, -U NUMBER    Number of retries action
-      --wait, -W NUMBER     Wait seconds to start an action
+      --wait, -W SECONDS    Wait seconds to start an action
       --user, -u USER       Login name used to log into the remote host
 
    Restore options:
@@ -801,8 +799,7 @@ The restore process is the exact opposite of the backup process. It takes the fi
       --last, -L            Last available backup of the same host
       --computer, -c HOSTNAME
                             Hostname or ip address to perform restore
-      --root-dir, -r ROOT_DIR
-                            Root directory to perform restore
+      --root-dir, -r PATH   Root directory to perform restore
       --type, -t {unix,windows,macos}
                             Type of operating system to perform restore
       --mirror, -m          Mirror mode
@@ -844,10 +841,10 @@ This command perform a restore on the same machine of the backup:
 .. code-block:: console
 
    arthur@heartofgold$ bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host1 --log
-   info: Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
-   info: Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y
-   success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc arthur@host1:/restore_2018_08_08__10_58
-   success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host1:/Users
+   info: Want to do restore path /mnt/backup/host1/2024_08_08__10_58/etc? To continue [Y/N]? y
+   info: Want to do restore path /mnt/backup/host1/2024_08_08__10_58/Users? To continue [Y/N]? y
+   success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2024_08_08__10_58/restore.log /mnt/backup/host1/2024_08_08__10_58/etc arthur@host1:/restore_2024_08_08__10_58
+   success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2024_08_08__10_58/restore.log /mnt/backup/host1/2024_08_08__10_58/Users/* arthur@host1:/Users
 
 .. important::
    Without specifying the "type" flag that indicates the operating system on which the data are being retrieved,
@@ -858,10 +855,10 @@ Now, select the last available backup on catalog; run this:
 .. code-block:: console
 
    arthur@heartofgold$ bb restore --catalog /mnt/backup --last --computer host1 --log
-   info: Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
-   info: Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y
-   success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc arthur@host1:/restore_2018_08_08__10_59
-   success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host1:/Users
+   info: Want to do restore path /mnt/backup/host1/2024_08_08__10_58/etc? To continue [Y/N]? y
+   info: Want to do restore path /mnt/backup/host1/2024_08_08__10_58/Users? To continue [Y/N]? y
+   success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2024_08_08__10_58/restore.log /mnt/backup/host1/2024_08_08__10_58/etc arthur@host1:/restore_2024_08_08__10_59
+   success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2024_08_08__10_58/restore.log /mnt/backup/host1/2024_08_08__10_58/Users/* arthur@host1:/Users
 
 This example, is the same as the previous one, but restore to other machine and other operating system:
 
@@ -869,23 +866,23 @@ This example, is the same as the previous one, but restore to other machine and 
 
    arthur@heartofgold$ bb restore --catalog /mnt/backup --backup-id dd6de2f2-9a1e-11e8-82b0-005056a664e0 --computer host2 --type Unix --log --verbose
    debug: Build a rsync command
-   debug: Command flags are: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log
-   info: Want to do restore path /mnt/backup/host1/2018_08_08__10_58/etc? To continue [Y/N]? y
+   debug: Command flags are: rsync -ahu -vP --log-file=/mnt/backup/host1/2024_08_08__10_58/restore.log
+   info: Want to do restore path /mnt/backup/host1/2024_08_08__10_58/etc? To continue [Y/N]? y
    debug: Build a rsync command
-   debug: Command flags are: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log
-   info: Want to do restore path /mnt/backup/host1/2018_08_08__10_58/Users? To continue [Y/N]? y
+   debug: Command flags are: rsync -ahu -vP --log-file=/mnt/backup/host1/2024_08_08__10_58/restore.log
+   info: Want to do restore path /mnt/backup/host1/2024_08_08__10_58/Users? To continue [Y/N]? y
    info: Start restore on host2
-   debug: rsync command: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc/* arthur@host2:/etc
+   debug: rsync command: rsync -ahu -vP --log-file=/mnt/backup/host1/2024_08_08__10_58/restore.log /mnt/backup/host1/2024_08_08__10_58/etc/* arthur@host2:/etc
    info: Start restore on host2
-   debug: rsync command: rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host2:/home
+   debug: rsync command: rsync -ahu -vP --log-file=/mnt/backup/host1/2024_08_08__10_58/restore.log /mnt/backup/host1/2024_08_08__10_58/Users/* arthur@host2:/home
    building file list ...
    26633 files to consider
    ...
    ...
    sent 777.53K bytes  received 20 bytes  62.20K bytes/sec
    total size is 6.66G  speedup is 8566.41
-   success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/etc/* arthur@host2:/etc
-   success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2018_08_08__10_58/restore.log /mnt/backup/host1/2018_08_08__10_58/Users/* arthur@host2:/home
+   success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2024_08_08__10_58/restore.log /mnt/backup/host1/2024_08_08__10_58/etc/* arthur@host2:/etc
+   success: Command rsync -ahu -vP --log-file=/mnt/backup/host1/2024_08_08__10_58/restore.log /mnt/backup/host1/2024_08_08__10_58/Users/* arthur@host2:/home
 
 .. _archive:
 
@@ -898,7 +895,7 @@ Archive operations are used to store backups by saving disk space. Backups older
 .. code-block:: console
 
    arthur@heartofgold$ bb archive --help
-   usage: bb archive [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] --catalog CATALOG [--days DAYS] --destination DESTINATION
+   usage: bb archive [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] --catalog CATALOG [--days DAYS] --destination PATH
 
    options:
       -h, --help            show this help message and exit
@@ -915,7 +912,7 @@ Archive operations are used to store backups by saving disk space. Backups older
       --catalog, -C CATALOG
                             Catalog path
       --days, -D DAYS       Number of days of archive retention
-      --destination, -d DESTINATION
+      --destination, -d PATH
                             Archive destination path
 
 
@@ -929,14 +926,14 @@ Archive old backup of 3 days:
 .. code-block:: console
 
    arthur@heartofgold$ bb archive --catalog /mnt/backup/ --days 3 --destination /mnt/archive/ --verbose --log
-   debug: Check archive this backup f65e5afe-9734-11e8-b0bb-005056a664e0. Folder /mnt/backup/host2/2018_08_08__17_50
-   debug: Check archive this backup 4f2b5f6e-9939-11e8-9ab6-005056a664e0. Folder /mnt/backup/host2/2018_08_04__07_26
-   success: Delete /mnt/backup/host2/2018_08_04__07_26 successfully.
-   success: Archive /mnt/backup/host2/2018_08_04__07_26 successfully.
+   debug: Check archive this backup f65e5afe-9734-11e8-b0bb-005056a664e0. Folder /mnt/backup/host2/2024_08_08__17_50
+   debug: Check archive this backup 4f2b5f6e-9939-11e8-9ab6-005056a664e0. Folder /mnt/backup/host2/2024_08_04__07_26
+   success: Delete /mnt/backup/host2/2024_08_04__07_26 successfully.
+   success: Archive /mnt/backup/host2/2024_08_04__07_26 successfully.
    arthur@heartofgold$ ls /mnt/archive
    host1
    arthur@heartofgold$ ls /mnt/archive/host1
-   2018_08_06__07_26.zip
+   2024_08_06__07_26.zip
 
 The backup-id *f65e5afe-9734-11e8-b0bb-005056a664e0* it is not considered, because it falls within the established time.
 The other, however, is zipped and deleted.
@@ -949,12 +946,12 @@ Lastly, let's look in the catalog and see that the backup was actually archived:
    Backup id: 4f2b5f6e-9939-11e8-9ab6-005056a664e0
    Hostname or ip: host2
    Type: Incremental
-   Timestamp: 2018-08-08 07:26:46
-   Start: 2018-08-08 07:26:46
-   Finish: 2018-08-08 08:43:45
+   Timestamp: 2024-08-08 07:26:46
+   Start: 2024-08-08 07:26:46
+   Finish: 2024-08-08 08:43:45
    OS: MacOS
    ExitCode: 0
-   Path: /mnt/backup/host2/2018_08_04__07_26
+   Path: /mnt/backup/host2/2024_08_04__07_26
    Archived: True
 
 .. _export:
@@ -968,9 +965,9 @@ The export function is used to copy a particular backup to another path.
 .. code-block:: console
 
    arthur@heartofgold$ bb export -h
-   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] [--compress] [--timeout TIMEOUT] [--skip-error] [--rsync-path RSYNC] [--bwlimit BWLIMIT] [--ssh-port PORT]
-                    [--include PATTERN [PATTERN ...] | --exclude PATTERN [PATTERN ...]] [--checksum] [--links] [--acl] [--files FILES [FILES ...]] [--retry NUMBER] [--wait NUMBER] [--user USER] --catalog CATALOG [--backup-id ID | --all]
-                    --destination DESTINATION [--mirror] [--cut] [--link-backup PATH]
+   usage: bb export [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] [--compress] [--timeout SECONDS] [--skip-error] [--rsync-path PATH] [--bwlimit BWLIMIT] [--ssh-port PORT]
+                    [--include PATTERN [PATTERN ...] | --exclude PATTERN [PATTERN ...]] [--checksum] [--links] [--acl] [--files FILES [FILES ...]] [--retry NUMBER] [--wait SECONDS] [--user USER] --catalog CATALOG [--backup-id ID | --all]
+                    --destination PATH [--mirror] [--cut] [--link-folder PATH]
 
    options:
       -h, --help            show this help message and exit
@@ -985,10 +982,10 @@ The export function is used to copy a particular backup to another path.
 
    Rsync options:
       --compress, -z        Compress data
-      --timeout, -T TIMEOUT
+      --timeout, -T SECONDS
                             I/O timeout in seconds
       --skip-error, -e      Skip error
-      --rsync-path, -R RSYNC
+      --rsync-path, -R PATH
                             Custom rsync path
       --bwlimit, -b BWLIMIT
                             Bandwidth limit in KBPS.
@@ -1003,7 +1000,7 @@ The export function is used to copy a particular backup to another path.
       --files, -f FILES [FILES ...]
                             Consider only specified files
       --retry, -U NUMBER    Number of retries action
-      --wait, -W NUMBER     Wait seconds to start an action
+      --wait, -W SECONDS    Wait seconds to start an action
       --user, -u USER       Login name used to log into the remote host
 
    Export options:
@@ -1011,11 +1008,11 @@ The export function is used to copy a particular backup to another path.
                             Catalog path
       --backup-id, -i ID    Backup-id of backup
       --all, -A             All backup
-      --destination, -d DESTINATION
+      --destination, -d PATH
                             Destination path
       --mirror, -m          Mirror mode
       --cut, -c             Cut mode. Delete source
-      --link-backup, -L PATH
+      --link-folder, -L PATH
                             Hard link to other backup folder
 
 
@@ -1050,8 +1047,8 @@ Export a backup in other directory:
    debug: Build a rsync command
    info: Start export host1
    ...
-   debug: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
-   success: Command rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
+   debug: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2024_12_20__10_02 /mnt/backup/export/host1
+   success: Command rsync -ah --no-links -vP /mnt/backup/host1/2024_12_20__10_02 /mnt/backup/export/host1
 
 Export all backup in other directory:
 
@@ -1062,8 +1059,8 @@ Export all backup in other directory:
    debug: Build a rsync command
    info: Start export host1
    ...
-   debug: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
-   success: Command rsync -ah --no-links -vP /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
+   debug: rsync command: rsync -ah --no-links -vP /mnt/backup/host1/2024_12_20__10_02 /mnt/backup/export/host1
+   success: Command rsync -ah --no-links -vP /mnt/backup/host1/2024_12_20__10_02 /mnt/backup/export/host1
 
 Export a backup with exclude pdf files:
 
@@ -1074,8 +1071,8 @@ Export a backup with exclude pdf files:
    debug: Build a rsync command
    info: Start export host1
    ...
-   debug: rsync command: rsync -ah --no-links -vP --exclude=*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
-   success: Command rsync -ah --no-links -vP --exclude=*.pdf /mnt/backup/host1/2018_12_20__10_02 /mnt/backup/export/host1
+   debug: rsync command: rsync -ah --no-links -vP --exclude=*.pdf /mnt/backup/host1/2024_12_20__10_02 /mnt/backup/export/host1
+   success: Command rsync -ah --no-links -vP --exclude=*.pdf /mnt/backup/host1/2024_12_20__10_02 /mnt/backup/export/host1
 
 
 .. _donations:

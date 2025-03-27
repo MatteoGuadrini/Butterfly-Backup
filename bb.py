@@ -1333,12 +1333,18 @@ def parse_arguments():
         dest="timeout",
         action="store",
         type=int,
+        metavar="SECONDS",
     )
     rsync_group.add_argument(
         "--skip-error", "-e", help="Skip error", dest="skip_err", action="store_true"
     )
     rsync_group.add_argument(
-        "--rsync-path", "-R", help="Custom rsync path", dest="rsync", action="store"
+        "--rsync-path",
+        "-R",
+        help="Custom rsync path",
+        dest="rsync",
+        action="store",
+        metavar="PATH",
     )
     rsync_group.add_argument(
         "--bwlimit",
@@ -1364,6 +1370,7 @@ def parse_arguments():
         dest="include",
         action="store",
         nargs="+",
+        metavar="PATTERN",
     )
     pattern_rsync_mutually.add_argument(
         "--exclude",
@@ -1372,6 +1379,7 @@ def parse_arguments():
         dest="exclude",
         action="store",
         nargs="+",
+        metavar="PATTERN",
     )
     rsync_group.add_argument(
         "--checksum",
@@ -1414,7 +1422,7 @@ def parse_arguments():
         help="Wait seconds to start an action",
         dest="wait",
         action="store",
-        metavar="NUM",
+        metavar="SECONDS",
         type=int,
         default=0,
     )
@@ -1548,6 +1556,7 @@ def parse_arguments():
         dest="destination",
         action="store",
         required=True,
+        metavar="CATALOG",
     )
     group_backup.add_argument(
         "--mode",
@@ -1577,6 +1586,7 @@ def parse_arguments():
         dest="customdata",
         action="store",
         nargs="+",
+        metavar="PATHS",
     )
     data_or_custom.add_argument(
         "--file-data",
@@ -1605,7 +1615,7 @@ def parse_arguments():
         dest="retention",
         action="store",
         nargs="*",
-        metavar=("DAYS", "NUMBER"),
+        metavar="DAYS [NUMBER]",
         type=int,
     )
     group_backup.add_argument(
@@ -1615,7 +1625,8 @@ def parse_arguments():
         dest="parallel",
         action="store",
         type=int,
-        default=5,
+        default=4,
+        metavar="NUMBER",
     )
     group_backup.add_argument(
         "--start-from",
@@ -1640,7 +1651,12 @@ def parse_arguments():
     )
     restore_id_or_last = group_restore.add_mutually_exclusive_group(required=True)
     restore_id_or_last.add_argument(
-        "--backup-id", "-i", help="Backup-id of backup", dest="id", action="store"
+        "--backup-id",
+        "-i",
+        help="Backup-id of backup",
+        dest="id",
+        action="store",
+        metavar="ID",
     )
     restore_id_or_last.add_argument(
         "--last",
@@ -1663,6 +1679,7 @@ def parse_arguments():
         help="Root directory to perform restore",
         dest="root_dir",
         action="store",
+        metavar="PATH",
     )
     group_restore.add_argument(
         "--type",
@@ -1705,6 +1722,7 @@ def parse_arguments():
         dest="destination",
         action="store",
         required=True,
+        metavar="PATH",
     )
     # list session
     list_action = action.add_parser(
@@ -1721,7 +1739,12 @@ def parse_arguments():
     )
     group_list_mutually = group_list.add_mutually_exclusive_group()
     group_list_mutually.add_argument(
-        "--backup-id", "-i", help="Backup-id of backup", dest="id", action="store"
+        "--backup-id",
+        "-i",
+        help="Backup-id of backup",
+        dest="id",
+        action="store",
+        metavar="ID",
     )
     group_list_mutually.add_argument(
         "--archived",
@@ -1784,7 +1807,12 @@ def parse_arguments():
     )
     group_export_id_or_all = group_export.add_mutually_exclusive_group()
     group_export_id_or_all.add_argument(
-        "--backup-id", "-i", help="Backup-id of backup", dest="id", action="store"
+        "--backup-id",
+        "-i",
+        help="Backup-id of backup",
+        dest="id",
+        action="store",
+        metavar="ID",
     )
     group_export_id_or_all.add_argument(
         "--all", "-A", help="All backup", dest="all", action="store_true"
@@ -1796,6 +1824,7 @@ def parse_arguments():
         dest="destination",
         action="store",
         required=True,
+        metavar="PATH",
     )
     group_export.add_argument(
         "--mirror", "-m", help="Mirror mode", dest="mirror", action="store_true"
@@ -1804,7 +1833,7 @@ def parse_arguments():
         "--cut", "-c", help="Cut mode. Delete source", dest="cut", action="store_true"
     )
     group_export.add_argument(
-        "--link-backup",
+        "--link-folder",
         "-L",
         help="Hard link to other backup folder",
         dest="link",
