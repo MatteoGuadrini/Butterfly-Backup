@@ -22,11 +22,10 @@
 #
 """
 NAME
-    Butterfly Backup - backup/restore/archive tool , agentless
+    Butterfly Backup - backup/restore/archive tool
 
 DESCRIPTION
-    Butterfly Backup is a simple command line wrapper of rsync for complex task,
-    written in python
+    Butterfly Backup is a modern backup program
 
 SYNOPSIS
     bb [ACTION] [OPTIONS]
@@ -64,7 +63,7 @@ from multiprocessing import Pool
 import utility
 
 # region Global Variables
-VERSION = "1.18.0"
+VERSION = "1.19.0"
 
 
 # endregion

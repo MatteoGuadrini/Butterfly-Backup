@@ -1,5 +1,10 @@
 # Release notes
 
+## 1.19.0
+Mar 28, 2025
+* Add **--retry** argument into _export_, _backup_ and _restore_ actions
+* Add **--wait** argument into _export_, _backup_ and _restore_ actions
+
 ## 1.18.0
 Mar 09, 2025
 * Add **--links** argument into _export_, _backup_ and _restore_ actions

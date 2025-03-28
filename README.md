@@ -4,13 +4,10 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7fc47024f17f4dffa3be08a7a5ab31bd)](https://app.codacy.com/app/MatteoGuadrini/Butterfly-Backup?utm_source=github.com&utm_medium=referral&utm_content=MatteoGuadrini/Butterfly-Backup&utm_campaign=Badge_Grade_Dashboard)
 [![CircleCI](https://circleci.com/gh/MatteoGuadrini/Butterfly-Backup.svg?style=svg)](https://circleci.com/gh/MatteoGuadrini/Butterfly-Backup)
 
-# Butterfly Backup
-Butterfly Backup is a _simple_ command line wrapper of rsync for _complex_ task, written in python.
-
 ## Introduction
 Butterfly Backup is a modern backup program that can back up your files:
 
-* from **Linux**, **BSD**, **Mac** and **Windows** (through [cygwin](https://www.cygwin.com/)
+* from **Linux**, **BSD**, **Mac** and **Windows** (through [cygwin](https://www.cygwin.com/))
 * **easily**, being a single executable that you can run without a server or complex setup
 * **effectively**, only transferring the parts that actually changed in the files you back up, in four mode (_full_, _incremental_, _differential_ and _mirror_)
 * **verifiably**, store all backup in a readable catalog also through file system
@@ -128,7 +125,7 @@ bb restore --computer host1 --catalog /nas/mybackup --backup-id f65e5afe-9734-11
 So we have restored the data saved on the date indicated in our _host1_.
 
 ## Documentation
-[Manual of Butterfly backup](https://Butterfly-Backup.readthedocs.io/en/latest/) or run help:
+[Manual of Butterfly Backup](https://Butterfly-Backup.readthedocs.io/en/latest/) or run help:
 ```bash
 bb --help
 ```
