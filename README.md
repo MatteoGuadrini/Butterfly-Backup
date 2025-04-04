@@ -124,6 +124,20 @@ bb restore --computer host1 --catalog /nas/mybackup --backup-id f65e5afe-9734-11
 ```
 So we have restored the data saved on the date indicated in our _host1_.
 
+## 3-2-1 rule
+
+With Butterfly Backup you can apply _3-2-1 rule_ (Keep three copies of your data on two different types of media, with one copy offsite) in only 4 lines:
+
+```bash
+CATALOG="/nas/mybackup"
+bb backup --computer host1 --destination $CATALOG --data user config --type macos; BCKID="$(bb list --catalog $CATALOG --last --computer host1 --only-id)"
+bb export --catalog $CATALOG --backup-id "$BCKID" --destination /mnt/other_backup/
+# attach you USB drive on your host1...
+bb restore --computer host1 --catalog $CATALOG --backup-id "$BCKID" --root-dir /usb/path   # on Windows /cygdrive/d/
+```
+
+Schedule on your own this script in your backup server and you have applied the rule.
+
 ## Documentation
 [Manual of Butterfly Backup](https://Butterfly-Backup.readthedocs.io/en/latest/) or run help:
 ```bash
