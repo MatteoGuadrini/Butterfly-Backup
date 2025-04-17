@@ -492,16 +492,16 @@ def compose_source():
     if args.data:
         folders = map_dict_folder(args.type)
         if "system" in args.data:
-            src_list.append(":{0}".format(folders["system"]))
+            src_list.append(":'{0}'".format(folders["system"]))
             return src_list
         if "user" in args.data:
-            src_list.append(":{0}".format(folders["user"]))
+            src_list.append(":'{0}'".format(folders["user"]))
         if "config" in args.data:
-            src_list.append(":{0}".format(folders["config"]))
+            src_list.append(":'{0}'".format(folders["config"]))
         if "application" in args.data:
-            src_list.append(":{0}".format(folders["application"]))
+            src_list.append(":'{0}'".format(folders["application"]))
         if "log" in args.data:
-            src_list.append(":{0}".format(folders["log"]))
+            src_list.append(":'{0}'".format(folders["log"]))
     elif args.customdata:
         # This is the custom data
         for custom_data in args.customdata:
@@ -2150,14 +2150,14 @@ def main():
                 if src_dst:
                     src = src_dst[0]
                     # Compose source
-                    cmd.append(os.path.join(rpath, src))
+                    cmd.append("'{}'".format(os.path.join(rpath, src)))
                     dst = src_dst[1]
                     if (hostname.lower() == "localhost") or (hostname == "127.0.0.1"):
                         # Compose destination only with path of folder
-                        cmd.append("{}".format(dst))
+                        cmd.append("'{}'".format(dst))
                     else:
                         # Compose destination <user>@<hostname> format
-                        cmd.append("{0}@{1}:".format(args.user, rhost).__add__(dst))
+                        cmd.append("{0}@{1}:'{2}'".format(args.user, rhost, dst))
                     # Add command
                     if utility.confirm(
                         "info: Want to do restore path {0} into {1} at {2}?".format(
