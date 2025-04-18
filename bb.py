@@ -1773,6 +1773,15 @@ def parse_arguments():
         action="store",
         metavar="ID",
     )
+    group_list_mutually.add_argument(
+        "--status",
+        "-S",
+        help="Only backup(s) of specific status number",
+        dest="status",
+        action="store",
+        metavar="NUMBER",
+        type=int,
+    )
     group_list.add_argument(
         "--oneline", "-o", help="One line output", dest="oneline", action="store_true"
     )
@@ -2529,6 +2538,52 @@ def main():
                 # Get session backup id
                 bck_id = list_catalog[lid]
                 if "cleaned" in bck_id:
+                    if args.ids:
+                        print(lid)
+                        continue
+                    utility.write_log(
+                        log_args["status"],
+                        log_args["destination"],
+                        "INFO",
+                        "Backup id: {0}".format(lid),
+                    )
+                    utility.write_log(
+                        log_args["status"],
+                        log_args["destination"],
+                        "INFO",
+                        "Hostname or ip: {0}".format(bck_id.get("name", "")),
+                    )
+                    utility.write_log(
+                        log_args["status"],
+                        log_args["destination"],
+                        "INFO",
+                        "Timestamp: {0}".format(bck_id.get("timestamp", "")),
+                    )
+                    text += "Backup id: {0}".format(lid)
+                    text += "\n"
+                    text += "Hostname or ip: {0}".format(bck_id.get("name", ""))
+                    text += "\n"
+                    text += "Timestamp: {0}".format(bck_id.get("timestamp", ""))
+                    text += "\n\n"
+            if not args.ids:
+                utility.pager(text)
+        elif args.status is not None:
+            utility.print_verbose(
+                args.verbose,
+                "List all matched status ({}) backup in catalog".format(args.status),
+                nocolor=args.color,
+            )
+            text = "BUTTERFLY BACKUP CATALOG (STATUS={})\n\n".format(args.status)
+            utility.write_log(
+                log_args["status"],
+                log_args["destination"],
+                "INFO",
+                "BUTTERFLY BACKUP CATALOG (STATUS={})\n\n".format(args.status),
+            )
+            for lid in list_catalog.sections():
+                # Get session backup id
+                bck_id = list_catalog[lid]
+                if int(bck_id.get("status", 0)) == args.status:
                     if args.ids:
                         print(lid)
                         continue

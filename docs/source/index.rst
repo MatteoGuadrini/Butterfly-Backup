@@ -651,8 +651,8 @@ To query this catalog, the list command exists.
 .. code-block:: console
 
    arthur@heartofgold$ bb list --help
-   usage: bb list [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] --catalog CATALOG [--backup-id ID | --archived | --cleaned | --last | --detail ID] [--oneline] [--computer HOSTNAME]
-                  [--only-id]
+   usage: bb list [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] --catalog CATALOG [--backup-id ID | --archived | --cleaned | --last |
+                  --detail ID | --status NUMBER] [--oneline] [--computer HOSTNAME] [--only-id]
 
    options:
       -h, --help            show this help message and exit
@@ -673,6 +673,7 @@ To query this catalog, the list command exists.
       --cleaned, -c         List only cleaned backup
       --last, -L            Only last backup
       --detail, -d ID       List detail of file and folder of specific backup-id
+      --status, -S NUMBER   Only backup(s) of specific status number
       --oneline, -o         One line output
       --computer, -H HOSTNAME
                             List only match hostname or ip
