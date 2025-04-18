@@ -238,16 +238,15 @@ def get_std_out():
                 stdout = "DEVNULL"
         else:
             stdout = "DEVNULL"
-        return stdout
-    elif args.action == "restore":
+    elif args.action == "restore" or args.action == "export":
         if args.verbose:
             stdout = "STDOUT"
         else:
             stdout = "DEVNULL"
-        return stdout
     else:
         stdout = "STDOUT"
-        return stdout
+    
+    return stdout
 
 
 def map_dict_folder(os_name):
@@ -268,7 +267,7 @@ def map_dict_folder(os_name):
     elif os_name == "windows":
         folders["user"] = "/cygdrive/c/Users"
         folders["config"] = "/cygdrive/c/ProgramData"
-        folders["application"] = "'/cygdrive/c/Program Files'"
+        folders["application"] = "/cygdrive/c/Program Files"
         folders["system"] = "/cygdrive/c"
         folders["log"] = "/cygdrive/c/Windows/System32/winevt"
     elif os_name == "macos":
