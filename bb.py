@@ -63,7 +63,7 @@ from multiprocessing import Pool
 import utility
 
 # region Global Variables
-VERSION = "1.19.0"
+VERSION = "1.20.0"
 
 
 # endregion

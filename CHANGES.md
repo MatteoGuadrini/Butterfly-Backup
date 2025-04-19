@@ -1,5 +1,11 @@
 # Release notes
 
+## 1.20.0
+Apr 19, 2025
+* Add **--status** argument into _list_ action
+* Fix path in _restore_ action
+* Fix **--verbosity** into _export_ action
+
 ## 1.19.0
 Mar 28, 2025
 * Add **--retry** argument into _export_, _backup_ and _restore_ actions
