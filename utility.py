@@ -114,8 +114,8 @@ def print_values(key, value, nocolor=False, endline="\n"):
 
 
 def touch(filename, times=None):
-    """
-    Create an empty file
+    """Create an empty file
+
     :param filename: path of file
     :param times: time creation of file
     :return:  file
@@ -130,8 +130,8 @@ def touch(filename, times=None):
 
 
 def find_replace(filename, text_to_search, replacement_text):
-    """
-    Find and replace word in a text file
+    """Find and replace word in a text file
+
     :param filename: path of file
     :param text_to_search: word to search
     :param replacement_text: word to replace
@@ -145,8 +145,8 @@ def find_replace(filename, text_to_search, replacement_text):
 
 
 def write_log(status, log, level, message):
-    """
-    Write custom log in a custom path
+    """Write custom log in a custom path
+
     :param status: if True, log to file
     :param log: path of log file
     :param level: level of log message
@@ -182,8 +182,8 @@ def write_log(status, log, level, message):
 
 
 def make_dir(directory):
-    """
-    Create a folder
+    """Create a folder
+    
     :param directory: Path of folder
     """
     import os
@@ -193,8 +193,8 @@ def make_dir(directory):
 
 
 def time_for_folder():
-    """
-    Time now() in this format: %Y_%m_%d__%H_%M
+    """Time now() in this format: %Y_%m_%d__%H_%M
+
     :return: string time
     """
     import time
@@ -203,8 +203,8 @@ def time_for_folder():
 
 
 def time_for_log():
-    """
-    Time now() in this format: %Y-%m-%d %H:%M:%S
+    """Time now() in this format: %Y-%m-%d %H:%M:%S
+
     :return: string time
     """
     import time
@@ -213,8 +213,8 @@ def time_for_log():
 
 
 def cleanup(path, date, days):
-    """
-    Delete folder to pass a first argument, when time of it is minor of certain date
+    """Delete folder to pass a first argument, when time of it is minor of certain date
+
     :param path: path to delete
     :param date: date passed of path
     :param days: number of days
@@ -238,8 +238,8 @@ def cleanup(path, date, days):
 
 
 def new_id():
-    """
-    Generate new uuid
+    """Generate new uuid
+
     :return: uuid object
     """
     import uuid
@@ -248,8 +248,8 @@ def new_id():
 
 
 def string_to_time(string):
-    """
-    Convert time string into date object in this format '%Y-%m-%d %H:%M:%S'
+    """Convert time string into date object in this format '%Y-%m-%d %H:%M:%S'
+
     :param string: Time format string
     :return: time object
     """
@@ -260,8 +260,8 @@ def string_to_time(string):
 
 
 def time_to_string(date):
-    """
-    Convert date into string object in this format '%Y-%m-%d %H:%M:%S'
+    """Convert date into string object in this format '%Y-%m-%d %H:%M:%S'
+
     :param date: Date object
     :return: string
     """
@@ -272,8 +272,8 @@ def time_to_string(date):
 
 
 def make_symlink(source, destination):
-    """
-    Make a symbolic link
+    """Make a symbolic link
+
     :param source: Source path of symbolic link
     :param destination: Destination path of symbolic link
     """
@@ -296,8 +296,8 @@ def unlink(link):
 
 
 def confirm(message, default="n", force=False):
-    """
-    Ask user to enter Y or N (case-insensitive).
+    """Ask user to enter Y or N (case-insensitive).
+
     :message: message to print
     :default: default answer
     :force: ignore prompt message
@@ -322,8 +322,8 @@ def confirm(message, default="n", force=False):
 
 
 def print_verbose(verbose_status, *messages, nocolor=False):
-    """
-    Print verbose information
+    """Print verbose information
+
     :return: Verbose message if verbose status is True
     :rtype: str
     """
@@ -339,8 +339,8 @@ def print_verbose(verbose_status, *messages, nocolor=False):
 
 
 def check_tool(name):
-    """
-    Check tool is installed
+    """Check tool is installed
+
     :param name: name of the tool
     :return: boolean
     """
@@ -350,8 +350,8 @@ def check_tool(name):
 
 
 def check_ssh(ip, user, keytype, port=22):
-    """
-    Test ssh connection
+    """Test ssh connection
+
     :param ip: ip address or hostname of machine
     :param user: user for connection
     :param port: ssh port (default is 22)
@@ -388,8 +388,8 @@ def check_ssh(ip, user, keytype, port=22):
 
 
 def archive(path, date, days, destination):
-    """
-    Archive entire folder in a zip file
+    """Archive entire folder in a zip file
+
     :param path: path than would archive in a zip file
     :param date: date passed of path
     :param days: number of days
@@ -435,8 +435,8 @@ def archive(path, date, days, destination):
 
 
 def pager(text):
-    """
-    Pagination function like less
+    """Pagination function like less
+    
     :param text: text than would see with pagination
     :return: docstring
     """
