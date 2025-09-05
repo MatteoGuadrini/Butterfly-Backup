@@ -124,6 +124,27 @@ bb restore --computer host1 --catalog /nas/mybackup --backup-id f65e5afe-9734-11
 ```
 So we have restored the data saved on the date indicated in our _host1_.
 
+## Web interface: Butterfly-Backup-Web
+
+In this [repository](https://github.com/MatteoGuadrini/butterfly-backup-web) you find a simple web interface of **Butterfly Backup**.
+
+Copy this snippet for a rapid start
+
+```console
+# Installation
+git clone https://github.com/MatteoGuadrini/butterfly-backup-web.git
+cd butterfly-backup-web
+pip install . --upgrade
+
+# Modify this variable for your catalog path
+export BB_CATALOG_PATH=/backup
+
+# Use bbweb command line
+bbweb migrate
+bbweb createsuperuser
+bbweb runserver 0.0.0.0:80
+```
+
 ## 3-2-1 rule
 
 With Butterfly Backup you can apply _3-2-1 rule_ (Keep three copies of your data on two different types of media, with one copy offsite) in only 4 lines:
