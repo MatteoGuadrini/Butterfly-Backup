@@ -165,6 +165,11 @@ Schedule on your own this script in your backup server and you have applied the 
 bb --help
 ```
 
+## Licence            
+This package is [Treeware](https://treeware.earth). If you use it in production, then we ask that you [**buy the world a tree**](https://plant.treeware.earth/MatteoGuadrini/Butterfly-Backup) to thank us for our work. By contributing to the Treeware forest you’ll be creating employment for local families and restoring wildlife habitats.
+
+[![Buy us a tree](https://img.shields.io/badge/Treeware-%F0%9F%8C%B3-lightgreen?style=for-the-badge)](https://plant.treeware.earth/MatteoGuadrini/Butterfly-Backup)
+
 ## Open source
 Butterfly Backup is a open source project. Any contribute, It's welcome.
 

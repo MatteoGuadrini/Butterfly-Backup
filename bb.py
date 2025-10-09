@@ -63,7 +63,7 @@ from multiprocessing import Pool
 import utility
 
 # region Global Variables
-VERSION = "1.20.0"
+VERSION = "1.21.0"
 
 
 # endregion
@@ -138,12 +138,13 @@ def run_in_parallel(fn, commands, limit):
 
     # Check exit code of command
     for p, command, plog in zip(jobs, commands, logs):
-        if p.get() != 0:
+        exit_code = p.get()
+        if exit_code != 0:
             # Print warning for partial transfer
-            if p.get() in (23, 24):
+            if exit_code in (23, 24):
                 utility.warning(
                     "Command {0} exit with code (partial transfer): {1}".format(
-                        command, p.get()
+                        command, exit_code
                     ),
                     nocolor=args.color,
                 )
@@ -152,12 +153,12 @@ def run_in_parallel(fn, commands, limit):
                     plog["destination"],
                     "WARNING",
                     "Finish process {0} on {1} with error (partial transfer):{2}".format(
-                        args.action, plog["hostname"], p.get()
+                        args.action, plog["hostname"], exit_code
                     ),
                 )
             else:
                 utility.error(
-                    "Command {0} exit with code: {1}".format(command, p.get()),
+                    "Command {0} exit with code: {1}".format(command, exit_code),
                     nocolor=args.color,
                 )
                 utility.write_log(
@@ -165,13 +166,15 @@ def run_in_parallel(fn, commands, limit):
                     plog["destination"],
                     "ERROR",
                     "Finish process {0} on {1} with error:{2}".format(
-                        args.action, plog["hostname"], p.get()
+                        args.action, plog["hostname"], exit_code
                     ),
                 )
             if args.action == "backup":
                 # Write catalog file
                 write_catalog(catalog_path, plog["id"], "end", utility.time_for_log())
-                write_catalog(catalog_path, plog["id"], "status", "{0}".format(p.get()))
+                write_catalog(
+                    catalog_path, plog["id"], "status", "{0}".format(exit_code)
+                )
                 if args.retention and args.skip_err:
                     # Retention policy
                     retention_policy(
@@ -179,6 +182,25 @@ def run_in_parallel(fn, commands, limit):
                     )
             # Retry
             necessaries_retries.append(command)
+
+            # Abort
+            if args.abort is not None:
+                # Delete current backup
+                if exit_code >= args.abort:
+                    err_msg = "Abort backup {} because rsync exit code is {}".format(
+                        plog["id"], exit_code
+                    )
+                    utility.error(
+                        err_msg,
+                        nocolor=args.color,
+                    )
+                    utility.write_log(
+                        log_args["status"],
+                        log_args["destination"],
+                        "ERROR",
+                        err_msg,
+                    )
+                    delete_backup(catalog_path, plog["id"], force=True)
 
         else:
             utility.success("Command {0}".format(command), nocolor=args.color)
@@ -191,7 +213,9 @@ def run_in_parallel(fn, commands, limit):
             if args.action == "backup":
                 # Write catalog file
                 write_catalog(catalog_path, plog["id"], "end", utility.time_for_log())
-                write_catalog(catalog_path, plog["id"], "status", "{0}".format(p.get()))
+                write_catalog(
+                    catalog_path, plog["id"], "status", "{0}".format(exit_code)
+                )
                 if args.retention:
                     # Retention policy
                     retention_policy(
@@ -245,7 +269,7 @@ def get_std_out():
             stdout = "DEVNULL"
     else:
         stdout = "STDOUT"
-    
+
     return stdout
 
 
@@ -1156,7 +1180,7 @@ def delete_host(catalog, host):
             config.write(configfile)
 
 
-def delete_backup(catalog, bckid):
+def delete_backup(catalog, bckid, force=False):
     """Delete selected backup by id
 
     :param catalog: catalog file
@@ -1169,7 +1193,7 @@ def delete_backup(catalog, bckid):
     bck_id = utility.get_bckid(config, bckid)
     if utility.confirm(
         "info: Delete backup {0} from catalog {1}?".format(bckid, catalog),
-        force=args.force,
+        force=force,
     ):
         if bck_id:
             if not bck_id.get("path") or not os.path.exists(bck_id.get("path")):
@@ -1245,7 +1269,7 @@ def clean_catalog(catalog):
         if mod:
             utility.warning(
                 "The backup-id {0} has been set to default value, "
-                "because he was corrupt. "
+                "because it's corrupted. "
                 "Check it!".format(cid),
                 nocolor=args.color,
             )
@@ -1634,6 +1658,14 @@ def parse_arguments():
         action="store",
         metavar="ID",
     )
+    group_backup.add_argument(
+        "--abort",
+        "-A",
+        help="Abort backup if rsync exit code is equal or greater than",
+        action="store",
+        metavar="EXIT_CODE",
+        type=int,
+    )
     # restore session
     restore = action.add_parser(
         "restore", help="Restore options", parents=[parent_parser, rsync_parser]
@@ -1886,7 +1918,7 @@ def main():
             delete_host(catalog_path, args.delete[1])
         elif args.delete_backup:
             catalog_path = os.path.join(args.delete_backup[0], catalog_file)
-            delete_backup(catalog_path, args.delete_backup[1])
+            delete_backup(catalog_path, args.delete_backup[1], args.force)
         elif args.clean:
             catalog_path = os.path.join(args.clean, catalog_file)
             clean_catalog(catalog_path)

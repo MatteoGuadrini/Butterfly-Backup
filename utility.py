@@ -183,7 +183,7 @@ def write_log(status, log, level, message):
 
 def make_dir(directory):
     """Create a folder
-    
+
     :param directory: Path of folder
     """
     import os
@@ -283,7 +283,7 @@ def make_symlink(source, destination):
             os.unlink(destination)
         os.symlink(source, destination)
     except OSError:
-        warning(f"Link {destination} doesn't created")
+        warning(f"Link {destination} doesn't created", nocolor=True)
 
 
 def unlink(link):
@@ -436,7 +436,7 @@ def archive(path, date, days, destination):
 
 def pager(text):
     """Pagination function like less
-    
+
     :param text: text than would see with pagination
     :return: docstring
     """

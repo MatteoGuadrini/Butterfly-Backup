@@ -337,10 +337,10 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 .. code-block:: console
 
    arthur@heartofgold$ bb backup --help
-   usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] [--compress] [--timeout TIMEOUT] [--skip-error] [--rsync-path PATH] [--bwlimit BWLIMIT] [--ssh-port PORT]
-                    [--include PATTERN [PATTERN ...] | --exclude PATTERN [PATTERN ...]] [--checksum] [--links] [--acl] [--files FILES [FILES ...]] [--retry NUMBER] [--wait SECONDS] [--user USER] (--computer HOSTNAME | --list LIST)
-                    --destination CATALOG [--mode {full,incremental,differential,mirror}] (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data PATHS [PATHS ...] | --file-data FILEDATA)
-                    --type {unix,windows,macos} [--retention [DAYS [NUMBER] ...]] [--parallel NUMBER] [--start-from ID]
+   usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] [--compress] [--timeout SECONDS] [--skip-error] [--rsync-path PATH] [--bwlimit BWLIMIT]
+                    [--ssh-port PORT] [--include PATTERN [PATTERN ...] | --exclude PATTERN [PATTERN ...]] [--checksum] [--links] [--acl] [--files FILES [FILES ...]] [--retry NUMBER] [--wait SECONDS] [--user USER]
+                    (--computer HOSTNAME | --list LIST) --destination CATALOG [--mode {full,incremental,differential,mirror}] (--data {user,config,application,system,log} [{user,config,application,system,log} ...] |
+                    --custom-data PATHS [PATHS ...] | --file-data FILEDATA) --type {unix,windows,macos} [--retention [DAYS [NUMBER] ...]] [--parallel NUMBER] [--start-from ID] [--abort EXIT_CODE]
 
    options:
       -h, --help            show this help message and exit
@@ -397,6 +397,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
       --parallel, -p NUMBER
                             Number of parallel backups
       --start-from, -s ID   Backup id where start a new backup
+      --abort, -A EXIT_CODE
+                            Abort backup if rsync exit code is equal or greater than
 
 
 * **Backup options**
@@ -468,6 +470,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
    --links, -K             Preserve symbolic links.
    --retry, -U             Number of retries action.
    --wait, -W              Wait seconds to start an action.
+   --abort, -A             Abort backup if rsync exit code is equal or greater than.
 
 Flowchart of the differences between Differential and Incremental backup::
 

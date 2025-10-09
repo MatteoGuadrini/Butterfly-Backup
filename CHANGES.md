@@ -1,5 +1,9 @@
 # Release notes
 
+## 1.21.0
+Oct 09, 2025
+* Add **--abort** argument into _backup_ action
+
 ## 1.20.0
 Apr 19, 2025
 * Add **--status** argument into _list_ action
