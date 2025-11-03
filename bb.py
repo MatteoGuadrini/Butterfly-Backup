@@ -1216,9 +1216,9 @@ def delete_backup(catalog, bckid, force=False):
                         "Backup-id {0} has been removed from catalog!".format(bckid),
                         nocolor=args.color,
                     )
-                    config.remove_section(bck_id.name)
                 elif cleanup == 1:
                     utility.error("Delete {0} failed.".format(path), nocolor=args.color)
+            config.remove_section(bck_id.name)
         # Write file
         with open(catalog, "w") as configfile:
             config.write(configfile)
@@ -2038,8 +2038,10 @@ def main():
             utility.make_symlink(
                 bck_dst, os.path.join(args.destination, hostname, "last_backup")
             )
+        # For list of computers
+        check_continue = True if args.list else False
         # Start backup
-        if ssh_check:
+        if check_continue or ssh_check:
             if args.wait:
                 print("info: wait {} second(s)".format(args.wait))
                 time.sleep(args.wait)
