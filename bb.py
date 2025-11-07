@@ -791,7 +791,7 @@ def write_catalog(catalog, section, key, value):
     :param section: section of catalog file
     :param key: key of catalog file
     :param value: value of key of catalog file
-    :return:
+    :return: None
     """
     global args
 
@@ -803,6 +803,32 @@ def write_catalog(catalog, section, key, value):
             config.set(section, key, value)
         except configparser.DuplicateSectionError:
             config.set(section, key, value)
+        # Write new section
+        with open(catalog, "w") as configfile:
+            config.write(configfile)
+
+
+def remove_backup_id(catalog, section):
+    """Remove specific backup id from catalog
+
+    :param catalog: path catalog file
+    :param section: section of catalog file
+    :return: None
+    """
+    global args
+
+    config = read_catalog(catalog)
+    utility.print_verbose(
+        args.verbose,
+        f"Remove backup id {section} from catalog",
+        nocolor=args.color,
+    )
+    if not args.dry_run:
+        # Remove section
+        try:
+            config.remove_section(section)
+        except configparser.NoSectionError:
+            utility.warning(f"Section {section} doesn't exists", nocolor=args.color)
         # Write new section
         with open(catalog, "w") as configfile:
             config.write(configfile)
@@ -2071,6 +2097,8 @@ def main():
                     if not bad_results:
                         break
                     args.retry -= 1
+        else:
+            remove_backup_id(catalog_path, backup_id)
 
     # Check restore session
     if args.action == "restore":
