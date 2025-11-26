@@ -58,7 +58,7 @@ import os
 import subprocess
 import time
 from glob import glob
-from multiprocessing import Pool
+from multiprocessing import Pool, set_start_method
 
 import utility
 
@@ -110,6 +110,7 @@ def run_in_parallel(fn, commands, limit):
     global args, catalog_path, logs
 
     # Start a Pool with "limit" processes
+    set_start_method("fork")
     pool = Pool(processes=limit)
     jobs = []
     necessaries_retries = []
@@ -1962,6 +1963,8 @@ def main():
         if args.hostname:
             # Computer list
             hostnames.append(args.hostname)
+            # Redefine parallel process
+            args.parallel = 1
         elif args.list:
             if os.path.exists(args.list) and os.path.isfile(args.list):
                 list_file = open(args.list, "r").read().split()
@@ -1982,7 +1985,7 @@ def main():
                     nocolor=args.color,
                 )
                 continue
-            if not args.verbose:
+            if args.list and not args.verbose:
                 if not check_configuration(hostname):
                     utility.error(
                         "For bulk or silently backup, deploy configuration! "
