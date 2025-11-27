@@ -1,5 +1,10 @@
 # Release notes
 
+## 1.22.0
+Nov 27, 2025
+* Add **--retry-code** argument
+* Fix Python 3.14 _multiprocessing_ start method; force to **fork** process
+
 ## 1.21.0
 Oct 09, 2025
 * Add **--abort** argument into _backup_ action

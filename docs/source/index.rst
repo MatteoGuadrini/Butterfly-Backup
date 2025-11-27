@@ -78,13 +78,13 @@ Backups are organized according to precise cataloguing; this is an example:
    arthur@heartofgold$ tree destination/of/backup
    .
    ├── destination
-   │   ├── hostname or ip of the machine under backup
-   │   │   ├── timestamp folder
-   │   │   │   ├── backup folders
-   │   │   │   ├── backup.log
-   │   │   │   └── restore.log
-   │   │   ├─── general.log
-   │   │   └─── symlink of last backup
+   │   └── hostname or ip of the machine under backup
+   │       ├── timestamp folder
+   │       │   ├── backup folders
+   │       │   ├── backup.log
+   │       │   └── restore.log
+   │       ├─── general.log
+   │       └─── symlink of last backup
    │
    ├── export.log
    ├── backup.list
@@ -338,9 +338,10 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
 
    arthur@heartofgold$ bb backup --help
    usage: bb backup [-h] [--verbose] [--log] [--dry-run] [--force] [--no-color] [--explain-error] [--keytype {rsa,ed25519}] [--compress] [--timeout SECONDS] [--skip-error] [--rsync-path PATH] [--bwlimit BWLIMIT]
-                    [--ssh-port PORT] [--include PATTERN [PATTERN ...] | --exclude PATTERN [PATTERN ...]] [--checksum] [--links] [--acl] [--files FILES [FILES ...]] [--retry NUMBER] [--wait SECONDS] [--user USER]
-                    (--computer HOSTNAME | --list LIST) --destination CATALOG [--mode {full,incremental,differential,mirror}] (--data {user,config,application,system,log} [{user,config,application,system,log} ...] |
-                    --custom-data PATHS [PATHS ...] | --file-data FILEDATA) --type {unix,windows,macos} [--retention [DAYS [NUMBER] ...]] [--parallel NUMBER] [--start-from ID] [--abort EXIT_CODE]
+                    [--ssh-port PORT] [--include PATTERN [PATTERN ...] | --exclude PATTERN [PATTERN ...]] [--checksum] [--links] [--acl] [--files FILES [FILES ...]] [--retry NUMBER] [--retry-code EXIT_CODE] [--wait SECONDS]
+                    [--user USER] (--computer HOSTNAME | --list LIST) --destination CATALOG [--mode {full,incremental,differential,mirror}]
+                    (--data {user,config,application,system,log} [{user,config,application,system,log} ...] | --custom-data PATHS [PATHS ...] | --file-data FILEDATA) --type {unix,windows,macos}
+                    [--retention [DAYS [NUMBER] ...]] [--parallel NUMBER] [--start-from ID] [--abort EXIT_CODE]
 
    options:
       -h, --help            show this help message and exit
@@ -351,7 +352,7 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
       --no-color, -w        Remove color into terminal
       --explain-error, -x   Print python traceback
       --keytype, -k {rsa,ed25519}
-                            Kind of public/private key to use or generate
+                              Kind of public/private key to use or generate
 
    Rsync options:
       --compress, -z        Compress data
@@ -373,6 +374,8 @@ There are two backup modes: single and bulk. Let's see how to go about looking a
       --files, -f FILES [FILES ...]
                             Consider only specified files
       --retry, -U NUMBER    Number of retries action
+      --retry-code, -M EXIT_CODE
+                            Retry action if rsync exit code is equal or greater than
       --wait, -W SECONDS    Wait seconds to start an action
       --user, -u USER       Login name used to log into the remote host
 
@@ -792,6 +795,8 @@ The restore process is the exact opposite of the backup process. It takes the fi
       --files, -f FILES [FILES ...]
                             Consider only specified files
       --retry, -U NUMBER    Number of retries action
+      --retry-code, -M EXIT_CODE
+                            Retry action if rsync exit code is equal or greater than
       --wait, -W SECONDS    Wait seconds to start an action
       --user, -u USER       Login name used to log into the remote host
 
@@ -1003,6 +1008,8 @@ The export function is used to copy a particular backup to another path.
       --files, -f FILES [FILES ...]
                             Consider only specified files
       --retry, -U NUMBER    Number of retries action
+      --retry-code, -M EXIT_CODE
+                            Retry action if rsync exit code is equal or greater than
       --wait, -W SECONDS    Wait seconds to start an action
       --user, -u USER       Login name used to log into the remote host
 

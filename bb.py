@@ -63,7 +63,7 @@ from multiprocessing import Pool, set_start_method
 import utility
 
 # region Global Variables
-VERSION = "1.21.0"
+VERSION = "1.22.0"
 
 
 # endregion
@@ -110,7 +110,6 @@ def run_in_parallel(fn, commands, limit):
     global args, catalog_path, logs
 
     # Start a Pool with "limit" processes
-    set_start_method("fork")
     pool = Pool(processes=limit)
     jobs = []
     necessaries_retries = []
@@ -181,8 +180,10 @@ def run_in_parallel(fn, commands, limit):
                     retention_policy(
                         plog["hostname"], catalog_path, plog["destination"]
                     )
+
             # Retry
-            necessaries_retries.append(command)
+            if args.retry_code is not None and exit_code >= args.retry_code:
+                necessaries_retries.append(command)
 
             # Abort
             if args.abort is not None:
@@ -1466,6 +1467,15 @@ def parse_arguments():
         default=0,
     )
     rsync_group.add_argument(
+        "--retry-code",
+        "-M",
+        help="Retry action if rsync exit code is equal or greater than",
+        dest="retry_code",
+        action="store",
+        metavar="EXIT_CODE",
+        type=int,
+    )
+    rsync_group.add_argument(
         "--wait",
         "-W",
         help="Wait seconds to start an action",
@@ -1908,11 +1918,27 @@ def parse_arguments():
 
     args = parser_object.parse_args()
 
+    # Check retry code
+    if hasattr(args, "retry_code") and args.retry == 0:
+        parser_object.error(
+            'The "--retry-code or -M" argument required "--retry or -U" argument'
+        )
+    if hasattr(args, "retry_code") and args.retry_code == 0:
+        parser_object.error('The "--retry-code or -M" must be greater than zero')
+    if (
+        hasattr(args, "abort")
+        and hasattr(args, "retry_code")
+        and args.abort == args.retry_code
+    ):
+        parser_object.error(
+            'The "--retry-code or -M" argument and "--abort or -A" must no have same value'
+        )
+
     # Checks of parser
     if hasattr(args, "retention"):
         if args.retention and len(args.retention) >= 3:
             parser_object.error(
-                'The "--retention or -r" parameter must have max two integers. '
+                'The "--retention or -r" argument must have max two integers. '
                 "Three or more arguments specified: {}".format(args.retention),
             )
 
@@ -2883,6 +2909,10 @@ def main():
 
 if __name__ == "__main__":
     global args, catalog_path, backup_id, rpath, log_args, logs, hostname
+
+    # Set start multiprocessing method
+    set_start_method("fork")
+
     try:
         main()
     except Exception as err:
