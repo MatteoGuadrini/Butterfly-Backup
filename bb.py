@@ -1919,11 +1919,11 @@ def parse_arguments():
     args = parser_object.parse_args()
 
     # Check retry code
-    if hasattr(args, "retry_code") and args.retry == 0:
+    if hasattr(args, "retry_code") and args.retry_code and args.retry == 0:
         parser_object.error(
             'The "--retry-code or -M" argument required "--retry or -U" argument'
         )
-    if hasattr(args, "retry_code") and args.retry_code == 0:
+    if hasattr(args, "retry_code") and args.retry_code and args.retry_code == 0:
         parser_object.error('The "--retry-code or -M" must be greater than zero')
     if (
         hasattr(args, "abort")
