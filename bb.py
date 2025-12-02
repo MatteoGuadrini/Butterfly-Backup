@@ -202,6 +202,8 @@ def run_in_parallel(fn, commands, limit):
                         "ERROR",
                         err_msg,
                     )
+                    if args.retry > 0:
+                        continue
                     delete_backup(catalog_path, plog["id"], force=True)
 
         else:
@@ -2004,6 +2006,18 @@ def main():
                 )
                 exit(1)
         for hostname in hostnames:
+            # Log information's
+            catalog_path = os.path.join(args.destination, catalog_file)
+            backup_id = "{}".format(utility.new_id())
+            log_args = {
+                "id": backup_id,
+                "hostname": hostname,
+                "status": args.log,
+                "destination": os.path.join(args.destination, hostname, "general.log"),
+            }
+            logs.append(log_args)
+            backup_catalog = read_catalog(catalog_path)
+            # Check SSH connection
             ssh_check = utility.check_ssh(hostname, args.user, args.keytype, port)
             if not ssh_check:
                 utility.error(
@@ -2019,17 +2033,6 @@ def main():
                         nocolor=args.color,
                     )
                     continue
-            # Log information's
-            backup_id = "{}".format(utility.new_id())
-            log_args = {
-                "id": backup_id,
-                "hostname": hostname,
-                "status": args.log,
-                "destination": os.path.join(args.destination, hostname, "general.log"),
-            }
-            logs.append(log_args)
-            catalog_path = os.path.join(args.destination, catalog_file)
-            backup_catalog = read_catalog(catalog_path)
             # Compose command
             cmd = compose_command(args, hostname)
             # Check if start-from is specified
