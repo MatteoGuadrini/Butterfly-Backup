@@ -361,12 +361,14 @@ def check_ssh(ip, user, keytype, port=22):
     home = os.path.expanduser("~")
     ssh_folder = os.path.join(home, ".ssh")
     key_filename = os.path.join(ssh_folder, "id_{0}".format(keytype))
-    key = {"key_filename": key_filename} if os.path.exists(key_filename) else None
+    connect_kwargs = {"banner_timeout": 60}
+    if os.path.exists(key_filename):
+        connect_kwargs["key_filename"] = key_filename
     conn = Connection(
         ip,
         port=port,
         user=user,
-        connect_kwargs=key,
+        connect_kwargs=connect_kwargs,
     )
     try:
         conn.open()
