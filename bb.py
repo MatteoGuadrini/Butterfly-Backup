@@ -938,7 +938,9 @@ def archive_policy(catalog, destination):
             if (type_backup == "full") and (full_count <= 1):
                 continue
             if not dry_run("Archive {0} backup folder".format(path)):
-                archive = utility.archive(path, date, args.days, destination)
+                archive = utility.archive(
+                    path, date, args.days, destination, nocolor=args.color
+                )
             if archive == 0:
                 write_catalog(catalog, bid, "archived", "True")
                 utility.success(
@@ -2018,7 +2020,9 @@ def main():
             logs.append(log_args)
             backup_catalog = read_catalog(catalog_path)
             # Check SSH connection
-            ssh_check = utility.check_ssh(hostname, args.user, args.keytype, port)
+            ssh_check = utility.check_ssh(
+                hostname, args.user, args.keytype, port, args.color
+            )
             if not ssh_check:
                 utility.error(
                     "SSH connection failed on {1}:{0}".format(port, hostname),
@@ -2094,7 +2098,9 @@ def main():
             write_catalog(catalog_path, backup_id, "timestamp", utility.time_for_log())
             # Create a symlink for last backup
             utility.make_symlink(
-                bck_dst, os.path.join(args.destination, hostname, "last_backup")
+                bck_dst,
+                os.path.join(args.destination, hostname, "last_backup"),
+                args.color,
             )
         # For list of computers
         check_continue = True if args.list else False
@@ -2110,7 +2116,8 @@ def main():
                     utility.warning(
                         "Backup exits with non-zero status; retry backup for {} times".format(
                             args.retry
-                        )
+                        ),
+                        nocolor=args.color,
                     )
                     utility.write_log(
                         log_args["status"],
@@ -2211,7 +2218,7 @@ def main():
                 )
                 exit(1)
         # Test connection
-        ssh_check = utility.check_ssh(rhost, args.user, args.keytype, port)
+        ssh_check = utility.check_ssh(rhost, args.user, args.keytype, port, args.color)
         if not ssh_check:
             utility.error(
                 "SSH connection failed on {1}:{0}".format(port, rhost),
@@ -2279,7 +2286,8 @@ def main():
                     utility.warning(
                         "Backup exits with non-zero status; retry restore for {} times".format(
                             args.retry
-                        )
+                        ),
+                        nocolor=args.color,
                     )
                     utility.write_log(
                         log_args["status"],
@@ -2884,7 +2892,8 @@ def main():
                 utility.warning(
                     "Backup exits with non-zero status; retry export for {} times".format(
                         args.retry
-                    )
+                    ),
+                    nocolor=args.color,
                 )
                 utility.write_log(
                     log_args["status"],
@@ -2926,4 +2935,4 @@ if __name__ == "__main__":
                 "CRITICAL",
                 "Something wrong: {0}.".format(err),
             )
-        utility.report_issue(err, args.error)
+        utility.report_issue(err, args.error, args.color)

@@ -47,12 +47,13 @@ def get_bckid(catalog, bckid):
     return bid
 
 
-def report_issue(exc, tb):
+def report_issue(exc, tb, nocolor=False):
     """Report issue"""
     error(
         '{0} on line {1}, with error "{2}"'.format(
             type(exc).__name__, exc.__traceback__.tb_lineno, str(exc)
-        )
+        ),
+        nocolor=nocolor,
     )
     if tb:
         traceback.print_exc()
@@ -271,7 +272,7 @@ def time_to_string(date):
     return string
 
 
-def make_symlink(source, destination):
+def make_symlink(source, destination, nocolor=False):
     """Make a symbolic link
 
     :param source: Source path of symbolic link
@@ -283,7 +284,7 @@ def make_symlink(source, destination):
             os.unlink(destination)
         os.symlink(source, destination)
     except OSError:
-        warning(f"Link {destination} doesn't created", nocolor=True)
+        warning(f"Link {destination} doesn't created", nocolor=nocolor)
 
 
 def unlink(link):
@@ -349,7 +350,7 @@ def check_tool(name):
     return which(name) is not None
 
 
-def check_ssh(ip, user, keytype, port=22):
+def check_ssh(ip, user, keytype, port=22, nocolor=False):
     """Test ssh connection
 
     :param ip: ip address or hostname of machine
@@ -376,20 +377,22 @@ def check_ssh(ip, user, keytype, port=22):
         return True
     except ValueError:
         error(
-            "Connection error. Maybe you can deploy configuration. See 'bb config --help'"
+            "Connection error. Maybe you can deploy configuration. See 'bb config --help'",
+            nocolor=nocolor,
         )
         return False
     except AuthenticationException:
         warning(
             "Connection to the host {0} failed by authentication error. "
-            "See 'bb config -h' to deploy configuration.".format(conn.host)
+            "See 'bb config -h' to deploy configuration.".format(conn.host),
+            nocolor=nocolor,
         )
         return True
     except Exception:
         return False
 
 
-def archive(path, date, days, destination):
+def archive(path, date, days, destination, nocolor=False):
     """Archive entire folder in a zip file
 
     :param path: path than would archive in a zip file
@@ -423,17 +426,22 @@ def archive(path, date, days, destination):
                     exitcode = 0
                     clean = cleanup(path, date, days)
                     if clean == 0:
-                        success("Delete {0} successfully.".format(path))
+                        success(
+                            "Delete {0} successfully.".format(path), nocolor=nocolor
+                        )
                     elif clean != 0:
-                        error("Delete {0} failed.".format(path))
+                        error("Delete {0} failed.".format(path), nocolor=nocolor)
                     return exitcode
                 except OSError:
                     exitcode = 1
                     return exitcode
             else:
-                error("The destination path {0} is not exist.".format(destination))
+                error(
+                    "The destination path {0} is not exist.".format(destination),
+                    nocolor=nocolor,
+                )
         else:
-            error("The path {0} is not exist.".format(path))
+            error("The path {0} is not exist.".format(path), nocolor=nocolor)
 
 
 def pager(text):
