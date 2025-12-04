@@ -280,7 +280,7 @@ def make_symlink(source, destination, nocolor=False):
     """
 
     try:
-        if os.path.exists(destination):
+        if os.path.islink(destination):
             os.unlink(destination)
         os.symlink(source, destination)
     except OSError:
