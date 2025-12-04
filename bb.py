@@ -63,7 +63,7 @@ from multiprocessing import Pool, set_start_method
 import utility
 
 # region Global Variables
-VERSION = "1.22.0"
+VERSION = "1.22.1"
 
 
 # endregion
@@ -175,8 +175,28 @@ def run_in_parallel(fn, commands, limit):
                 write_catalog(
                     catalog_path, plog["id"], "status", "{0}".format(exit_code)
                 )
-                if args.retention and args.skip_err:
-                    # Retention policy
+                # Abort
+                if args.abort is not None and not args.retry:
+                    # Delete current backup
+                    if exit_code >= args.abort:
+                        err_msg = (
+                            "Abort backup {} because rsync exit code is {}".format(
+                                plog["id"], exit_code
+                            )
+                        )
+                        utility.error(
+                            err_msg,
+                            nocolor=args.color,
+                        )
+                        utility.write_log(
+                            log_args["status"],
+                            log_args["destination"],
+                            "ERROR",
+                            err_msg,
+                        )
+                        delete_backup(catalog_path, plog["id"], force=True)
+                # Retention policy
+                if args.retention:
                     retention_policy(
                         plog["hostname"], catalog_path, plog["destination"]
                     )
@@ -184,27 +204,8 @@ def run_in_parallel(fn, commands, limit):
             # Retry
             if args.retry_code is not None and exit_code >= args.retry_code:
                 necessaries_retries.append(command)
-
-            # Abort
-            if args.abort is not None:
-                # Delete current backup
-                if exit_code >= args.abort:
-                    err_msg = "Abort backup {} because rsync exit code is {}".format(
-                        plog["id"], exit_code
-                    )
-                    utility.error(
-                        err_msg,
-                        nocolor=args.color,
-                    )
-                    utility.write_log(
-                        log_args["status"],
-                        log_args["destination"],
-                        "ERROR",
-                        err_msg,
-                    )
-                    if args.retry > 0:
-                        continue
-                    delete_backup(catalog_path, plog["id"], force=True)
+            elif args.retry and exit_code > 0:
+                necessaries_retries.append(command)
 
         else:
             utility.success("Command {0}".format(command), nocolor=args.color)
@@ -2114,8 +2115,8 @@ def main():
             if args.retry and bad_results:
                 for _ in range(args.retry):
                     utility.warning(
-                        "Backup exits with non-zero status; retry backup for {} times".format(
-                            args.retry
+                        "Backup of {} exits with non-zero status; retry backup for {} times".format(
+                            hostname, args.retry
                         ),
                         nocolor=args.color,
                     )
@@ -2127,15 +2128,15 @@ def main():
                             args.retry
                         ),
                     )
+                    if not bad_results:
+                        break
+                    args.retry -= 1
                     if args.wait:
                         print("info: wait {} second(s)".format(args.wait))
                         time.sleep(args.wait)
                     bad_results = run_in_parallel(
                         start_process, bad_results, args.parallel
                     )
-                    if not bad_results:
-                        break
-                    args.retry -= 1
         else:
             remove_backup_id(catalog_path, backup_id)
 

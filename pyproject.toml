@@ -7,7 +7,7 @@ py-modules = ["bb", "utility"]
 
 [project]
 name = "Butterfly-Backup"
-version = "1.22.0"
+version = "1.22.1"
 readme = "README.md"
 license = { text = "GNU General Public License v3.0" }
 keywords = [
