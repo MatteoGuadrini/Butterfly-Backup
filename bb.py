@@ -63,7 +63,7 @@ from multiprocessing import Pool, set_start_method
 import utility
 
 # region Global Variables
-VERSION = "1.22.1"
+VERSION = "1.22.2"
 
 
 # endregion
@@ -1933,6 +1933,7 @@ def parse_arguments():
     if (
         hasattr(args, "abort")
         and hasattr(args, "retry_code")
+        and args.retry_code is not None
         and args.abort == args.retry_code
     ):
         parser_object.error(
