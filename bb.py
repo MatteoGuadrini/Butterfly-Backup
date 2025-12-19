@@ -63,7 +63,7 @@ from multiprocessing import Pool, set_start_method
 import utility
 
 # region Global Variables
-VERSION = "1.22.2"
+VERSION = "1.22.3"
 
 
 # endregion
@@ -114,6 +114,10 @@ def run_in_parallel(fn, commands, limit):
     jobs = []
     necessaries_retries = []
 
+    if args.wait:
+        print("info: wait {} second(s)".format(args.wait))
+        time.sleep(args.wait)
+
     for command, plog in zip(commands, logs):
         # Run the function
         proc = pool.apply_async(func=fn, args=(command,))
@@ -123,7 +127,7 @@ def run_in_parallel(fn, commands, limit):
             args.verbose, "rsync command: {0}".format(command), nocolor=args.color
         )
         utility.write_log(
-            log_args["status"],
+            plog["status"],
             plog["destination"],
             "INFO",
             "Start process {0} on {1}".format(args.action, plog["hostname"]),
@@ -149,7 +153,7 @@ def run_in_parallel(fn, commands, limit):
                     nocolor=args.color,
                 )
                 utility.write_log(
-                    log_args["status"],
+                    plog["status"],
                     plog["destination"],
                     "WARNING",
                     "Finish process {0} on {1} with error (partial transfer):{2}".format(
@@ -162,7 +166,7 @@ def run_in_parallel(fn, commands, limit):
                     nocolor=args.color,
                 )
                 utility.write_log(
-                    log_args["status"],
+                    plog["status"],
                     plog["destination"],
                     "ERROR",
                     "Finish process {0} on {1} with error:{2}".format(
@@ -189,8 +193,8 @@ def run_in_parallel(fn, commands, limit):
                             nocolor=args.color,
                         )
                         utility.write_log(
-                            log_args["status"],
-                            log_args["destination"],
+                            plog["status"],
+                            plog["destination"],
                             "ERROR",
                             err_msg,
                         )
@@ -210,7 +214,7 @@ def run_in_parallel(fn, commands, limit):
         else:
             utility.success("Command {0}".format(command), nocolor=args.color)
             utility.write_log(
-                log_args["status"],
+                plog["status"],
                 plog["destination"],
                 "INFO",
                 "Finish process {0} on {1}".format(args.action, plog["hostname"]),
@@ -2010,17 +2014,6 @@ def main():
                 )
                 exit(1)
         for hostname in hostnames:
-            # Log information's
-            catalog_path = os.path.join(args.destination, catalog_file)
-            backup_id = "{}".format(utility.new_id())
-            log_args = {
-                "id": backup_id,
-                "hostname": hostname,
-                "status": args.log,
-                "destination": os.path.join(args.destination, hostname, "general.log"),
-            }
-            logs.append(log_args)
-            backup_catalog = read_catalog(catalog_path)
             # Check SSH connection
             ssh_check = utility.check_ssh(
                 hostname, args.user, args.keytype, port, args.color
@@ -2039,6 +2032,17 @@ def main():
                         nocolor=args.color,
                     )
                     continue
+            # Log information's
+            catalog_path = os.path.join(args.destination, catalog_file)
+            backup_id = "{}".format(utility.new_id())
+            log_args = {
+                "id": backup_id,
+                "hostname": hostname,
+                "status": args.log,
+                "destination": os.path.join(args.destination, hostname, "general.log"),
+            }
+            logs.append(log_args)
+            backup_catalog = read_catalog(catalog_path)
             # Compose command
             cmd = compose_command(args, hostname)
             # Check if start-from is specified
@@ -2104,13 +2108,9 @@ def main():
                 os.path.join(args.destination, hostname, "last_backup"),
                 args.color,
             )
-        # For list of computers
         check_continue = True if args.list else False
         # Start backup
         if check_continue or ssh_check:
-            if args.wait:
-                print("info: wait {} second(s)".format(args.wait))
-                time.sleep(args.wait)
             bad_results = run_in_parallel(start_process, cmds, args.parallel)
             # Retry
             if args.retry and bad_results:

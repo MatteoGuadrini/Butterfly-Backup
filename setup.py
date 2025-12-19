@@ -29,7 +29,7 @@ with open("README.md") as rme:
 setup(
     name="Butterfly-Backup",
     py_modules=["bb", "utility"],
-    version="1.22.2",
+    version="1.22.3",
     url="https://matteoguadrini.github.io/Butterfly-Backup/",
     project_urls={
         "Documentation": "https://butterfly-backup.readthedocs.io/en/latest/",
