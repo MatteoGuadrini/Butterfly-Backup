@@ -1,9 +1,10 @@
 version: 2.1
 
+orbs:
+  python: circleci/python@2.0.3
+
 jobs:
   build-and-test:
-    docker:
-      - image: circleci/python
     steps:
       - checkout
       - run: sudo chmod 777 /usr/share/man/man1
