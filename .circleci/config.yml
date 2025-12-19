@@ -5,10 +5,12 @@ orbs:
 
 jobs:
   build-and-test:
+    executor: python/default
     steps:
       - checkout
-      - run: sudo chmod 777 /usr/share/man/man1
-      - run: sudo python setup.py install -f
+      - python/install-packages:
+          pkg-manager: pip
+      - run: sudo pip install . --force
       - run: sudo apt update
       - run: sudo apt -y install rsync
       - run: bb -V
