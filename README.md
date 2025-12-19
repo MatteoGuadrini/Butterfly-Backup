@@ -44,6 +44,22 @@ sudo pip install . --upgrade
 bb --help
 ```
 
+> [!TIP]
+> If your operating system adhere to [PEP668](https://peps.python.org/pep-0668/), to install Butterfly Backup follow this:
+```bash
+git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
+cd Butterfly-Backup
+# Use a virtual environment
+python3 -m venv venv && . venv/bin/activate && pip install .
+# Use user-space
+pip install --user .
+# Use external tools like pipx(https://pipx.pypa.io/stable/) and/or uv(https://docs.astral.sh/uv/) (they create virtual environments for you); upgrading is done via a specific subcommand
+pipx install . && pipx upgrade-all
+uv pip install . --upgrade
+# Deactivate the externally managed file, temporarily or permanently
+pip install . --break-system-packages || python3 -m pip config set global.break-system-packages true
+```
+
 ## Quickstart
 A short demo of Butterfly Backup:
 ```bash

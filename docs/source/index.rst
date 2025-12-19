@@ -61,6 +61,21 @@ Install Butterfly Backup is very simple; run this:
 
 The upgrade is also simple; type the same commands.
 
+.. tip::
+
+   If your operating system adhere to `PEP668 <https://peps.python.org/pep-0668/>`_, to install Butterfly Backup follow this:
+
+.. code-block:: console
+
+   arthur@heartofgold$ git clone https://github.com/MatteoGuadrini/Butterfly-Backup.git
+   arthur@heartofgold$ cd Butterfly-Backup
+   arthur@heartofgold$ python3 -m venv venv && . venv/bin/activate && pip install . # Use a virtual environment
+   arthur@heartofgold$ pip install --user . # Use user-space
+   arthur@heartofgold$ pipx install . && pipx upgrade-all # Use external tools like pipx(https://pipx.pypa.io/stable/)
+   arthur@heartofgold$ uv pip install . --upgrade # Use external tools like uv(https://docs.astral.sh/uv/)
+   arthur@heartofgold$ pip install . --break-system-packages || python3 -m pip config set global.break-system-packages true # Deactivate the externally managed file, temporarily or permanently
+
+
 .. _core:
 
 
@@ -78,11 +93,11 @@ Backups are organized according to precise cataloguing; this is an example:
    arthur@heartofgold$ tree destination/of/backup
    .
    ├── destination
-   │   └── hostname or ip of the machine under backup
-   │       ├── timestamp folder
-   │       │   ├── backup folders
-   │       │   ├── backup.log
-   │       │   └── restore.log
+   │   └── hostname or ip of the machine under backup
+   │       ├── timestamp folder
+   │       │   ├── backup folders
+   │       │   ├── backup.log
+   │       │   └── restore.log
    │       ├─── general.log
    │       └─── symlink of last backup
    │
