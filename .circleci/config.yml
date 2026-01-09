@@ -10,10 +10,9 @@ jobs:
       - checkout
       - python/install-packages:
           pkg-manager: pip
-      - run: sudo pip install . --force
       - run: sudo apt update
       - run: sudo apt -y install rsync
-      - run: bb -V
+      - run: python3 bb.py -V
 
 workflows:
   main:
